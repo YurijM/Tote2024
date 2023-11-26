@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Тотализатор 2024</string>
+
+    <string name="design">"Разработка"</string>
+    <string name="company"><![CDATA[MU & C°]]></string>
+
+    <string name="sign_up">Регистрация</string>
+    <string name="sign_in">Авторизация</string>
+
+    <string name="rating">Рейтинг</string>
+    <string name="stake">Ставки</string>
+    <string name="prognosis">Прогноз</string>
+    <string name="games">Игры</string>
+
+    <string name="to_register">Зарегистрироваться</string>
+    <string name="to_log_into">Авторизоваться</string>
+    <string name="enter_email">Введите email</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="confirm_password">Подтвердите пароль</string>
+
+    <string name="error_min_length">Поле должно содержать не меньше %1$s символов</string>
+    <string name="error_field_empty">Поле не может быть пустым</string>
+</resources>
