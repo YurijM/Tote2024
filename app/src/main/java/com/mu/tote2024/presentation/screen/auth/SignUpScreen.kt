@@ -63,7 +63,7 @@ fun SignUpScreen(
     var password by mutableStateOf<String?>(null)
     var passwordConfirm by mutableStateOf<String?>(null)
 
-    val isLoading by mutableStateOf(false)
+    var isLoading by mutableStateOf(false)
 
     var isErrorEmail by mutableStateOf(true)
     var isErrorPassword by mutableStateOf(true)
@@ -172,9 +172,9 @@ fun SignUpScreen(
                     AppTextField(
                         value = email,
                         onChange = { newValue ->
+                            email = newValue
                             isErrorEmail = newValue.isBlank()
                             enabledButton = (!isErrorEmail) && (!isErrorPassword) && (!isErrorPasswordConfirm)
-                            email = newValue
                         },
                         label = stringResource(id = R.string.enter_email),
                         painterId = R.drawable.ic_mail,
@@ -186,9 +186,9 @@ fun SignUpScreen(
                         label = stringResource(id = R.string.enter_password),
                         value = password,
                         onChange = { newValue ->
+                            password = newValue
                             isErrorPassword = newValue.isBlank() || newValue.length < MIN_PASSWORD_LENGTH
                             enabledButton = !isErrorEmail && !isErrorPassword && !isErrorPasswordConfirm
-                            password = newValue
                         },
                         painterId = R.drawable.ic_password,
                         description = "password",
@@ -199,9 +199,9 @@ fun SignUpScreen(
                         label = stringResource(id = R.string.confirm_password),
                         value = passwordConfirm,
                         onChange = { newValue ->
+                            passwordConfirm = newValue
                             isErrorPasswordConfirm = newValue.isBlank() || newValue.length < MIN_PASSWORD_LENGTH
                             enabledButton = !isErrorEmail && !isErrorPassword && !isErrorPasswordConfirm
-                            passwordConfirm = newValue
                         },
                         painterId = R.drawable.ic_password,
                         description = "passwordConfirm",
@@ -211,6 +211,7 @@ fun SignUpScreen(
                     Button(
                         enabled = !isErrorEmail && !isErrorPassword && !isErrorPasswordConfirm,
                         onClick = {
+                            isLoading = !isLoading
                             /*viewModel.sendEvent(
                                 AuthEvent.OnSignUp(
                                     email = email ?: "",
