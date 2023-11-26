@@ -13,8 +13,10 @@ import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -56,10 +58,10 @@ fun PasswordTextField(
     description: String,
     errorMessage: String
 ) {
-    val showPassword = remember {
+    var showPassword by remember {
         mutableStateOf(false)
     }
-    val hasError = remember {
+    var hasError by remember {
         mutableStateOf(false)
     }
 
@@ -69,7 +71,7 @@ fun PasswordTextField(
             value = value ?: "",
             shape = ShapeDefaults.Medium,
             onValueChange = { newValue ->
-                hasError.value = newValue.isBlank() || (newValue.length < MIN_PASSWORD_LENGTH)
+                hasError = newValue.isBlank() || (newValue.length < MIN_PASSWORD_LENGTH)
                 onChange(newValue)
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -86,7 +88,7 @@ fun PasswordTextField(
                 )
             },
             singleLine = true,
-            visualTransformation = if (showPassword.value) {
+            visualTransformation = if (showPassword) {
                 VisualTransformation.None
             } else {
                 PasswordVisualTransformation()
@@ -96,9 +98,9 @@ fun PasswordTextField(
                     modifier = Modifier
                         .size(28.dp)
                         .clickable {
-                            showPassword.value = !showPassword.value
+                            showPassword = !showPassword
                         },
-                    painter = if (showPassword.value) {
+                    painter = if (showPassword) {
                         painterResource(id = R.drawable.ic_hide)
                     } else {
                         painterResource(id = R.drawable.ic_show)
@@ -106,9 +108,9 @@ fun PasswordTextField(
                     contentDescription = "eye"
                 )
             },
-            isError = hasError.value
+            isError = hasError
         )
-        if (hasError.value) {
+        if (hasError) {
             TextError(errorMessage)
         }
     }

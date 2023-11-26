@@ -53,7 +53,6 @@ fun SignUpScreenPreview() {
     }
 }
 
-//@SuppressLint("UnrememberedMutableState", "SuspiciousIndentation")
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun SignUpScreen(
@@ -66,11 +65,11 @@ fun SignUpScreen(
 
     val isLoading by mutableStateOf(false)
 
-    val isErrorEmail = mutableStateOf(true)
-    val isErrorPassword = mutableStateOf(true)
-    val isErrorPasswordConfirm = mutableStateOf(true)
+    var isErrorEmail by mutableStateOf(true)
+    var isErrorPassword by mutableStateOf(true)
+    var isErrorPasswordConfirm by mutableStateOf(true)
 
-    val enabledButton = mutableStateOf(false)
+    var enabledButton by mutableStateOf(false)
 
     /*val state by viewModel.state.collectAsState()
     Log.d(DEBUG_TAG, "start state: $state")*/
@@ -173,8 +172,8 @@ fun SignUpScreen(
                     AppTextField(
                         value = email,
                         onChange = { newValue ->
-                            isErrorEmail.value = newValue.isBlank()
-                            enabledButton.value = (!isErrorEmail.value) && (!isErrorPassword.value) && (!isErrorPasswordConfirm.value)
+                            isErrorEmail = newValue.isBlank()
+                            enabledButton = (!isErrorEmail) && (!isErrorPassword) && (!isErrorPasswordConfirm)
                             email = newValue
                         },
                         label = stringResource(id = R.string.enter_email),
@@ -187,8 +186,8 @@ fun SignUpScreen(
                         label = stringResource(id = R.string.enter_password),
                         value = password,
                         onChange = { newValue ->
-                            isErrorPassword.value = newValue.isBlank() || newValue.length < MIN_PASSWORD_LENGTH
-                            enabledButton.value = !isErrorEmail.value && !isErrorPassword.value && !isErrorPasswordConfirm.value
+                            isErrorPassword = newValue.isBlank() || newValue.length < MIN_PASSWORD_LENGTH
+                            enabledButton = !isErrorEmail && !isErrorPassword && !isErrorPasswordConfirm
                             password = newValue
                         },
                         painterId = R.drawable.ic_password,
@@ -200,8 +199,8 @@ fun SignUpScreen(
                         label = stringResource(id = R.string.confirm_password),
                         value = passwordConfirm,
                         onChange = { newValue ->
-                            isErrorPasswordConfirm.value = newValue.isBlank() || newValue.length < MIN_PASSWORD_LENGTH
-                            enabledButton.value = !isErrorEmail.value && !isErrorPassword.value && !isErrorPasswordConfirm.value
+                            isErrorPasswordConfirm = newValue.isBlank() || newValue.length < MIN_PASSWORD_LENGTH
+                            enabledButton = !isErrorEmail && !isErrorPassword && !isErrorPasswordConfirm
                             passwordConfirm = newValue
                         },
                         painterId = R.drawable.ic_password,
@@ -210,7 +209,7 @@ fun SignUpScreen(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Button(
-                        enabled = !isErrorEmail.value && !isErrorPassword.value && !isErrorPasswordConfirm.value, //enabledButton.value,
+                        enabled = !isErrorEmail && !isErrorPassword && !isErrorPasswordConfirm,
                         onClick = {
                             /*viewModel.sendEvent(
                                 AuthEvent.OnSignUp(

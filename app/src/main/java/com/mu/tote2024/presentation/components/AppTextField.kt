@@ -1,5 +1,6 @@
 package com.mu.tote2024.presentation.components
 
+import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,8 +13,10 @@ import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -41,6 +44,7 @@ fun PreviewAppField() {
     }
 }*/
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTextField(
@@ -51,7 +55,7 @@ fun AppTextField(
     description: String,
     errorMessage: String
 ) {
-    val hasError = remember {
+    var hasError by remember {
         mutableStateOf(false)
     }
 
@@ -61,7 +65,7 @@ fun AppTextField(
             value = value ?: "",
             shape = ShapeDefaults.Medium,
             onValueChange = { newValue ->
-                hasError.value = newValue.isBlank()
+                hasError = newValue.isBlank()
                 onChange(newValue)
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -78,9 +82,9 @@ fun AppTextField(
                 )
             },
             singleLine = true,
-            isError = hasError.value
+            isError = hasError
         )
-        if (hasError.value) {
+        if (hasError) {
             TextError(errorMessage)
         }
     }
