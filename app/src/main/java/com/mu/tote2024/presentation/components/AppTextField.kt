@@ -13,10 +13,6 @@ import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -55,17 +51,12 @@ fun AppTextField(
     description: String,
     errorMessage: String
 ) {
-    var hasError by remember {
-        mutableStateOf(false)
-    }
-
     Column {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = value ?: "",
             shape = ShapeDefaults.Medium,
             onValueChange = { newValue ->
-                hasError = newValue.isBlank()
                 onChange(newValue)
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -82,9 +73,9 @@ fun AppTextField(
                 )
             },
             singleLine = true,
-            isError = hasError
+            isError = errorMessage.isNotBlank()
         )
-        if (hasError) {
+        if (errorMessage.isNotBlank()) {
             TextError(errorMessage)
         }
     }

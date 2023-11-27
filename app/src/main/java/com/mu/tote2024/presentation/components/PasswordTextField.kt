@@ -23,7 +23,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.mu.tote2024.R
-import com.mu.tote2024.presentation.utils.Constants.MIN_PASSWORD_LENGTH
 
 /*@Preview(
     name = "Light",
@@ -61,9 +60,6 @@ fun PasswordTextField(
     var showPassword by remember {
         mutableStateOf(false)
     }
-    var hasError by remember {
-        mutableStateOf(false)
-    }
 
     Column {
         OutlinedTextField(
@@ -71,7 +67,6 @@ fun PasswordTextField(
             value = value ?: "",
             shape = ShapeDefaults.Medium,
             onValueChange = { newValue ->
-                hasError = newValue.isBlank() || (newValue.length < MIN_PASSWORD_LENGTH)
                 onChange(newValue)
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -108,9 +103,9 @@ fun PasswordTextField(
                     contentDescription = "eye"
                 )
             },
-            isError = hasError
+            isError = errorMessage.isNotBlank()
         )
-        if (hasError) {
+        if (errorMessage.isNotBlank()) {
             TextError(errorMessage)
         }
     }

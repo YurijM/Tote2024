@@ -65,9 +65,10 @@ fun SignUpScreen(
 
     var isLoading by mutableStateOf(false)
 
-    var isErrorEmail by mutableStateOf(true)
-    var isErrorPassword by mutableStateOf(true)
-    var isErrorPasswordConfirm by mutableStateOf(true)
+    //var hasErrorEmail by mutableStateOf(true)
+    var errorEmail by mutableStateOf("")
+    var errorPassword by mutableStateOf("")
+    var errorPasswordConfirm by mutableStateOf("")
 
     var enabledButton by mutableStateOf(false)
 
@@ -169,17 +170,26 @@ fun SignUpScreen(
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    val errorFieldIsNotEmpty = stringResource(R.string.error_field_empty)
+                    val errorFieldMustContainLeastNChars = stringResource(R.string.error_min_length, MIN_PASSWORD_LENGTH)
+
                     AppTextField(
                         value = email,
                         onChange = { newValue ->
                             email = newValue
-                            isErrorEmail = newValue.isBlank()
-                            enabledButton = (!isErrorEmail) && (!isErrorPassword) && (!isErrorPasswordConfirm)
+                            errorEmail = if (newValue.isBlank()) {
+                                errorFieldIsNotEmpty
+                            } else {
+                                ""
+                            }
+                            enabledButton = (errorEmail.isBlank()) &&
+                                    (errorPassword.isBlank()) &&
+                                    (errorPasswordConfirm.isBlank())
                         },
                         label = stringResource(id = R.string.enter_email),
                         painterId = R.drawable.ic_mail,
                         description = "email",
-                        errorMessage = stringResource(R.string.error_field_empty),
+                        errorMessage = errorEmail
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     PasswordTextField(
@@ -187,12 +197,18 @@ fun SignUpScreen(
                         value = password,
                         onChange = { newValue ->
                             password = newValue
-                            isErrorPassword = newValue.isBlank() || newValue.length < MIN_PASSWORD_LENGTH
-                            enabledButton = !isErrorEmail && !isErrorPassword && !isErrorPasswordConfirm
+                            errorPassword = when {
+                                newValue.isBlank() -> errorFieldIsNotEmpty
+                                newValue.length < MIN_PASSWORD_LENGTH -> errorFieldMustContainLeastNChars
+                                else -> ""
+                            }
+                            enabledButton = (errorEmail.isBlank()) &&
+                                    (errorPassword.isBlank()) &&
+                                    (errorPasswordConfirm.isBlank())
                         },
                         painterId = R.drawable.ic_password,
                         description = "password",
-                        errorMessage = stringResource(R.string.error_min_length, MIN_PASSWORD_LENGTH)
+                        errorMessage = errorPassword
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     PasswordTextField(
@@ -200,16 +216,22 @@ fun SignUpScreen(
                         value = passwordConfirm,
                         onChange = { newValue ->
                             passwordConfirm = newValue
-                            isErrorPasswordConfirm = newValue.isBlank() || newValue.length < MIN_PASSWORD_LENGTH
-                            enabledButton = !isErrorEmail && !isErrorPassword && !isErrorPasswordConfirm
+                            errorPasswordConfirm = when {
+                                newValue.isBlank() -> errorFieldIsNotEmpty
+                                newValue.length < MIN_PASSWORD_LENGTH -> errorFieldMustContainLeastNChars
+                                else -> ""
+                            }
+                            enabledButton = (errorEmail.isBlank()) &&
+                                    (errorPassword.isBlank()) &&
+                                    (errorPasswordConfirm.isBlank())
                         },
                         painterId = R.drawable.ic_password,
                         description = "passwordConfirm",
-                        errorMessage = stringResource(R.string.error_min_length, MIN_PASSWORD_LENGTH)
+                        errorMessage = errorPasswordConfirm
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Button(
-                        enabled = !isErrorEmail && !isErrorPassword && !isErrorPasswordConfirm,
+                        enabled = enabledButton,
                         onClick = {
                             isLoading = !isLoading
                             /*viewModel.sendEvent(
