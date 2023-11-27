@@ -34,6 +34,7 @@ import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
 import com.mu.tote2024.presentation.ui.Tote2024Theme
 import com.mu.tote2024.presentation.utils.Constants.MIN_PASSWORD_LENGTH
+import com.mu.tote2024.presentation.utils.checkEmail
 
 @Preview(
     name = "Light",
@@ -177,11 +178,7 @@ fun SignUpScreen(
                         value = email,
                         onChange = { newValue ->
                             email = newValue
-                            errorEmail = if (newValue.isBlank()) {
-                                errorFieldIsNotEmpty
-                            } else {
-                                ""
-                            }
+                            errorEmail = checkEmail(email = newValue)
                             enabledButton = (errorEmail.isBlank()) &&
                                     (errorPassword.isBlank()) &&
                                     (errorPasswordConfirm.isBlank())
@@ -200,6 +197,9 @@ fun SignUpScreen(
                             errorPassword = when {
                                 newValue.isBlank() -> errorFieldIsNotEmpty
                                 newValue.length < MIN_PASSWORD_LENGTH -> errorFieldMustContainLeastNChars
+                                (!passwordConfirm.isNullOrBlank() &&
+                                        passwordConfirm!!.length >= MIN_PASSWORD_LENGTH &&
+                                        newValue != passwordConfirm) -> "Значения паролей не совпадают"
                                 else -> ""
                             }
                             enabledButton = (errorEmail.isBlank()) &&
@@ -219,6 +219,9 @@ fun SignUpScreen(
                             errorPasswordConfirm = when {
                                 newValue.isBlank() -> errorFieldIsNotEmpty
                                 newValue.length < MIN_PASSWORD_LENGTH -> errorFieldMustContainLeastNChars
+                                (!password.isNullOrBlank() &&
+                                        password!!.length >= MIN_PASSWORD_LENGTH &&
+                                        newValue != password) -> "Значения паролей не совпадают"
                                 else -> ""
                             }
                             enabledButton = (errorEmail.isBlank()) &&

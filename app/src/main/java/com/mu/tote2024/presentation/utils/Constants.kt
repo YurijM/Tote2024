@@ -17,4 +17,9 @@ object Constants {
         const val PROGNOSIS_SCREEN = "prognosis_screen"
         const val GAMES_SCREEN = "games_screen"
     }
+
+    object Errors {
+        const val FIELD_IS_NOT_EMPTY = "Поле не может быть пустым"
+        const val FIELD_MUST_CONTAIN_LEAST_N_CHARS = "Поле должно содержать не меньше 6 символов"
+    }
 }
