@@ -55,7 +55,7 @@ fun PasswordTextField(
     onChange: (newValue: String) -> Unit,
     @DrawableRes painterId: Int,
     description: String,
-    errorMessage: String
+    errorMessage: String?
 ) {
     var showPassword by remember {
         mutableStateOf(false)
@@ -103,9 +103,9 @@ fun PasswordTextField(
                     contentDescription = "eye"
                 )
             },
-            isError = errorMessage.isNotBlank()
+            isError = !errorMessage.isNullOrBlank()
         )
-        if (errorMessage.isNotBlank()) {
+        if (!errorMessage.isNullOrBlank()) {
             TextError(errorMessage)
         }
     }

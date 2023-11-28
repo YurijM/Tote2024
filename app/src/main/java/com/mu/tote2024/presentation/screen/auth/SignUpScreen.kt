@@ -1,8 +1,6 @@
 package com.mu.tote2024.presentation.screen.auth
 
 import android.annotation.SuppressLint
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,18 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mu.tote2024.R
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
-import com.mu.tote2024.presentation.ui.Tote2024Theme
-import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
 import com.mu.tote2024.presentation.utils.checkEmail
 import com.mu.tote2024.presentation.utils.checkPassword
 
-@Preview(
+/*@Preview(
     name = "Light",
     showBackground = true
 )
@@ -54,7 +49,7 @@ fun SignUpScreenPreview() {
             onSignUpClick = {}
         )
     }
-}
+}*/
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
@@ -68,12 +63,9 @@ fun SignUpScreen(
 
     var isLoading by mutableStateOf(false)
 
-    //var hasErrorEmail by mutableStateOf(true)
     var errorEmail by mutableStateOf<String?>(null)
     var errorPassword by mutableStateOf<String?>(null)
     var errorPasswordConfirm by mutableStateOf<String?>(null)
-
-    var enabledButton by mutableStateOf(false)
 
     /*val state by viewModel.state.collectAsState()
     Log.d(DEBUG_TAG, "start state: $state")*/
@@ -158,7 +150,7 @@ fun SignUpScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(
-                    width = 1.dp,
+                    width = 2.dp,
                     color = MaterialTheme.colorScheme.outline
                 ),
             ) {
@@ -178,18 +170,11 @@ fun SignUpScreen(
                         onChange = { newValue ->
                             email = newValue
                             errorEmail = checkEmail(newValue)
-                            enabledButton = (errorEmail != null && errorEmail!!.isBlank()) &&
-                                    (errorPassword != null && errorPassword!!.isBlank()) &&
-                                    (errorPasswordConfirm != null && errorPasswordConfirm!!.isBlank())
-                            Log.d(DEBUG_TAG, "email: errorEmail = $errorEmail, " +
-                                    "errorPassword = $errorPassword, " +
-                                    "errorPasswordConfirm = $errorPasswordConfirm\n" +
-                                    "enabledButton = $enabledButton")
                         },
                         label = stringResource(id = R.string.enter_email),
                         painterId = R.drawable.ic_mail,
                         description = "email",
-                        errorMessage = checkEmail(email)
+                        errorMessage = errorEmail
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     PasswordTextField(
@@ -198,18 +183,12 @@ fun SignUpScreen(
                         onChange = { newValue ->
                             password = newValue
                             errorPassword = checkPassword(newValue, passwordConfirm)
-                            enabledButton = (errorEmail != null && errorEmail!!.isBlank()) &&
-                                    (errorPassword != null && errorPassword!!.isBlank()) &&
-                                    (errorPasswordConfirm != null && errorPasswordConfirm!!.isBlank())
-                            Log.d(DEBUG_TAG, "email: errorEmail = $errorEmail, " +
-                                    "errorPassword = $errorPassword, " +
-                                    "errorPasswordConfirm = $errorPasswordConfirm\n" +
-                                    "enabledButton = $enabledButton")
+                            errorPasswordConfirm = checkPassword(passwordConfirm, newValue)
                         },
                         painterId = R.drawable.ic_password,
                         description = "password",
-                        //errorMessage = errorPassword ?: ""
-                        errorMessage = checkPassword(password, passwordConfirm)
+                        errorMessage = errorPassword
+                        //errorMessage = checkPassword(password, passwordConfirm)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     PasswordTextField(
@@ -218,22 +197,17 @@ fun SignUpScreen(
                         onChange = { newValue ->
                             passwordConfirm = newValue
                             errorPasswordConfirm = checkPassword(newValue, password)
-                            enabledButton = (errorEmail != null && errorEmail!!.isBlank()) &&
-                                    (errorPassword != null && errorPassword!!.isBlank()) &&
-                                    (errorPasswordConfirm != null && errorPasswordConfirm!!.isBlank())
-                            Log.d(DEBUG_TAG, "email: errorEmail = $errorEmail, " +
-                                    "errorPassword = $errorPassword, " +
-                                    "errorPasswordConfirm = $errorPasswordConfirm\n" +
-                                    "enabledButton = $enabledButton")
-                       },
+                            errorPassword = checkPassword(password, newValue)
+                        },
                         painterId = R.drawable.ic_password,
                         description = "passwordConfirm",
-                        //errorMessage = errorPasswordConfirm ?: ""
-                        errorMessage = checkPassword(passwordConfirm, password)
+                        errorMessage = errorPasswordConfirm
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Button(
-                        enabled = enabledButton,
+                        enabled = (errorEmail != null && errorEmail!!.isBlank()) &&
+                                (errorPassword != null && errorPassword!!.isBlank()) &&
+                                (errorPasswordConfirm != null && errorPasswordConfirm!!.isBlank()),
                         onClick = {
                             isLoading = !isLoading
                             /*viewModel.sendEvent(

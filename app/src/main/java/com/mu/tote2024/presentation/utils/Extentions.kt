@@ -1,23 +1,31 @@
 package com.mu.tote2024.presentation.utils
 
-import com.mu.tote2024.presentation.utils.Constants.Errors.FIELD_IS_NOT_EMPTY
+import com.mu.tote2024.presentation.utils.Constants.Errors.EMAIL_INCORRECT
+import com.mu.tote2024.presentation.utils.Constants.Errors.FIELD_CAN_NOT_EMPTY
 import com.mu.tote2024.presentation.utils.Constants.Errors.FIELD_MUST_CONTAIN_LEAST_N_CHARS
 import com.mu.tote2024.presentation.utils.Constants.Errors.PASSWORDS_DO_NOT_MATCH
+import com.mu.tote2024.presentation.utils.Constants.MIN_PASSWORD_LENGTH
 
 fun checkEmail(email: String?): String {
-    return when {
-        email != null && email.isBlank() -> FIELD_IS_NOT_EMPTY
-        else -> ""
-    }
+    return if (email != null) {
+        when {
+            email.isBlank() -> FIELD_CAN_NOT_EMPTY
+			!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> EMAIL_INCORRECT
+
+            else -> ""
+        }
+    } else ""
 }
 
 fun checkPassword(password: String?, passwordConfirm: String?): String {
     return if (password != null) {
         when {
-            (password.isBlank()) -> FIELD_IS_NOT_EMPTY
-            password.length < Constants.MIN_PASSWORD_LENGTH -> FIELD_MUST_CONTAIN_LEAST_N_CHARS
+            (password.isBlank()) -> FIELD_CAN_NOT_EMPTY
+            password.length < MIN_PASSWORD_LENGTH -> {
+                FIELD_MUST_CONTAIN_LEAST_N_CHARS.replace("%_%", MIN_PASSWORD_LENGTH.toString())
+            }
             !passwordConfirm.isNullOrBlank() &&
-                    (passwordConfirm.length >= Constants.MIN_PASSWORD_LENGTH) &&
+                    (passwordConfirm.length >= MIN_PASSWORD_LENGTH) &&
                     (password != passwordConfirm) -> PASSWORDS_DO_NOT_MATCH
 
             else -> ""

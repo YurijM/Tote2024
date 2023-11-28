@@ -49,7 +49,7 @@ fun AppTextField(
     onChange: (newValue: String) -> Unit,
     @DrawableRes painterId: Int,
     description: String,
-    errorMessage: String
+    errorMessage: String?
 ) {
     Column {
         OutlinedTextField(
@@ -73,9 +73,9 @@ fun AppTextField(
                 )
             },
             singleLine = true,
-            isError = errorMessage.isNotBlank()
+            isError = !errorMessage.isNullOrBlank()
         )
-        if (errorMessage.isNotBlank()) {
+        if (!errorMessage.isNullOrBlank()) {
             TextError(errorMessage)
         }
     }

@@ -28,6 +28,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mu.tote2024.R
 import kotlinx.coroutines.delay
 
@@ -43,12 +44,15 @@ fun SplashScreen(
         Animatable(0f)
     }
 
-    val developmentText = stringResource(R.string.design)
+    val developmentText = stringResource(R.string.design) + "\n"
     val companyText = stringResource(R.string.company)
     val text = buildAnnotatedString {
         append("$developmentText ")
         withStyle(
-            style = SpanStyle(fontWeight = FontWeight.Bold)
+            style = SpanStyle(
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Black
+            )
         ) {
             pushStringAnnotation(tag = companyText, annotation = companyText)
             append(companyText)
