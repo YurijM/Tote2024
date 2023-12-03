@@ -1,4 +1,4 @@
-package com.mu.tote2024.di
+package com.mu.tote2024
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

@@ -1,6 +1,7 @@
 package com.mu.tote2024.presentation.screen.auth
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -27,9 +29,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
+import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
+import com.mu.tote2024.presentation.ui.common.UiState
+import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
 import com.mu.tote2024.presentation.utils.checkEmail
 import com.mu.tote2024.presentation.utils.checkPassword
 
@@ -54,7 +60,7 @@ fun SignUpScreenPreview() {
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun SignUpScreen(
-    //viewModel: AuthViewModel = hiltViewModel()
+    viewModel: AuthViewModel = hiltViewModel(),
     onSignUpClick: () -> Unit
 ) {
     var email by mutableStateOf<String?>(null)
@@ -67,8 +73,9 @@ fun SignUpScreen(
     var errorPassword by mutableStateOf<String?>(null)
     var errorPasswordConfirm by mutableStateOf<String?>(null)
 
-    /*val state by viewModel.state.collectAsState()
-    Log.d(DEBUG_TAG, "start state: $state")*/
+    val state by viewModel.state.collectAsState()
+
+    Log.d(DEBUG_TAG, "start state: $state")
 
     /*LaunchedEffect(key1 = true) {
         if (email.value != null && email.value!!.isNotBlank()
@@ -128,6 +135,13 @@ fun SignUpScreen(
         }
 
         else -> {*/
+    when (state.result) {
+        is UiState.Loading -> Log.d(DEBUG_TAG, "state: Loading")
+        is UiState.Success -> {
+            Log.d(DEBUG_TAG, "state: Success (${(state.result as UiState.Success<GamblerModel>).data})")
+        }
+        is UiState.Error -> Log.d(DEBUG_TAG, "state: Error (${(state.result as UiState.Error).message})")
+    }
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -209,7 +223,8 @@ fun SignUpScreen(
                                 (errorPassword != null && errorPassword!!.isBlank()) &&
                                 (errorPasswordConfirm != null && errorPasswordConfirm!!.isBlank()),
                         onClick = {
-                            isLoading = !isLoading
+                            viewModel.onEvent(AuthEvent.OnSignUp(email = email!!, password = password!!))
+                            //isLoading = !isLoading
                             /*viewModel.sendEvent(
                                 AuthEvent.OnSignUp(
                                     email = email ?: "",
