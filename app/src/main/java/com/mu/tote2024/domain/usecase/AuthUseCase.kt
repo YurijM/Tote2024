@@ -6,5 +6,5 @@ import javax.inject.Inject
 class AuthUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
-    fun createGambler(email: String, password: String) = authRepository.createGambler(email, password)
+    suspend fun createGambler(email: String, password: String) = authRepository.createGambler(email, password)
 }

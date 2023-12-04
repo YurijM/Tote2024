@@ -18,7 +18,7 @@ class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firebaseDatabase: FirebaseDatabase
 ) : AuthRepository {
-    override fun createGambler(email: String, password: String): Flow<UiState<Boolean>> = callbackFlow {
+    override suspend fun createGambler(email: String, password: String): Flow<UiState<Boolean>> = callbackFlow {
         trySend(UiState.Loading)
 
         firebaseAuth.createUserWithEmailAndPassword(
