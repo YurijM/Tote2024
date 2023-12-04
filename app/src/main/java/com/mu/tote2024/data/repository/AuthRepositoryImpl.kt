@@ -7,7 +7,6 @@ import com.mu.tote2024.data.utils.Constants.Errors.ERROR_FUN_CREATE_USER_WITH_EM
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_NEW_GAMBLER_IS_NOT_CREATED
 import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.data.utils.Constants.Nodes.NODE_GAMBLERS
-import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.repository.AuthRepository
 import com.mu.tote2024.presentation.ui.common.UiState
 import kotlinx.coroutines.channels.awaitClose
@@ -19,7 +18,7 @@ class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firebaseDatabase: FirebaseDatabase
 ) : AuthRepository {
-    override fun createGambler(email: String, password: String): Flow<UiState<GamblerModel>> = callbackFlow {
+    override fun createGambler(email: String, password: String): Flow<UiState<Boolean>> = callbackFlow {
         trySend(UiState.Loading)
 
         firebaseAuth.createUserWithEmailAndPassword(
@@ -40,11 +39,12 @@ class AuthRepositoryImpl @Inject constructor(
                         .child(user.uid)
                         .setValue(GAMBLER)
 
-                    trySend(UiState.Success(GAMBLER))
+                    trySend(UiState.Success(true))
                 } else {
                     trySend(UiState.Error(ERROR_NEW_GAMBLER_IS_NOT_CREATED))
                 }
             } else {
+
                 trySend(UiState.Error(ERROR_FUN_CREATE_USER_WITH_EMAIL_AND_PASSWORD))
             }
         }.addOnFailureListener {

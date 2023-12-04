@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
-import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
 import com.mu.tote2024.presentation.ui.common.UiState
@@ -66,8 +65,6 @@ fun SignUpScreen(
     var email by mutableStateOf<String?>(null)
     var password by mutableStateOf<String?>(null)
     var passwordConfirm by mutableStateOf<String?>(null)
-
-    var isLoading by mutableStateOf(false)
 
     var errorEmail by mutableStateOf<String?>(null)
     var errorPassword by mutableStateOf<String?>(null)
@@ -136,9 +133,10 @@ fun SignUpScreen(
 
         else -> {*/
     when (state.result) {
+        is UiState.Default -> Log.d(DEBUG_TAG, "state: Default")
         is UiState.Loading -> Log.d(DEBUG_TAG, "state: Loading")
         is UiState.Success -> {
-            Log.d(DEBUG_TAG, "state: Success (${(state.result as UiState.Success<GamblerModel>).data})")
+            Log.d(DEBUG_TAG, "state: Success (${(state.result as UiState.Success<Boolean>).data})")
         }
         is UiState.Error -> Log.d(DEBUG_TAG, "state: Error (${(state.result as UiState.Error).message})")
     }
@@ -240,7 +238,7 @@ fun SignUpScreen(
                 }
             }
         }
-        if (isLoading) {
+        if (state.result is UiState.Loading) {
             Box(
                 contentAlignment = Alignment.Center
             ) {

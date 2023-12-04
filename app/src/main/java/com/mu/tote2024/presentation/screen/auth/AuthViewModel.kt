@@ -2,7 +2,6 @@ package com.mu.tote2024.presentation.screen.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.repository.AuthRepository
 import com.mu.tote2024.presentation.ui.common.UiEvent
 import com.mu.tote2024.presentation.ui.common.UiState
@@ -47,5 +46,5 @@ class AuthViewModel @Inject constructor(
 }
 
 data class AuthState(
-    val result: UiState<GamblerModel> = UiState.Loading,
+    val result: UiState<Boolean> = UiState.Default,
 )
