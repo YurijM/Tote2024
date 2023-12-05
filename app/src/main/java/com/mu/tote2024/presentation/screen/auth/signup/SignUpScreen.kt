@@ -1,4 +1,4 @@
-package com.mu.tote2024.presentation.screen.auth
+package com.mu.tote2024.presentation.screen.auth.signup
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -56,16 +58,8 @@ fun SignUpScreenPreview() {
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun SignUpScreen(
-    viewModel: AuthViewModel = hiltViewModel()
+    viewModel: SignUpViewModel = hiltViewModel()
 ) {
-    //var email by mutableStateOf<String?>(null)
-    //var password by mutableStateOf<String?>(null)
-    //var passwordConfirm by mutableStateOf<String?>(null)
-
-    //var errorEmail by mutableStateOf<String?>(null)
-    //var errorPassword by mutableStateOf<String?>(null)
-    //var errorPasswordConfirm by mutableStateOf<String?>(null)
-
     val state by viewModel.state.collectAsState()
 
     Log.d(DEBUG_TAG, "start state: $state")
@@ -84,7 +78,7 @@ fun SignUpScreen(
                     //isLoading.value = false
                     Log.d(DEBUG_TAG, "state.isSuccess")
 
-                    viewModel.sendEvent(AuthEvent.Default)
+                    viewModel.sendEvent(SignUpEvent.Default)
 
                     navController.navigate(Routes.MAIN_SCREEN) {
                         popUpTo(Routes.LOGON_SCREEN) {
@@ -103,31 +97,6 @@ fun SignUpScreen(
         }
     }*/
 
-    /*when {
-        state.isLoading -> {
-            Log.d(DEBUG_TAG, "state.isLoading")
-            isLoading.value = true
-        }
-
-        state.isSuccess -> {
-            Log.d(DEBUG_TAG, "state.isSuccess")
-            isLoading.value = false
-
-            viewModel.sendEvent(AuthEvent.Default)
-
-            navController.navigate(Routes.MAIN_SCREEN) {
-                popUpTo(Routes.LOGON_SCREEN) {
-                    inclusive = true
-                }
-            }
-        }
-
-        (state.error != null) -> {
-            Log.d(DEBUG_TAG, "state.error")
-            isLoading.value = false
-        }
-
-        else -> {*/
     when (state.result) {
         is UiState.Default -> Log.d(DEBUG_TAG, "state: Default")
         is UiState.Loading -> Log.d(DEBUG_TAG, "state: Loading")
@@ -139,12 +108,14 @@ fun SignUpScreen(
         }
     }
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.Center
         ) {
             Text(
@@ -175,47 +146,49 @@ fun SignUpScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AppTextField(
-                        value = viewModel.authFields.email,
+                        value = viewModel.signUpFields.email,
                         onChange = { newValue ->
-                            viewModel.onEvent(AuthEvent.OnEmailChange(newValue))
+                            viewModel.onEvent(SignUpEvent.OnEmailChange(newValue))
                         },
                         label = stringResource(id = R.string.enter_email),
                         painterId = R.drawable.ic_mail,
                         description = "email",
-                        errorMessage = viewModel.authFields.errorEmail
+                        errorMessage = viewModel.signUpFields.errorEmail
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     PasswordTextField(
                         label = stringResource(id = R.string.enter_password),
-                        value = viewModel.authFields.password,
+                        value = viewModel.signUpFields.password,
                         onChange = { newValue ->
-                            viewModel.onEvent(AuthEvent.OnPasswordChange(newValue))
+                            viewModel.onEvent(SignUpEvent.OnPasswordChange(newValue))
                         },
                         painterId = R.drawable.ic_password,
                         description = "password",
-                        errorMessage = viewModel.authFields.errorPassword
+                        errorMessage = viewModel.signUpFields.errorPassword
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     PasswordTextField(
                         label = stringResource(id = R.string.confirm_password),
-                        value = viewModel.authFields.passwordConfirm,
+                        value = viewModel.signUpFields.passwordConfirm,
                         onChange = { newValue ->
-                            viewModel.onEvent(AuthEvent.OnPasswordConfirmChange(newValue))
+                            viewModel.onEvent(SignUpEvent.OnPasswordConfirmChange(newValue))
                         },
                         painterId = R.drawable.ic_password,
                         description = "passwordConfirm",
-                        errorMessage = viewModel.authFields.errorPasswordConfirm
+                        errorMessage = viewModel.signUpFields.errorPasswordConfirm
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Button(
-                        enabled = (viewModel.authFields.errorEmail != null && viewModel.authFields.errorEmail!!.isBlank()) &&
-                                (viewModel.authFields.errorPassword != null && viewModel.authFields.errorPassword!!.isBlank()) &&
-                                (viewModel.authFields.errorPasswordConfirm != null && viewModel.authFields.errorPasswordConfirm!!.isBlank()),
+                        enabled = (viewModel.signUpFields.errorEmail != null && viewModel.signUpFields.errorEmail!!.isBlank()) &&
+                                (viewModel.signUpFields.errorPassword != null && viewModel.signUpFields.errorPassword!!.isBlank()) &&
+                                (viewModel.signUpFields.errorPasswordConfirm != null && viewModel.signUpFields.errorPasswordConfirm!!.isBlank()),
                         onClick = {
-                            viewModel.onEvent(AuthEvent.OnSignUp(
-                                email = viewModel.authFields.email,
-                                password = viewModel.authFields.password
-                            ))
+                            viewModel.onEvent(
+                                SignUpEvent.OnSignUp(
+                                    email = viewModel.signUpFields.email,
+                                    password = viewModel.signUpFields.password
+                                )
+                            )
                         }
                     ) {
                         Text(
