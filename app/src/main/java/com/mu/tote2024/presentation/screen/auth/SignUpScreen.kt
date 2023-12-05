@@ -139,8 +139,7 @@ fun SignUpScreen(
         }
     }
     Surface(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
     ) {
         Column(
             modifier = Modifier
@@ -176,46 +175,46 @@ fun SignUpScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AppTextField(
-                        value = viewModel.email,
+                        value = viewModel.authFields.email,
                         onChange = { newValue ->
                             viewModel.onEvent(AuthEvent.OnEmailChange(newValue))
                         },
                         label = stringResource(id = R.string.enter_email),
                         painterId = R.drawable.ic_mail,
                         description = "email",
-                        errorMessage = viewModel.errorEmail
+                        errorMessage = viewModel.authFields.errorEmail
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     PasswordTextField(
                         label = stringResource(id = R.string.enter_password),
-                        value = viewModel.password,
+                        value = viewModel.authFields.password,
                         onChange = { newValue ->
                             viewModel.onEvent(AuthEvent.OnPasswordChange(newValue))
                         },
                         painterId = R.drawable.ic_password,
                         description = "password",
-                        errorMessage = viewModel.errorPassword
+                        errorMessage = viewModel.authFields.errorPassword
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     PasswordTextField(
                         label = stringResource(id = R.string.confirm_password),
-                        value = viewModel.passwordConfirm,
+                        value = viewModel.authFields.passwordConfirm,
                         onChange = { newValue ->
                             viewModel.onEvent(AuthEvent.OnPasswordConfirmChange(newValue))
                         },
                         painterId = R.drawable.ic_password,
                         description = "passwordConfirm",
-                        errorMessage = viewModel.errorPasswordConfirm
+                        errorMessage = viewModel.authFields.errorPasswordConfirm
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Button(
-                        enabled = (viewModel.errorEmail != null && viewModel.errorEmail!!.isBlank()) &&
-                                (viewModel.errorPassword != null && viewModel.errorPassword!!.isBlank()) &&
-                                (viewModel.errorPasswordConfirm != null && viewModel.errorPasswordConfirm!!.isBlank()),
+                        enabled = (viewModel.authFields.errorEmail != null && viewModel.authFields.errorEmail!!.isBlank()) &&
+                                (viewModel.authFields.errorPassword != null && viewModel.authFields.errorPassword!!.isBlank()) &&
+                                (viewModel.authFields.errorPasswordConfirm != null && viewModel.authFields.errorPasswordConfirm!!.isBlank()),
                         onClick = {
                             viewModel.onEvent(AuthEvent.OnSignUp(
-                                email = viewModel.email,
-                                password = viewModel.password
+                                email = viewModel.authFields.email,
+                                password = viewModel.authFields.password
                             ))
                         }
                     ) {
