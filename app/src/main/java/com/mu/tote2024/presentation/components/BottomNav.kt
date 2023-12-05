@@ -1,6 +1,6 @@
 package com.mu.tote2024.presentation.components
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,18 +8,33 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mu.tote2024.R
+
+/*@Preview(
+    name = "Light",
+    showBackground = true
+)
+@Preview(
+    name = "Dark",
+    showBackground = true,
+    uiMode = UI_MODE_NIGHT_YES
+)
+@Composable
+fun PreviewBottomNav() {
+    Tote2024Theme {
+        BottomNav()
+    }
+}*/
 
 @Composable
 fun BottomNav() {
@@ -30,21 +45,12 @@ fun BottomNav() {
         BottomNavItem.GamesItem,
     )
     Column {
-        BottomAppBar(
-            //containerColor = Color.White
-        ) {
+        BottomAppBar {
             navItems.forEachIndexed { index, item ->
                 val title = stringResource(id = item.titleId)
 
                 NavigationBarItem(
-                    /*colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = ColorApplication,
-                        selectedTextColor = ColorApplication,
-                        unselectedIconColor = Color.LightGray,
-                        unselectedTextColor = Color.LightGray,
-                        indicatorColor = ColorBackground
-                    ),*/
-                    selected = (index == 3),
+                    selected = (index == 0),
                     onClick = { /*TODO*/ },
                     icon = {
                         Icon(
@@ -64,21 +70,21 @@ fun BottomNav() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                //.background(ColorApplication)
-                .padding(horizontal = 8.dp, vertical = 4.dp),
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                modifier =Modifier.size(24.dp),
-                painter = painterResource(id = R.drawable.author_gray),
-                contentDescription = "author"
+            Icon(
+                painter = painterResource(id = R.drawable.author),
+                contentDescription = "author",
+                modifier =Modifier.size(28.dp),
+                tint = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = "2023-2024 ©",
-                //color = Color.White
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
-        Divider(color = Color.White)
     }
 }

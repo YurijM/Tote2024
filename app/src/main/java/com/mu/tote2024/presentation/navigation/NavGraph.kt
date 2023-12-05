@@ -5,7 +5,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.mu.tote2024.presentation.navigation.destination.auth
 import com.mu.tote2024.presentation.navigation.destination.main
-import com.mu.tote2024.presentation.navigation.destination.navigateToAuth
 import com.mu.tote2024.presentation.navigation.destination.navigateToMain
 import com.mu.tote2024.presentation.navigation.destination.navigateToSignUp
 import com.mu.tote2024.presentation.navigation.destination.signUp
@@ -22,7 +21,8 @@ fun NavGraph(
     ) {
         splash (
             toSignUp = {
-                navController.navigateToAuth()
+                //navController.navigateToAuth()
+                navController.navigateToMain()
             }
         )
 

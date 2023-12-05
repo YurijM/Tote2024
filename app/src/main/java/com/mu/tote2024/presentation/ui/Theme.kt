@@ -1,18 +1,13 @@
 package com.mu.tote2024.presentation.ui
 
 import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -20,18 +15,22 @@ private val DarkColorScheme = darkColorScheme(
     surface = Color9,
     onSurface = Color3,
     surfaceVariant = Color8,
+    onSurfaceVariant = Color5,
     primary = Color4,
     outline = Color4,
-    error = ColorErrorDark
+    error = ColorErrorDark,
+    secondaryContainer = Color7
 )
 
 private val LightColorScheme = lightColorScheme(
     surface = Color1,
     onSurface = Color7,
     surfaceVariant = Color2,
+    onSurfaceVariant = Color5,
     primary = Color6,
     outline = Color6,
-    error = ColorError
+    error = ColorError,
+    secondaryContainer = Color3
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -48,7 +47,7 @@ private val LightColorScheme = lightColorScheme(
 fun Tote2024Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    //dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
