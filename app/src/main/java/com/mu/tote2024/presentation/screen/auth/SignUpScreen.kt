@@ -59,8 +59,7 @@ fun SignUpScreenPreview() {
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun SignUpScreen(
-    viewModel: AuthViewModel = hiltViewModel(),
-    onSignUpClick: () -> Unit
+    viewModel: AuthViewModel = hiltViewModel()
 ) {
     var email by mutableStateOf<String?>(null)
     var password by mutableStateOf<String?>(null)
@@ -138,7 +137,10 @@ fun SignUpScreen(
         is UiState.Success -> {
             Log.d(DEBUG_TAG, "state: Success (${(state.result as UiState.Success<Boolean>).data})")
         }
-        is UiState.Error -> Log.d(DEBUG_TAG, "state: Error (${(state.result as UiState.Error).message})")
+        is UiState.Error -> {
+            errorPasswordConfirm = (state.result as UiState.Error).message
+            Log.d(DEBUG_TAG, "state: Error (${(state.result as UiState.Error).message})")
+        }
     }
     Surface(
         modifier = Modifier
