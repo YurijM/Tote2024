@@ -20,8 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,10 +31,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
+import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
-import com.mu.tote2024.presentation.utils.checkEmail
-import com.mu.tote2024.presentation.utils.checkPassword
 
 /*@Preview(
     name = "Light",
@@ -61,13 +58,13 @@ fun SignUpScreenPreview() {
 fun SignUpScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    var email by mutableStateOf<String?>(null)
-    var password by mutableStateOf<String?>(null)
-    var passwordConfirm by mutableStateOf<String?>(null)
+    //var email by mutableStateOf<String?>(null)
+    //var password by mutableStateOf<String?>(null)
+    //var passwordConfirm by mutableStateOf<String?>(null)
 
-    var errorEmail by mutableStateOf<String?>(null)
-    var errorPassword by mutableStateOf<String?>(null)
-    var errorPasswordConfirm by mutableStateOf<String?>(null)
+    //var errorEmail by mutableStateOf<String?>(null)
+    //var errorPassword by mutableStateOf<String?>(null)
+    //var errorPasswordConfirm by mutableStateOf<String?>(null)
 
     val state by viewModel.state.collectAsState()
 
@@ -138,7 +135,6 @@ fun SignUpScreen(
             Log.d(DEBUG_TAG, "state: Success (${(state.result as UiState.Success<Boolean>).data})")
         }
         is UiState.Error -> {
-            errorPasswordConfirm = (state.result as UiState.Error).message
             Log.d(DEBUG_TAG, "state: Error (${(state.result as UiState.Error).message})")
         }
     }
@@ -180,61 +176,56 @@ fun SignUpScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AppTextField(
-                        value = email,
+                        value = viewModel.email,
                         onChange = { newValue ->
-                            email = newValue
-                            errorEmail = checkEmail(newValue)
+                            viewModel.onEvent(AuthEvent.OnEmailChange(newValue))
                         },
                         label = stringResource(id = R.string.enter_email),
                         painterId = R.drawable.ic_mail,
                         description = "email",
-                        errorMessage = errorEmail
+                        errorMessage = viewModel.errorEmail
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     PasswordTextField(
                         label = stringResource(id = R.string.enter_password),
-                        value = password,
+                        value = viewModel.password,
                         onChange = { newValue ->
-                            password = newValue
-                            errorPassword = checkPassword(newValue, passwordConfirm)
-                            errorPasswordConfirm = checkPassword(passwordConfirm, newValue)
+                            viewModel.onEvent(AuthEvent.OnPasswordChange(newValue))
                         },
                         painterId = R.drawable.ic_password,
                         description = "password",
-                        errorMessage = errorPassword
-                        //errorMessage = checkPassword(password, passwordConfirm)
+                        errorMessage = viewModel.errorPassword
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     PasswordTextField(
                         label = stringResource(id = R.string.confirm_password),
-                        value = passwordConfirm,
+                        value = viewModel.passwordConfirm,
                         onChange = { newValue ->
-                            passwordConfirm = newValue
-                            errorPasswordConfirm = checkPassword(newValue, password)
-                            errorPassword = checkPassword(password, newValue)
+                            viewModel.onEvent(AuthEvent.OnPasswordConfirmChange(newValue))
                         },
                         painterId = R.drawable.ic_password,
                         description = "passwordConfirm",
-                        errorMessage = errorPasswordConfirm
+                        errorMessage = viewModel.errorPasswordConfirm
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Button(
-                        enabled = (errorEmail != null && errorEmail!!.isBlank()) &&
-                                (errorPassword != null && errorPassword!!.isBlank()) &&
-                                (errorPasswordConfirm != null && errorPasswordConfirm!!.isBlank()),
+                        enabled = (viewModel.errorEmail != null && viewModel.errorEmail!!.isBlank()) &&
+                                (viewModel.errorPassword != null && viewModel.errorPassword!!.isBlank()) &&
+                                (viewModel.errorPasswordConfirm != null && viewModel.errorPasswordConfirm!!.isBlank()),
                         onClick = {
-                            viewModel.onEvent(AuthEvent.OnSignUp(email = email!!, password = password!!))
-                            //isLoading = !isLoading
-                            /*viewModel.sendEvent(
-                                AuthEvent.OnSignUp(
-                                    email = email ?: "",
-                                    password = password ?: ""
-                                )
-                            )*/
+                            viewModel.onEvent(AuthEvent.OnSignUp(
+                                email = viewModel.email,
+                                password = viewModel.password
+                            ))
                         }
                     ) {
                         Text(
                             text = stringResource(id = R.string.to_register)
+                        )
+                    }
+                    if (state.result is UiState.Error) {
+                        TextError(
+                            errorMessage = (state.result as UiState.Error).message,
                         )
                     }
                 }
@@ -248,6 +239,4 @@ fun SignUpScreen(
             }
         }
     }
-    //}
-    //}
 }

@@ -32,7 +32,7 @@ fun NavGraph(
         )
 
         signUp (
-            onSignUpClick = {}
+            //onSignUpClick = {}
         )
     }
 }
