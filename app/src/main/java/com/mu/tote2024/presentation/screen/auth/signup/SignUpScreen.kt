@@ -58,7 +58,8 @@ fun SignUpScreenPreview() {
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun SignUpScreen(
-    viewModel: SignUpViewModel = hiltViewModel()
+    viewModel: SignUpViewModel = hiltViewModel(),
+    toMain: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -102,6 +103,7 @@ fun SignUpScreen(
         is UiState.Loading -> Log.d(DEBUG_TAG, "state: Loading")
         is UiState.Success -> {
             Log.d(DEBUG_TAG, "state: Success (${(state.result as UiState.Success<Boolean>).data})")
+            toMain()
         }
         is UiState.Error -> {
             Log.d(DEBUG_TAG, "state: Error (${(state.result as UiState.Error).message})")

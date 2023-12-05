@@ -7,17 +7,17 @@ import com.mu.tote2024.presentation.screen.auth.signup.SignUpScreen
 import com.mu.tote2024.presentation.utils.Constants
 
 fun NavGraphBuilder.signUp(
-    //onSignUpClick: () -> Unit
+    toMain: () -> Unit
 ) {
     composable(Constants.Routes.SIGN_UP_SCREEN) {
         SignUpScreen(
-            //onSignUpClick = onSignUpClick
+            toMain = toMain
         )
     }
 }
 
-fun NavController.navigateToSignUp() {
-    navigate(Constants.Routes.SIGN_UP_SCREEN) {
+fun NavController.navigateToMain() {
+    navigate(Constants.Routes.MAIN_SCREEN) {
         popUpTo(Constants.Routes.AUTH_SCREEN) /*{
             inclusive = true
         }*/
