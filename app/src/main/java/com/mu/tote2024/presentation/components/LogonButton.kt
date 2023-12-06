@@ -2,6 +2,7 @@ package com.mu.tote2024.presentation.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -10,12 +11,13 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mu.tote2024.R
 import com.mu.tote2024.presentation.ui.Color3
 import com.mu.tote2024.presentation.ui.Tote2024Theme
 
-/*@Preview(
+@Preview(
     name = "Light",
     showBackground = true
 )
@@ -32,7 +34,7 @@ fun PreviewLogonButton() {
             onClick = {}
         )
     }
-}*/
+}
 
 @Composable
 fun LogonButton(
@@ -40,7 +42,13 @@ fun LogonButton(
     onClick: () -> Unit
 ) {
     OutlinedButton(
-        onClick = { onClick() }
+        onClick = { onClick() },
+        contentPadding = PaddingValues(
+            top = 2.dp,
+            start = 12.dp,
+            end = 12.dp,
+            bottom = 8.dp
+        )
     ) {
         Text(
             text = stringResource(titleId),
