@@ -1,6 +1,5 @@
-package com.mu.tote2024.presentation.navigation.destination
+package com.mu.tote2024.presentation.navigation.destination.auth
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.mu.tote2024.presentation.screen.auth.signup.SignUpScreen
@@ -16,10 +15,10 @@ fun NavGraphBuilder.signUp(
     }
 }
 
-fun NavController.navigateToMain() {
+/*fun NavController.navigateToMain() {
     navigate(Constants.Routes.MAIN_SCREEN) {
-        popUpTo(Constants.Routes.AUTH_SCREEN) /*{
+        popUpTo(Constants.Routes.AUTH_SCREEN) *//*{
             inclusive = true
-        }*/
+        }*//*
     }
-}
+}*/

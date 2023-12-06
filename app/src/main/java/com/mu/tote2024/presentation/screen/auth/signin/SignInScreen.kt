@@ -1,4 +1,4 @@
-package com.mu.tote2024.presentation.screen.auth.signup
+package com.mu.tote2024.presentation.screen.auth.signin
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -34,80 +34,27 @@ import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
+import com.mu.tote2024.presentation.utils.Constants
 
-/*@Preview(
-    name = "Light",
-    showBackground = true
-)
-@Preview(
-    name = "Dark",
-    showBackground = true,
-    uiMode = UI_MODE_NIGHT_YES
-)
 @Composable
-fun SignUpScreenPreview() {
-    Tote2024Theme {
-        SignUpScreen(
-            onSignUpClick = {}
-        )
-    }
-}*/
-
-//@SuppressLint("UnrememberedMutableState")
-@Composable
-fun SignUpScreen(
-    viewModel: SignUpViewModel = hiltViewModel(),
+fun SignInScreen(
+    viewModel: SignInViewModel = hiltViewModel(),
     toMain: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
-    Log.d(DEBUG_TAG, "start state: $state")
-
-    /*LaunchedEffect(key1 = true) {
-        if (email.value != null && email.value!!.isNotBlank()
-            && password.value != null && password.value!!.isNotBlank()
-        ) {
-            when {
-                state.isLoading -> {
-                    Log.d(DEBUG_TAG, "state.isLoading")
-                    isLoading.value = true
-                }
-
-                state.isSuccess -> {
-                    //isLoading.value = false
-                    Log.d(DEBUG_TAG, "state.isSuccess")
-
-                    viewModel.sendEvent(SignUpEvent.Default)
-
-                    navController.navigate(Routes.MAIN_SCREEN) {
-                        popUpTo(Routes.LOGON_SCREEN) {
-                            inclusive = true
-                        }
-                    }
-                }
-
-                (state.error != null) -> {
-                    //isLoading.value = false
-                    Log.d(DEBUG_TAG, "state.error")
-                }
-
-                else -> {}
-            }
-        }
-    }*/
-
     when (state.result) {
+        is UiState.Default -> Log.d(Constants.DEBUG_TAG, "state: Default")
+        is UiState.Loading -> Log.d(Constants.DEBUG_TAG, "state: Loading")
         is UiState.Success -> {
+            Log.d(Constants.DEBUG_TAG, "state: Success (${(state.result as UiState.Success<Boolean>).data})")
             toMain()
         }
-
         is UiState.Error -> {
-            Log.d(DEBUG_TAG, "state: Error (${(state.result as UiState.Error).message})")
+            Log.d(Constants.DEBUG_TAG, "state: Error (${(state.result as UiState.Error).message})")
         }
-
-        else -> {}
     }
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -124,7 +71,7 @@ fun SignUpScreen(
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center,
-                text = stringResource(id = R.string.sign_up),
+                text = stringResource(id = R.string.sign_in),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -147,51 +94,40 @@ fun SignUpScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AppTextField(
-                        value = viewModel.signUpFields.email,
+                        value = viewModel.signInFields.email,
                         onChange = { newValue ->
-                            viewModel.onEvent(SignUpEvent.OnEmailChange(newValue))
+                            viewModel.onEvent(SignInEvent.OnEmailChange(newValue))
                         },
                         label = stringResource(id = R.string.enter_email),
                         painterId = R.drawable.ic_mail,
                         description = "email",
-                        errorMessage = viewModel.signUpFields.errorEmail
+                        errorMessage = viewModel.signInFields.errorEmail
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     PasswordTextField(
                         label = stringResource(id = R.string.enter_password),
-                        value = viewModel.signUpFields.password,
+                        value = viewModel.signInFields.password,
                         onChange = { newValue ->
-                            viewModel.onEvent(SignUpEvent.OnPasswordChange(newValue))
+                            viewModel.onEvent(SignInEvent.OnPasswordChange(newValue))
                         },
                         painterId = R.drawable.ic_password,
                         description = "password",
-                        errorMessage = viewModel.signUpFields.errorPassword
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    PasswordTextField(
-                        label = stringResource(id = R.string.confirm_password),
-                        value = viewModel.signUpFields.passwordConfirm,
-                        onChange = { newValue ->
-                            viewModel.onEvent(SignUpEvent.OnPasswordConfirmChange(newValue))
-                        },
-                        painterId = R.drawable.ic_password,
-                        description = "passwordConfirm",
-                        errorMessage = viewModel.signUpFields.errorPasswordConfirm
+                        errorMessage = viewModel.signInFields.errorPassword
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Button(
                         enabled = viewModel.enabledButton,
                         onClick = {
                             viewModel.onEvent(
-                                SignUpEvent.OnSignUp(
-                                    email = viewModel.signUpFields.email,
-                                    password = viewModel.signUpFields.password
+                                SignInEvent.OnSignIn(
+                                    email = viewModel.signInFields.email,
+                                    password = viewModel.signInFields.password
                                 )
                             )
                         }
                     ) {
                         Text(
-                            text = stringResource(id = R.string.to_register)
+                            text = stringResource(id = R.string.to_log_into)
                         )
                     }
                     if (state.result is UiState.Error) {

@@ -4,8 +4,15 @@ import com.mu.tote2024.presentation.ui.common.UiState
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
-    suspend fun createGambler(
+    fun createGambler(
         email: String,
         password: String
-    ) : Flow<UiState<Boolean>>
+    ): Flow<UiState<Boolean>>
+
+    fun authGambler(
+        email: String,
+        password: String
+    ): Flow<UiState<Boolean>>
+
+    fun getGambler(gamblerId: String): Flow<UiState<Boolean>>
 }

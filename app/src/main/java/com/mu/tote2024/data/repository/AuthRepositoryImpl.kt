@@ -1,12 +1,18 @@
 package com.mu.tote2024.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.mu.tote2024.data.utils.Constants.CURRENT_ID
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_FUN_CREATE_GAMBLER
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_FUN_CREATE_USER_WITH_EMAIL_AND_PASSWORD
+import com.mu.tote2024.data.utils.Constants.Errors.ERROR_GAMBLER_IS_NOT_FOUND
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_NEW_GAMBLER_IS_NOT_CREATED
 import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.data.utils.Constants.Nodes.NODE_GAMBLERS
+import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.repository.AuthRepository
 import com.mu.tote2024.presentation.ui.common.UiState
 import kotlinx.coroutines.channels.awaitClose
@@ -18,7 +24,10 @@ class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firebaseDatabase: FirebaseDatabase
 ) : AuthRepository {
-    override suspend fun createGambler(email: String, password: String): Flow<UiState<Boolean>> = callbackFlow {
+    override fun createGambler(
+        email: String,
+        password: String
+    ): Flow<UiState<Boolean>> = callbackFlow {
         trySend(UiState.Loading)
 
         firebaseAuth.createUserWithEmailAndPassword(
@@ -52,6 +61,55 @@ class AuthRepositoryImpl @Inject constructor(
         }
 
         awaitClose {
+            close()
+        }
+    }
+
+    override fun authGambler(
+        email: String,
+        password: String
+    ): Flow<UiState<Boolean>> = callbackFlow {
+        trySend(UiState.Loading)
+
+        firebaseAuth.signInWithEmailAndPassword(
+            email,
+            password
+        ).addOnSuccessListener {
+            CURRENT_ID = firebaseAuth.currentUser?.uid.toString()
+
+            trySend(UiState.Success(CURRENT_ID.isNotBlank()))
+        }.addOnFailureListener {
+            trySend(UiState.Error(it.message ?: ""))
+        }
+        awaitClose {
+            close()
+        }
+    }
+
+    override fun getGambler(gamblerId: String): Flow<UiState<Boolean>> = callbackFlow {
+        trySend(UiState.Loading)
+
+        val valueEvent = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                GAMBLER = snapshot.getValue(GamblerModel::class.java) ?: GamblerModel()
+
+                val isSuccess = GAMBLER.gamblerId?.isNotBlank() ?: false
+
+                if (isSuccess)
+                    trySend(UiState.Success(true))
+                else
+                    trySend(UiState.Error(ERROR_GAMBLER_IS_NOT_FOUND.replace("%_%", gamblerId)))
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                trySend(UiState.Error(error.message))
+            }
+        }
+
+        firebaseDatabase.reference.child(NODE_GAMBLERS).child(CURRENT_ID).addValueEventListener(valueEvent)
+
+        awaitClose {
+            firebaseDatabase.reference.child(NODE_GAMBLERS).child(CURRENT_ID).removeEventListener(valueEvent)
             close()
         }
     }

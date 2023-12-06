@@ -5,6 +5,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.mu.tote2024.data.repository.AuthRepositoryImpl
 import com.mu.tote2024.domain.repository.AuthRepository
 import com.mu.tote2024.domain.usecase.auth_usecase.AuthUseCase
+import com.mu.tote2024.domain.usecase.auth_usecase.GetGambler
+import com.mu.tote2024.domain.usecase.auth_usecase.SignIn
 import com.mu.tote2024.domain.usecase.auth_usecase.SignUp
 import dagger.Module
 import dagger.Provides
@@ -25,6 +27,8 @@ object AuthRepositoryModule {
     @Provides
     @Singleton
     fun provideAuthUseCase(authRepository: AuthRepository) = AuthUseCase(
-        signUp = SignUp(authRepository)
+        signUp = SignUp(authRepository),
+        signIn = SignIn(authRepository),
+        getGambler = GetGambler(authRepository)
     )
 }

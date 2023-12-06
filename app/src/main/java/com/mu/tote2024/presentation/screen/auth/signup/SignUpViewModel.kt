@@ -23,6 +23,9 @@ class SignUpViewModel @Inject constructor(
     private val _state: MutableStateFlow<SignUpState> = MutableStateFlow(SignUpState())
     val state: StateFlow<SignUpState> = _state.asStateFlow()
 
+    var enabledButton by mutableStateOf(false)
+        private set
+
     var signUpFields by mutableStateOf(
         SignInFields(
             email = "",
@@ -40,24 +43,27 @@ class SignUpViewModel @Inject constructor(
             is SignUpEvent.OnEmailChange -> {
                 signUpFields = signUpFields.copy(
                     email = event.email,
-                    errorEmail = checkEmail(event.email)
+                    errorEmail = checkEmail(event.email),
                 )
+                enabledButton = checkValues()
             }
 
             is SignUpEvent.OnPasswordChange -> {
                 signUpFields = signUpFields.copy(
                     password = event.password,
                     errorPassword = checkPassword(event.password, signUpFields.passwordConfirm),
-                    errorPasswordConfirm = checkPassword(signUpFields.passwordConfirm, event.password)
+                    errorPasswordConfirm = checkPassword(signUpFields.passwordConfirm, event.password),
                 )
+                enabledButton = checkValues()
             }
 
             is SignUpEvent.OnPasswordConfirmChange -> {
                 signUpFields = signUpFields.copy(
                     passwordConfirm = event.passwordConfirm,
                     errorPasswordConfirm = checkPassword(event.passwordConfirm, signUpFields.password),
-                    errorPassword = checkPassword(signUpFields.password, event.passwordConfirm)
+                    errorPassword = checkPassword(signUpFields.password, event.passwordConfirm),
                 )
+                enabledButton = checkValues()
             }
 
             is SignUpEvent.OnSignUp -> {
@@ -68,6 +74,12 @@ class SignUpViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun checkValues(): Boolean {
+        return (signUpFields.errorEmail != null && signUpFields.errorEmail!!.isBlank()) &&
+                (signUpFields.errorPassword != null && signUpFields.errorPassword!!.isBlank()) &&
+                (signUpFields.errorPasswordConfirm != null && signUpFields.errorPasswordConfirm!!.isBlank())
     }
 }
 

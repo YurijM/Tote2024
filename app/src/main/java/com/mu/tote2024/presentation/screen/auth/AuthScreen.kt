@@ -58,7 +58,9 @@ fun AuthScreen(
         ) {
             LogonButton(
                 R.string.sign_up,
-                onClick = { onSignUpClick() }
+                onClick = {
+                    onSignUpClick()
+                }
             )
             Spacer(modifier = Modifier.height(16.dp))
             Image(
