@@ -17,5 +17,9 @@ fun NavGraphBuilder.splash(
 }
 
 fun NavController.navigateToAuth() {
-    navigate(Constants.Routes.AUTH_SCREEN)
+    navigate(Constants.Routes.AUTH_SCREEN) {
+        popUpTo(Constants.Routes.SPLASH_SCREEN) {
+            inclusive = true
+        }
+    }
 }
