@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mu.tote2024.data.utils.Constants.CURRENT_ID
 import com.mu.tote2024.domain.usecase.auth_usecase.AuthUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.checkEmail
@@ -61,9 +60,9 @@ class SignInViewModel @Inject constructor(
                         _state.value = SignInState(it)
                     }
 
-                    if ((state.value.result as UiState.Success<Boolean>).data) {
+                    /*if ((state.value.result as UiState.Success<Boolean>).data) {
                         getGambler(CURRENT_ID)
-                    }
+                    }*/
                 }
             }
 
@@ -82,13 +81,13 @@ class SignInViewModel @Inject constructor(
                 (signInFields.errorPassword != null && signInFields.errorPassword!!.isBlank())
     }
 
-    private fun getGambler(gamblerId: String) {
+    /*private fun getGambler(gamblerId: String) {
         viewModelScope.launch {
             authUseCase.getGambler(gamblerId).collect {
                 _state.value = SignInState(it)
             }
         }
-    }
+    }*/
 }
 
 data class SignInState(

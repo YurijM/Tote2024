@@ -86,7 +86,8 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getGambler(gamblerId: String): Flow<UiState<Boolean>> = callbackFlow {
+    //override fun getGambler(gamblerId: String): Flow<UiState<Boolean>> = callbackFlow {
+    override fun getGambler(gamblerId: String): Flow<UiState<GamblerModel>> = callbackFlow {
         trySend(UiState.Loading)
 
         val valueEvent = object : ValueEventListener {
@@ -96,7 +97,8 @@ class AuthRepositoryImpl @Inject constructor(
                 val isSuccess = GAMBLER.gamblerId?.isNotBlank() ?: false
 
                 if (isSuccess)
-                    trySend(UiState.Success(true))
+                    //trySend(UiState.Success(true))
+                    trySend(UiState.Success(GAMBLER))
                 else
                     trySend(UiState.Error(ERROR_GAMBLER_IS_NOT_FOUND.replace("%_%", gamblerId)))
             }
@@ -106,10 +108,10 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
 
-        firebaseDatabase.reference.child(NODE_GAMBLERS).child(CURRENT_ID).addValueEventListener(valueEvent)
+        firebaseDatabase.reference.child(NODE_GAMBLERS).child(gamblerId).addValueEventListener(valueEvent)
 
         awaitClose {
-            firebaseDatabase.reference.child(NODE_GAMBLERS).child(CURRENT_ID).removeEventListener(valueEvent)
+            firebaseDatabase.reference.child(NODE_GAMBLERS).child(gamblerId).removeEventListener(valueEvent)
             close()
         }
     }
