@@ -65,14 +65,6 @@ class SignInViewModel @Inject constructor(
                     }*/
                 }
             }
-
-            /*is SignInEvent.OnGetGambler -> {
-                viewModelScope.launch {
-                    authUseCase.getGambler(CURRENT_ID).collect {
-                        _state.value = SignInState(it)
-                    }
-                }
-            }*/
         }
     }
 
@@ -81,22 +73,16 @@ class SignInViewModel @Inject constructor(
                 (signInFields.errorPassword != null && signInFields.errorPassword!!.isBlank())
     }
 
-    /*private fun getGambler(gamblerId: String) {
-        viewModelScope.launch {
-            authUseCase.getGambler(gamblerId).collect {
-                _state.value = SignInState(it)
-            }
-        }
-    }*/
+    companion object {
+        data class SignInState(
+            val result: UiState<Boolean> = UiState.Default,
+        )
+
+        data class SignInFields(
+            val email: String,
+            val password: String,
+            val errorEmail: String?,
+            val errorPassword: String?,
+        )
+    }
 }
-
-data class SignInState(
-    val result: UiState<Boolean> = UiState.Default,
-)
-
-data class SignInFields(
-    val email: String,
-    val password: String,
-    val errorEmail: String?,
-    val errorPassword: String?,
-)

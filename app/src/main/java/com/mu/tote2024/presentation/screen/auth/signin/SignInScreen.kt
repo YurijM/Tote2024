@@ -1,6 +1,5 @@
 package com.mu.tote2024.presentation.screen.auth.signin
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,7 +33,6 @@ import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.Constants
 
 @Composable
 fun SignInScreen(
@@ -44,15 +42,11 @@ fun SignInScreen(
     val state by viewModel.state.collectAsState()
 
     when (state.result) {
-        is UiState.Default -> Log.d(Constants.DEBUG_TAG, "state: Default")
-        is UiState.Loading -> Log.d(Constants.DEBUG_TAG, "state: Loading")
         is UiState.Success -> {
-            Log.d(Constants.DEBUG_TAG, "state: Success (${(state.result as UiState.Success<Boolean>).data})")
             toMain()
         }
-        is UiState.Error -> {
-            Log.d(Constants.DEBUG_TAG, "state: Error (${(state.result as UiState.Error).message})")
-        }
+
+        else -> {}
     }
 
     Surface(

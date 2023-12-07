@@ -1,6 +1,5 @@
 package com.mu.tote2024.presentation.screen.auth
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,13 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mu.tote2024.R
 import com.mu.tote2024.presentation.components.LogonButton
-import com.mu.tote2024.presentation.ui.Tote2024Theme
 
-@Preview(
+/*@Preview(
     name = "Light",
     showBackground = true
 )
@@ -35,11 +32,11 @@ import com.mu.tote2024.presentation.ui.Tote2024Theme
 fun PreviewAuth() {
     Tote2024Theme {
         AuthScreen(
-            onSignUpClick = { /*TODO*/ },
-            onSignInClick = { /*TODO*/ }
+            onSignUpClick = { *//*TODO*//* },
+            onSignInClick = { *//*TODO*//* }
         )
     }
-}
+}*/
 
 @Composable
 fun AuthScreen(

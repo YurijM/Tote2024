@@ -75,23 +75,24 @@ class SignUpViewModel @Inject constructor(
             }
         }
     }
-
     private fun checkValues(): Boolean {
         return (signUpFields.errorEmail != null && signUpFields.errorEmail!!.isBlank()) &&
                 (signUpFields.errorPassword != null && signUpFields.errorPassword!!.isBlank()) &&
                 (signUpFields.errorPasswordConfirm != null && signUpFields.errorPasswordConfirm!!.isBlank())
     }
+
+    companion object {
+        data class SignUpState(
+            val result: UiState<Boolean> = UiState.Default,
+        )
+
+        data class SignInFields(
+            val email: String,
+            val password: String,
+            val passwordConfirm: String,
+            val errorEmail: String?,
+            val errorPassword: String?,
+            val errorPasswordConfirm: String?,
+        )
+    }
 }
-
-data class SignUpState(
-    val result: UiState<Boolean> = UiState.Default,
-)
-
-data class SignInFields(
-    val email: String,
-    val password: String,
-    val passwordConfirm: String,
-    val errorEmail: String?,
-    val errorPassword: String?,
-    val errorPasswordConfirm: String?,
-)
