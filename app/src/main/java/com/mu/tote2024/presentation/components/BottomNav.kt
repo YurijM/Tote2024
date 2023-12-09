@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mu.tote2024.R
+import com.mu.tote2024.presentation.utils.Constants.YEAR_START
 
 /*@Preview(
     name = "Light",
@@ -82,7 +83,7 @@ fun BottomNav() {
                 tint = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = "2023-2024 ©",
+                text = "$YEAR_START-2024 ©",
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
