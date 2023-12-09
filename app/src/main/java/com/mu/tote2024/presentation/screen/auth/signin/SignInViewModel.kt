@@ -59,10 +59,6 @@ class SignInViewModel @Inject constructor(
                     authUseCase.signIn(event.email, event.password).collect {
                         _state.value = SignInState(it)
                     }
-
-                    /*if ((state.value.result as UiState.Success<Boolean>).data) {
-                        getGambler(CURRENT_ID)
-                    }*/
                 }
             }
         }

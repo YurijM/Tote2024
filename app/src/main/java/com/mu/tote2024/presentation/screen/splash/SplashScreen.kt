@@ -79,11 +79,6 @@ fun SplashScreen(
             )
         )
         delay(1000L)
-        /*navController.navigate(Routes.LOGON_SCREEN) {
-            popUpTo(Routes.SPLASH_SCREEN) {
-                inclusive = true
-            }
-        }*/
         toSignUp()
     }
 

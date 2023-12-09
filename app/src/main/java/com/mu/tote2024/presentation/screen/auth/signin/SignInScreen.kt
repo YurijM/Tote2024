@@ -23,10 +23,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
 import com.mu.tote2024.presentation.components.AppTextField
@@ -66,8 +64,7 @@ fun SignInScreen(
                     .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center,
                 text = stringResource(id = R.string.sign_in),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.titleLarge
             )
             Card(
                 modifier = Modifier.fillMaxWidth(),
