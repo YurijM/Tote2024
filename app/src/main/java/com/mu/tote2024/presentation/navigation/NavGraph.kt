@@ -4,13 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.mu.tote2024.presentation.navigation.destination.auth.auth
-import com.mu.tote2024.presentation.navigation.destination.main
-import com.mu.tote2024.presentation.navigation.destination.navigateToAuth
 import com.mu.tote2024.presentation.navigation.destination.auth.navigateToMain
+import com.mu.tote2024.presentation.navigation.destination.auth.navigateToProfile
 import com.mu.tote2024.presentation.navigation.destination.auth.navigateToSignIn
 import com.mu.tote2024.presentation.navigation.destination.auth.navigateToSignUp
 import com.mu.tote2024.presentation.navigation.destination.auth.signIn
 import com.mu.tote2024.presentation.navigation.destination.auth.signUp
+import com.mu.tote2024.presentation.navigation.destination.main
+import com.mu.tote2024.presentation.navigation.destination.navigateToAuth
+import com.mu.tote2024.presentation.navigation.destination.profile.profile
 import com.mu.tote2024.presentation.navigation.destination.splash
 import com.mu.tote2024.presentation.utils.Constants.Routes
 
@@ -38,8 +40,8 @@ fun NavGraph(
         )
 
         signUp (
-            toMain = {
-                navController.navigateToMain()
+            toProfile = {
+                navController.navigateToProfile()
             }
         )
 
@@ -48,6 +50,8 @@ fun NavGraph(
                 navController.navigateToMain()
             }
         )
+
+        profile()
 
         main()
     }

@@ -58,7 +58,7 @@ fun SignUpScreenPreview() {
 @Composable
 fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel(),
-    toMain: () -> Unit
+    toProfile: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -99,7 +99,7 @@ fun SignUpScreen(
 
     when (state.result) {
         is UiState.Success -> {
-            toMain()
+            toProfile()
         }
 
         is UiState.Error -> {

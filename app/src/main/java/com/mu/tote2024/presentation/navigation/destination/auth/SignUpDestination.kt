@@ -6,11 +6,11 @@ import com.mu.tote2024.presentation.screen.auth.signup.SignUpScreen
 import com.mu.tote2024.presentation.utils.Constants
 
 fun NavGraphBuilder.signUp(
-    toMain: () -> Unit
+    toProfile: () -> Unit
 ) {
     composable(Constants.Routes.SIGN_UP_SCREEN) {
         SignUpScreen(
-            toMain = toMain
+            toProfile = toProfile
         )
     }
 }

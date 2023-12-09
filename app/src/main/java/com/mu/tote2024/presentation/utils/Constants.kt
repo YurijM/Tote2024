@@ -12,6 +12,7 @@ object Constants {
         const val AUTH_SCREEN = "auth_screen"
         const val SIGN_UP_SCREEN = "sign_up_screen"
         const val SIGN_IN_SCREEN = "sign_in_screen"
+        const val PROFILE_SCREEN = "profile_screen"
         const val RATING_SCREEN = "rating_screen"
         const val STAKES_SCREEN = "stakes_screen"
         const val PROGNOSIS_SCREEN = "prognosis_screen"

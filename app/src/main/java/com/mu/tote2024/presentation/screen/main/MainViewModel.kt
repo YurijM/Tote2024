@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
 import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GamblerModel
-import com.mu.tote2024.domain.usecase.auth_usecase.AuthUseCase
+import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val authUseCase: AuthUseCase
+    private val gamblerUseCase: GamblerUseCase
 ) : ViewModel() {
     private val _gambler: MutableStateFlow<GamblerState> = MutableStateFlow(GamblerState())
     val gambler: StateFlow<GamblerState> = _gambler.asStateFlow()
@@ -29,7 +29,7 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            authUseCase.getGambler(CURRENT_ID).collect {
+            gamblerUseCase.getGambler(CURRENT_ID).collect {
                 _gambler.value = GamblerState(it)
             }
         }
