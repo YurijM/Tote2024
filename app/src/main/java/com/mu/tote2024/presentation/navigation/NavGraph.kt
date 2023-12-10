@@ -51,7 +51,11 @@ fun NavGraph(
             }
         )
 
-        profile()
+        profile(
+            toMain = {
+                navController.navigateToMain()
+            }
+        )
 
         main()
     }
