@@ -31,7 +31,8 @@ fun MainScreenPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: MainViewModel = hiltViewModel(),
+    toProfile: () -> Unit
 ) {
     val gambler by viewModel.gambler.collectAsState()
 
@@ -48,7 +49,10 @@ fun MainScreen(
             BottomNav()
         },
         topBar = {
-            ApplicationBar(isAdmin = viewModel.isGamblerAdmin)
+            ApplicationBar(
+                isAdmin = viewModel.isGamblerAdmin,
+                onImageClick = { toProfile() }
+            )
         }
     ) {
     }

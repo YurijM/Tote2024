@@ -57,6 +57,10 @@ fun NavGraph(
             }
         )
 
-        main()
+        main(
+            toProfile = {
+                navController.navigateToProfile()
+            }
+        )
     }
 }

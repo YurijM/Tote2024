@@ -49,7 +49,6 @@ class GamblerRepositoryImpl @Inject constructor(
                 val isSuccess = GAMBLER.gamblerId?.isNotBlank() ?: false
 
                 if (isSuccess)
-                //trySend(UiState.Success(true))
                     trySend(UiState.Success(GAMBLER))
                 else
                     trySend(UiState.Error(ERROR_GAMBLER_IS_NOT_FOUND.replace("%_%", gamblerId)))

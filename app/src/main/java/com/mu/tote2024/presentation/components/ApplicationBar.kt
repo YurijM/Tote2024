@@ -39,14 +39,18 @@ import com.mu.tote2024.presentation.ui.Tote2024Theme
 @Composable
 fun PreviewApplicationBar() {
     Tote2024Theme {
-        ApplicationBar(true)
+        ApplicationBar(
+            isAdmin = true,
+            onImageClick = { }
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApplicationBar(
-    isAdmin: Boolean
+    isAdmin: Boolean,
+    onImageClick: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -63,7 +67,7 @@ fun ApplicationBar(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(CircleShape)
-                        .clickable { },
+                        .clickable { onImageClick() },
                     painter = painterResource(id = R.drawable.mu),
                     contentDescription = "user_photo"
                 )
