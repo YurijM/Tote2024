@@ -38,6 +38,8 @@ class ProfileViewModel @Inject constructor(
     )
         private set
 
+    val sex = listOf("мужской", "женский")
+
     fun onEvent(event: ProfileEvent) {
         when (event) {
             is ProfileEvent.OnNicknameChange -> {
@@ -49,7 +51,14 @@ class ProfileViewModel @Inject constructor(
                 )
             }
             is ProfileEvent.OnPhotoChange -> {}
-            is ProfileEvent.OnGenderChange -> {}
+            is ProfileEvent.OnGenderChange -> {
+                profile = profile.copy(
+                    gender = event.gender
+                )
+                profileErrors = profileErrors.copy(
+                    errorGender = checkIsFieldEmpty(event.gender)
+                )
+            }
             is ProfileEvent.OnSave -> {
                 viewModelScope.launch {
                     gamblerUseCase.saveProfile(profile)

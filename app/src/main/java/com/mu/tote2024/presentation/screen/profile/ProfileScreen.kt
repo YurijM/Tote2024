@@ -23,10 +23,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
+import com.mu.tote2024.presentation.components.AppRadioGroup
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.ui.common.UiState
 
@@ -53,6 +55,11 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     toMain: () -> Unit
 ) {
+    /*val sex = listOf("мужской", "женский")
+    val setSelected = remember { mutableStateOf("") }*/
+
+    //val gender = remember { mutableStateOf("") }
+
     val state by viewModel.state.collectAsState()
 
     when (state.result) {
@@ -92,7 +99,7 @@ fun ProfileScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
+                        //.padding(8.dp)
                 ) {
                     Image(
                         imageVector = Icons.Filled.Person,
@@ -103,22 +110,52 @@ fun ProfileScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(
-                                top = 4.dp,
-                                start = 0.dp,
-                                end = 8.dp,
-                                bottom = 4.dp
-                            )
+                            .padding(end = 8.dp)
                     ) {
-                        AppTextField(
-                            label = stringResource(id = R.string.enter_nick),
-                            value = viewModel.profile.nickname,
-                            onChange = { newValue ->
-                                viewModel.onEvent(ProfileEvent.OnNicknameChange(newValue))
-                            },
-                            errorMessage = viewModel.profileErrors.errorNickname
+                        Text(
+                            text = "Пол",
+                            modifier = Modifier.padding(
+                                start = 8.dp,
+                                bottom = 4.dp
+                            ),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Bold
                         )
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            border = BorderStroke(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outline
+                            ),
+                        ) {
+                            AppRadioGroup(
+                                items = viewModel.sex,
+                                currentValue = viewModel.profile.gender,
+                                onClick = { newValue ->
+                                    viewModel.onEvent(ProfileEvent.OnGenderChange(newValue))
+                                }
+                            )
+                        }
                     }
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = 8.dp,
+                            end = 8.dp,
+                            bottom = 8.dp
+                        )
+                ) {
+                    AppTextField(
+                        label = stringResource(id = R.string.enter_nick),
+                        value = viewModel.profile.nickname,
+                        onChange = { newValue ->
+                            viewModel.onEvent(ProfileEvent.OnNicknameChange(newValue))
+                        },
+                        errorMessage = viewModel.profileErrors.errorNickname
+                    )
                 }
             }
         }

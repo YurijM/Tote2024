@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
-import com.mu.tote2024.presentation.components.AppTextFieldWithIcon
+import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
@@ -84,7 +84,7 @@ fun SignInScreen(
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    AppTextFieldWithIcon(
+                    AppTextField(
                         value = viewModel.signInFields.email,
                         onChange = { newValue ->
                             viewModel.onEvent(SignInEvent.OnEmailChange(newValue))
@@ -118,7 +118,8 @@ fun SignInScreen(
                         }
                     ) {
                         Text(
-                            text = stringResource(id = R.string.to_log_into)
+                            text = stringResource(id = R.string.to_log_into),
+                            style = MaterialTheme.typography.titleMedium
                         )
                     }
                     if (state.result is UiState.Error) {

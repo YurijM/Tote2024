@@ -11,6 +11,17 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+private val LightColorScheme = lightColorScheme(
+    surface = Color1,
+    onSurface = Color7,
+    surfaceVariant = Color2,
+    onSurfaceVariant = Color5,
+    primary = Color6,
+    outline = Color6,
+    error = ColorError,
+    secondaryContainer = Color3
+)
+
 private val DarkColorScheme = darkColorScheme(
     surface = Color9,
     onSurface = Color3,
@@ -22,16 +33,6 @@ private val DarkColorScheme = darkColorScheme(
     secondaryContainer = Color7
 )
 
-private val LightColorScheme = lightColorScheme(
-    surface = Color1,
-    onSurface = Color7,
-    surfaceVariant = Color2,
-    onSurfaceVariant = Color5,
-    primary = Color6,
-    outline = Color6,
-    error = ColorError,
-    secondaryContainer = Color3
-
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
@@ -41,7 +42,6 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F),
     */
-)
 
 @Composable
 fun Tote2024Theme(

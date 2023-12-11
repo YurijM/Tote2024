@@ -19,7 +19,7 @@
     <string name="confirm_password">Подтвердите пароль</string>
 
     <string name="profile">Профиль</string>
-    <string name="enter_nick">Введите ник</string>
+    <string name="enter_nick">Введите Ник</string>
 
     <string name="error_min_length">Поле должно содержать не меньше %1$s символов</string>
     <string name="error_field_empty">Поле не может быть пустым</string>
