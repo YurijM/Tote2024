@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
-import com.mu.tote2024.presentation.components.AppTextField
+import com.mu.tote2024.presentation.components.AppTextFieldWithIcon
 import com.mu.tote2024.presentation.components.PasswordTextField
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
@@ -135,7 +135,7 @@ fun SignUpScreen(
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    AppTextField(
+                    AppTextFieldWithIcon(
                         value = viewModel.signUpFields.email,
                         onChange = { newValue ->
                             viewModel.onEvent(SignUpEvent.OnEmailChange(newValue))

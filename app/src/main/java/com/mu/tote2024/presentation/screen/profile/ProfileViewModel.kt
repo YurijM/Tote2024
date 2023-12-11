@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.domain.model.GamblerProfileModel
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
+import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +40,14 @@ class ProfileViewModel @Inject constructor(
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
-            is ProfileEvent.OnNicknameChange -> {}
+            is ProfileEvent.OnNicknameChange -> {
+                profile = profile.copy(
+                    nickname = event.nickname
+                )
+                profileErrors = profileErrors.copy(
+                    errorNickname = checkIsFieldEmpty(event.nickname)
+                )
+            }
             is ProfileEvent.OnPhotoChange -> {}
             is ProfileEvent.OnGenderChange -> {}
             is ProfileEvent.OnSave -> {

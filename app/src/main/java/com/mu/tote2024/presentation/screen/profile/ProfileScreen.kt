@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
+import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.ui.common.UiState
 
 /*@Preview(
@@ -96,15 +97,27 @@ fun ProfileScreen(
                     Image(
                         imageVector = Icons.Filled.Person,
                         contentDescription = "gambler",
-                        modifier = Modifier.size(100.dp),
+                        modifier = Modifier.size(124.dp),
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
                     )
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(12.dp)
+                            .padding(
+                                top = 4.dp,
+                                start = 0.dp,
+                                end = 8.dp,
+                                bottom = 4.dp
+                            )
                     ) {
-
+                        AppTextField(
+                            label = stringResource(id = R.string.enter_nick),
+                            value = viewModel.profile.nickname,
+                            onChange = { newValue ->
+                                viewModel.onEvent(ProfileEvent.OnNicknameChange(newValue))
+                            },
+                            errorMessage = viewModel.profileErrors.errorNickname
+                        )
                     }
                 }
             }

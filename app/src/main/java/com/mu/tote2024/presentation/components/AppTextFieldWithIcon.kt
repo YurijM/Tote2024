@@ -1,9 +1,12 @@
 package com.mu.tote2024.presentation.components
 
 import android.annotation.SuppressLint
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.ShapeDefaults
@@ -11,6 +14,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 
 /*@Preview(
     name = "Light",
@@ -22,7 +27,7 @@ import androidx.compose.ui.Modifier
     uiMode = UI_MODE_NIGHT_YES
 )
 @Composable
-fun PreviewAppField() {
+fun PreviewAppFieldWithIcon() {
     Tote2024Theme {
         AppTextField(
             label = "email",
@@ -38,10 +43,12 @@ fun PreviewAppField() {
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppTextField(
+fun AppTextFieldWithIcon(
     label: String,
     value: String?,
     onChange: (newValue: String) -> Unit,
+    @DrawableRes painterId: Int,
+    description: String,
     errorMessage: String?
 ) {
     Column {
@@ -57,6 +64,13 @@ fun AppTextField(
             ),
             label = {
                 Text(text = label)
+            },
+            leadingIcon = {
+                Icon(
+                    modifier = Modifier.size(28.dp),
+                    painter = painterResource(id = painterId),
+                    contentDescription = description
+                )
             },
             singleLine = true,
             isError = !errorMessage.isNullOrBlank()
