@@ -1,6 +1,5 @@
 package com.mu.tote2024.presentation.components
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.MaterialTheme
@@ -10,12 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mu.tote2024.R
-import com.mu.tote2024.presentation.ui.Tote2024Theme
 
-@Preview(
+/*@Preview(
     name = "Light",
     showBackground = true
 )
@@ -32,7 +28,7 @@ fun PreviewLogonButton() {
             onClick = {}
         )
     }
-}
+}*/
 
 @Composable
 fun LogonButton(

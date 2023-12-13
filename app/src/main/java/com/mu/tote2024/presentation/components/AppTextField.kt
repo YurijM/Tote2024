@@ -1,6 +1,5 @@
 package com.mu.tote2024.presentation.components
 
-import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,7 +39,6 @@ fun PreviewAppFieldWithIcon() {
     }
 }*/
 
-@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTextField(
