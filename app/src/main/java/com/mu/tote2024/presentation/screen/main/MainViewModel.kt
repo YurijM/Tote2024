@@ -1,5 +1,6 @@
 package com.mu.tote2024.presentation.screen.main
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,6 +11,7 @@ import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
+import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,6 +33,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             gamblerUseCase.getGambler(CURRENT_ID).collect {
                 _gambler.value = GamblerState(it)
+                Log.d(DEBUG_TAG, "GAMBLER: $GAMBLER")
             }
         }
     }

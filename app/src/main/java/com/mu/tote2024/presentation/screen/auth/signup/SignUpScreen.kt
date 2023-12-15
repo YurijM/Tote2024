@@ -20,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -56,44 +58,23 @@ fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel(),
     toProfile: () -> Unit
 ) {
+    val isLoading = remember { mutableStateOf(false) }
+
     val state by viewModel.state.collectAsState()
 
-    /*LaunchedEffect(key1 = true) {
-        if (email.value != null && email.value!!.isNotBlank()
-            && password.value != null && password.value!!.isNotBlank()
-        ) {
-            when {
-                state.isLoading -> {
-                    Log.d(DEBUG_TAG, "state.isLoading")
-                    isLoading.value = true
-                }
-
-                state.isSuccess -> {
-                    //isLoading.value = false
-                    Log.d(DEBUG_TAG, "state.isSuccess")
-
-                    viewModel.sendEvent(SignUpEvent.Default)
-
-                    navController.navigate(Routes.MAIN_SCREEN) {
-                        popUpTo(Routes.LOGON_SCREEN) {
-                            inclusive = true
-                        }
-                    }
-                }
-
-                (state.error != null) -> {
-                    //isLoading.value = false
-                    Log.d(DEBUG_TAG, "state.error")
-                }
-
-                else -> {}
-            }
-        }
-    }*/
-
     when (state.result) {
+        is UiState.Loading -> {
+            isLoading.value = true
+        }
+
         is UiState.Success -> {
+            isLoading.value = false
             toProfile()
+        }
+
+        is UiState.Error -> {
+            // Добавить обработку ошибки
+            isLoading.value = false
         }
 
         else -> {}
@@ -193,7 +174,7 @@ fun SignUpScreen(
                 }
             }
         }
-        if (state.result is UiState.Loading) {
+        if (isLoading.value) {
             Box(
                 contentAlignment = Alignment.Center
             ) {
