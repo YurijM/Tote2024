@@ -1,10 +1,13 @@
 package com.mu.tote2024.presentation.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -19,38 +22,50 @@ import androidx.compose.ui.unit.dp
 fun AppRadioGroup(
     items: List<String>,
     currentValue: String,
-    onClick: (newValue: String) -> Unit
+    onClick: (newValue: String) -> Unit,
+    errorMessage: String?
 ) {
-    Column(
-        modifier = Modifier
-            .selectableGroup()
-            .padding(8.dp)
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        border = BorderStroke(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.outline
+        ),
     ) {
-        items.forEach { item ->
-            Row(
-                Modifier
-                    .selectable(
+        Column(
+            modifier = Modifier
+                .selectableGroup()
+                .padding(8.dp)
+        ) {
+            items.forEach { item ->
+                Row(
+                    Modifier
+                        .selectable(
+                            selected = (item == currentValue),
+                            onClick = { onClick(item) },
+                            role = Role.RadioButton
+                        )
+                        .padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
                         selected = (item == currentValue),
-                        onClick = { onClick(item) },
-                        role = Role.RadioButton
+                        onClick = null,
+                        colors = RadioButtonDefaults.colors(
+                            selectedColor = MaterialTheme.colorScheme.onSurface
+                        )
                     )
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                RadioButton(
-                    selected = (item == currentValue),
-                    onClick = null,
-                    colors = RadioButtonDefaults.colors(
-                        selectedColor = MaterialTheme.colorScheme.onSurface
+                    Text(
+                        text = item,
+                        modifier = Modifier.padding(start = 12.dp),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
-                )
-                Text(
-                    text = item,
-                    modifier = Modifier.padding(start = 12.dp),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                }
             }
         }
+    }
+    if (!errorMessage.isNullOrBlank()) {
+        TextError(errorMessage)
     }
 }

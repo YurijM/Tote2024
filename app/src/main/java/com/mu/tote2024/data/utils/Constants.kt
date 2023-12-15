@@ -8,6 +8,7 @@ object Constants {
 
     object Nodes {
         const val NODE_GAMBLERS = "gamblers"
+        const val NODE_PROFILE = "profile"
     }
 
     object Errors {

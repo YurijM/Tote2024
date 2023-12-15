@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface GamblerRepository {
     fun saveGambler(gambler: GamblerModel): Flow<UiState<GamblerModel>>
-    fun saveGamblerProfile(profile: GamblerProfileModel): Flow<UiState<GamblerProfileModel>>
+    fun saveGamblerProfile(profile: GamblerProfileModel): Flow<UiState<Boolean>>
     fun saveGamblerResult(result: GamblerResultModel): Flow<UiState<GamblerResultModel>>
     fun getGambler(gamblerId: String): Flow<UiState<GamblerModel>>
 }

@@ -40,22 +40,25 @@ fun SignInScreen(
     toMain: () -> Unit
 ) {
     val isLoading = remember { mutableStateOf(false) }
+    val error = remember { mutableStateOf("") }
 
     val state by viewModel.state.collectAsState()
 
     when (state.result) {
         is UiState.Loading -> {
             isLoading.value = true
+            error.value = ""
         }
 
         is UiState.Success -> {
             isLoading.value = false
+            error.value = ""
             toMain()
         }
 
         is UiState.Error -> {
-            // Добавить обработку ошибки
             isLoading.value = false
+            error.value = (state.result as UiState.Error).message
         }
 
         else -> {}
@@ -136,9 +139,9 @@ fun SignInScreen(
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
-                    if (state.result is UiState.Error) {
+                    if (error.value.isNotBlank()) {
                         TextError(
-                            errorMessage = (state.result as UiState.Error).message,
+                            errorMessage = error.value,
                             textAlign = TextAlign.Center
                         )
                     }

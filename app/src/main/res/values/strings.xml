@@ -7,6 +7,8 @@
     <string name="sign_up">Регистрация</string>
     <string name="sign_in">Авторизация</string>
 
+    <string name="save">Сохранить</string>
+
     <string name="rating">Рейтинг</string>
     <string name="stake">Ставки</string>
     <string name="prognosis">Прогноз</string>

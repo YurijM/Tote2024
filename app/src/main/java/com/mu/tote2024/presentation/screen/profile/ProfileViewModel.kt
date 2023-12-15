@@ -23,9 +23,6 @@ class ProfileViewModel @Inject constructor(
     private val _state: MutableStateFlow<ProfileState> = MutableStateFlow(ProfileState())
     val state: StateFlow<ProfileState> = _state.asStateFlow()
 
-    var enabledButton by mutableStateOf(false)
-        private set
-
     var profile by mutableStateOf(GamblerProfileModel())
         private set
 
@@ -50,26 +47,40 @@ class ProfileViewModel @Inject constructor(
                     errorNickname = checkIsFieldEmpty(event.nickname)
                 )
             }
-            is ProfileEvent.OnPhotoChange -> {}
+
+            is ProfileEvent.OnPhotoChange -> {
+
+            }
+
             is ProfileEvent.OnGenderChange -> {
                 profile = profile.copy(
                     gender = event.gender
                 )
-                profileErrors = profileErrors.copy(
-                    errorGender = checkIsFieldEmpty(event.gender)
-                )
             }
+
             is ProfileEvent.OnSave -> {
-                viewModelScope.launch {
-                    gamblerUseCase.saveProfile(profile)
+                if (checkValues()) {
+                    viewModelScope.launch {
+                        gamblerUseCase.saveProfile(profile).collect {
+                            _state.value = ProfileState(it)
+                        }
+                    }
                 }
             }
         }
     }
 
     private fun checkValues(): Boolean {
+        profileErrors = profileErrors.copy(
+            errorNickname = checkIsFieldEmpty(profile.nickname)
+        )
+
+        profileErrors = profileErrors.copy(
+            errorGender = checkIsFieldEmpty(profile.gender)
+        )
+
         return (profileErrors.errorNickname != null && profileErrors.errorNickname!!.isBlank()) &&
-                (profileErrors.errorPhotoUrl != null && profileErrors.errorPhotoUrl!!.isBlank()) &&
+                //(profileErrors.errorPhotoUrl != null && profileErrors.errorPhotoUrl!!.isBlank()) &&
                 (profileErrors.errorGender != null && profileErrors.errorGender!!.isBlank())
     }
 

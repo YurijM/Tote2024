@@ -4,9 +4,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.mu.tote2024.data.utils.Constants.CURRENT_ID
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_GAMBLER_IS_NOT_FOUND
 import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.data.utils.Constants.Nodes.NODE_GAMBLERS
+import com.mu.tote2024.data.utils.Constants.Nodes.NODE_PROFILE
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.model.GamblerProfileModel
 import com.mu.tote2024.domain.model.GamblerResultModel
@@ -31,8 +33,20 @@ class GamblerRepositoryImpl @Inject constructor(
         trySend(UiState.Success(gambler))
     }
 
-    override fun saveGamblerProfile(profile: GamblerProfileModel): Flow<UiState<GamblerProfileModel>> {
-        TODO("Not yet implemented")
+    override fun saveGamblerProfile(profile: GamblerProfileModel): Flow<UiState<Boolean>> = callbackFlow {
+        trySend(UiState.Loading)
+
+        firebaseDatabase.reference
+            .child(NODE_GAMBLERS)
+            .child(CURRENT_ID)
+            .child(NODE_PROFILE)
+            .setValue(profile)
+
+        trySend(UiState.Success(true))
+
+        awaitClose {
+            close()
+        }
     }
 
     override fun saveGamblerResult(result: GamblerResultModel): Flow<UiState<GamblerResultModel>> {
