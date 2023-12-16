@@ -1,5 +1,6 @@
 package com.mu.tote2024.presentation.screen.profile
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.LoadPhoto
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
+import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
 
 /*@Preview(
     name = "Light",
@@ -127,10 +129,12 @@ fun ProfileScreen(
                     LoadPhoto(
                         viewModel.profile.photoUrl,
                         onClick = { uri ->
+                            Log.d(DEBUG_TAG, "uri: $uri")
                             if (uri != null) {
                                 viewModel.onEvent(ProfileEvent.OnPhotoChange(uri))
                             }
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth(.4f)
                     )
                     Column(
                         modifier = Modifier
@@ -168,9 +172,22 @@ fun ProfileScreen(
                             },
                             errorMessage = viewModel.profileErrors.errorGender
                         )
+                        Spacer(modifier = Modifier.size(4.dp))
+                        AppTextField(
+                            label = stringResource(id = R.string.enter_nick),
+                            value = viewModel.profile.nickname,
+                            onChange = { newValue ->
+                                viewModel.onEvent(ProfileEvent.OnNicknameChange(newValue))
+                            },
+                            errorMessage = viewModel.profileErrors.errorNickname
+                        )
                     }
                 }
-                Spacer(modifier = Modifier.size(4.dp))
+                Divider(
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -181,15 +198,6 @@ fun ProfileScreen(
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    AppTextField(
-                        label = stringResource(id = R.string.enter_nick),
-                        value = viewModel.profile.nickname,
-                        onChange = { newValue ->
-                            viewModel.onEvent(ProfileEvent.OnNicknameChange(newValue))
-                        },
-                        errorMessage = viewModel.profileErrors.errorNickname
-                    )
-                    Spacer(modifier = Modifier.size(4.dp))
                     Button(
                         onClick = {
                             viewModel.onEvent(

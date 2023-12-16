@@ -1,24 +1,26 @@
 package com.mu.tote2024.presentation.components
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -34,18 +36,20 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import com.mu.tote2024.R
-import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
 
 @Composable
 fun LoadPhoto(
     photoUrl: String = "",
-    onClick: (uri: Uri?) -> Unit
+    onClick: (uri: Uri?) -> Unit,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
 ) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
@@ -57,9 +61,7 @@ fun LoadPhoto(
         }
 
     Column(
-        modifier = Modifier
-            .width(132.dp)
-            .padding(end = 8.dp),
+        modifier = modifier.padding(end = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         imageUri?.let {
@@ -71,55 +73,75 @@ fun LoadPhoto(
                 bitmap.value = ImageDecoder.decodeBitmap(source)
             }
         }
-
-        if (bitmap.value != null) {
-            Image(
-                bitmap = bitmap.value!!.asImageBitmap(),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(124.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            Log.d(DEBUG_TAG, "photoUrl: $photoUrl")
-            if (photoUrl.isNotBlank()) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(photoUrl)
-                        .crossfade(true)
-                        .build(),
+        Box(
+            modifier = Modifier
+                .width(148.dp)
+                .height(160.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            if (bitmap.value != null) {
+                Image(
+                    bitmap = bitmap.value!!.asImageBitmap(),
                     contentDescription = null,
-                    modifier = Modifier.size(124.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        //.size(148.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop
                 )
             } else {
-                Image(
-                    imageVector = Icons.Filled.Person,
-                    contentDescription = "gambler",
-                    modifier = Modifier.size(124.dp),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
-                )
+                if (photoUrl.isNotBlank()) {
+                    SubcomposeAsyncImage(
+                        model = photoUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            //.size(148.dp)
+                            .clip(RoundedCornerShape(8.dp)),
+                        contentScale = ContentScale.Crop
+                    ) {
+                        val state = painter.state
+                        if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.fillMaxSize(.25f)
+                                )
+                            }
+                        } else {
+                            SubcomposeAsyncImageContent()
+                        }
+                    }
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.noname),
+                        contentDescription = "gambler",
+                        //modifier = Modifier.size(124.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                    )
+                }
             }
         }
-
         Spacer(modifier = Modifier.size(4.dp))
         OutlinedButton(
             onClick = {
                 launcher.launch("image/*")
                 onClick(imageUri)
             },
-            modifier = Modifier.height(24.dp),
             contentPadding = PaddingValues(
-                top = 2.dp,
+                top = 0.dp,
                 start = 8.dp,
                 end = 8.dp,
-                bottom = 4.dp
+                bottom = 0.dp
             )
         ) {
             Text(
                 text = stringResource(id = R.string.load_photo),
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.labelSmall,
             )
         }
     }
