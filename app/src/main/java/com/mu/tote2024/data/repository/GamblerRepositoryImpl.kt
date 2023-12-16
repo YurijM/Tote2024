@@ -1,26 +1,34 @@
 package com.mu.tote2024.data.repository
 
+import android.net.Uri
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_GAMBLER_IS_NOT_FOUND
 import com.mu.tote2024.data.utils.Constants.GAMBLER
+import com.mu.tote2024.data.utils.Constants.Nodes.FOLDER_PROFILE_PHOTO
+import com.mu.tote2024.data.utils.Constants.Nodes.GAMBLER_PHOTO_URL
 import com.mu.tote2024.data.utils.Constants.Nodes.NODE_GAMBLERS
 import com.mu.tote2024.data.utils.Constants.Nodes.NODE_PROFILE
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.model.GamblerProfileModel
 import com.mu.tote2024.domain.model.GamblerResultModel
+import com.mu.tote2024.domain.repository.CommonRepository
 import com.mu.tote2024.domain.repository.GamblerRepository
 import com.mu.tote2024.presentation.ui.common.UiState
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class GamblerRepositoryImpl @Inject constructor(
-    private val firebaseDatabase: FirebaseDatabase
+    private val commonRepository: CommonRepository,
+    private val firebaseDatabase: FirebaseDatabase,
+    private val firebaseStorage: FirebaseStorage
 ) : GamblerRepository {
     override fun saveGambler(gambler: GamblerModel): Flow<UiState<GamblerModel>> = callbackFlow {
         trySend(UiState.Loading)
@@ -43,6 +51,33 @@ class GamblerRepositoryImpl @Inject constructor(
             .setValue(profile)
 
         trySend(UiState.Success(true))
+
+        awaitClose {
+            close()
+        }
+    }
+
+    override fun saveGamblerPhoto(id: String, photoUri: Uri): Flow<UiState<Boolean>> = callbackFlow {
+        trySend(UiState.Loading)
+
+        val path = firebaseStorage.reference.child(FOLDER_PROFILE_PHOTO).child(id)
+        path.putFile(photoUri)
+
+        val uri = path.downloadUrl.await()
+
+        firebaseDatabase.reference.child(NODE_GAMBLERS).child(id).child("profile").child(GAMBLER_PHOTO_URL).setValue(uri.toString())
+
+
+        trySend(UiState.Success(true))
+
+        /*if ((commonRepository.saveImageToStorage(path, photoUri) as UiState.Success<*>).data == true) {
+            val uri = (commonRepository.getUrlFromStorage(path) as UiState.Success<*>).data
+            firebaseDatabase.reference.child(NODE_GAMBLERS).child(id).child(GAMBLER_PHOTO_URL).setValue(uri.toString())
+
+            trySend(UiState.Success(true))
+        } else {
+            trySend(UiState.Error("GamblerRepository -> saveGamblerPhoto: error!!!"))
+        }*/
 
         awaitClose {
             close()

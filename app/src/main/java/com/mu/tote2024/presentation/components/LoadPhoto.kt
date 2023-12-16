@@ -5,6 +5,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -36,11 +37,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.mu.tote2024.R
+import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
 
 @Composable
 fun LoadPhoto(
-    photoUrl: String = ""
+    photoUrl: String = "",
+    onClick: (uri: Uri?) -> Unit
 ) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
@@ -65,33 +70,43 @@ fun LoadPhoto(
                 val source = ImageDecoder.createSource(context.contentResolver, it)
                 bitmap.value = ImageDecoder.decodeBitmap(source)
             }
+        }
 
-            if (bitmap.value != null) {
-                Image(
-                    bitmap = bitmap.value!!.asImageBitmap(),
+        if (bitmap.value != null) {
+            Image(
+                bitmap = bitmap.value!!.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(124.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Log.d(DEBUG_TAG, "photoUrl: $photoUrl")
+            if (photoUrl.isNotBlank()) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(photoUrl)
+                        .crossfade(true)
+                        .build(),
                     contentDescription = null,
-                    modifier = Modifier
-                        .size(124.dp)
-                        .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
+                    modifier = Modifier.size(124.dp),
                 )
             } else {
-                if (photoUrl.isNotBlank()) {
-                    TODO()
-                } else {
-                    Image(
-                        imageVector = Icons.Filled.Person,
-                        contentDescription = "gambler",
-                        modifier = Modifier.size(124.dp),
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
-                    )
-                }
+                Image(
+                    imageVector = Icons.Filled.Person,
+                    contentDescription = "gambler",
+                    modifier = Modifier.size(124.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                )
             }
         }
+
         Spacer(modifier = Modifier.size(4.dp))
         OutlinedButton(
             onClick = {
                 launcher.launch("image/*")
+                onClick(imageUri)
             },
             modifier = Modifier.height(24.dp),
             contentPadding = PaddingValues(

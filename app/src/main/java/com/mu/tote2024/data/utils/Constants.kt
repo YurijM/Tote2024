@@ -7,8 +7,12 @@ object Constants {
     var GAMBLER = GamblerModel()
 
     object Nodes {
+        const val FOLDER_PROFILE_PHOTO = "profile_photo"
+
         const val NODE_GAMBLERS = "gamblers"
         const val NODE_PROFILE = "profile"
+
+        const val GAMBLER_PHOTO_URL = "photoUrl"
     }
 
     object Errors {

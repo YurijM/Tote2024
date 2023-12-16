@@ -124,7 +124,14 @@ fun ProfileScreen(
                             end = 8.dp
                         )
                 ) {
-                    LoadPhoto()
+                    LoadPhoto(
+                        viewModel.profile.photoUrl,
+                        onClick = { uri ->
+                            if (uri != null) {
+                                viewModel.onEvent(ProfileEvent.OnPhotoChange(uri))
+                            }
+                        }
+                    )
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -163,6 +170,7 @@ fun ProfileScreen(
                         )
                     }
                 }
+                Spacer(modifier = Modifier.size(4.dp))
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
