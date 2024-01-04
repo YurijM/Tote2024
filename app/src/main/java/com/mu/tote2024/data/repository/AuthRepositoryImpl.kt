@@ -43,6 +43,8 @@ class AuthRepositoryImpl @Inject constructor(
                         .child(user.uid)
                         .setValue(GAMBLER)
 
+                    CURRENT_ID = user.uid
+
                     trySend(UiState.Success(true))
                 } else {
                     trySend(UiState.Error(ERROR_NEW_GAMBLER_IS_NOT_CREATED))
@@ -74,7 +76,7 @@ class AuthRepositoryImpl @Inject constructor(
 
             trySend(UiState.Success(CURRENT_ID.isNotBlank()))
         }.addOnFailureListener {
-            trySend(UiState.Error(it.message ?: ""))
+            trySend(UiState.Error(it.message ?: "authGambler: error is not defined"))
         }
         awaitClose {
             close()

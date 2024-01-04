@@ -1,14 +1,13 @@
 package com.mu.tote2024.data.repository
 
 import android.net.Uri
-import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.getValue
 import com.google.firebase.storage.FirebaseStorage
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
+import com.mu.tote2024.data.utils.Constants.Errors.ERROR_ALL_FIELDS_MUST_BE_FILLED
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_GAMBLER_IS_NOT_FOUND
 import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.data.utils.Constants.Nodes.FOLDER_PROFILE_PHOTO
@@ -18,10 +17,8 @@ import com.mu.tote2024.data.utils.Constants.Nodes.NODE_PROFILE
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.model.GamblerProfileModel
 import com.mu.tote2024.domain.model.GamblerResultModel
-import com.mu.tote2024.domain.repository.CommonRepository
 import com.mu.tote2024.domain.repository.GamblerRepository
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -29,7 +26,6 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class GamblerRepositoryImpl @Inject constructor(
-    private val commonRepository: CommonRepository,
     private val firebaseDatabase: FirebaseDatabase,
     private val firebaseStorage: FirebaseStorage
 ) : GamblerRepository {
@@ -57,7 +53,13 @@ class GamblerRepositoryImpl @Inject constructor(
         val (nickname, photoUrl, gender) = profile
         GAMBLER = GAMBLER.copy(profile = GamblerProfileModel(nickname, photoUrl, gender))
 
-        trySend(UiState.Success(true))
+        if (profile.nickname.isBlank()
+            || profile.photoUrl.isBlank()
+            || profile.gender.isBlank()) {
+            trySend(UiState.Error(ERROR_ALL_FIELDS_MUST_BE_FILLED))
+        } else {
+            trySend(UiState.Success(true))
+        }
 
         awaitClose {
             close()
@@ -74,7 +76,8 @@ class GamblerRepositoryImpl @Inject constructor(
 
         firebaseDatabase.reference
             .child(NODE_GAMBLERS)
-            .child(id).child("profile")
+            .child(id)
+            .child("profile")
             .child(GAMBLER_PHOTO_URL)
             .setValue(uri.toString())
 

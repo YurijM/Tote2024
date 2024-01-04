@@ -1,17 +1,14 @@
 package com.mu.tote2024.presentation.screen.main
 
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
+import com.mu.tote2024.data.utils.Constants.Errors.ERROR_PROFILE_IS_EMPTY
 import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
+import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,8 +30,20 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             gamblerUseCase.getGambler(CURRENT_ID).collect {
                 _state.value = GamblerState(it)
+
+                val currentValue = state.value.result
+                toLog("currentValue: $currentValue")
+                if (currentValue is UiState.Success) {
+                    if (GAMBLER.profile == null
+                        || GAMBLER.profile!!.nickname.isBlank()
+                        || GAMBLER.profile!!.photoUrl.isBlank()
+                        || GAMBLER.profile!!.gender.isBlank()
+                    ) {
+                        _state.value = GamblerState(UiState.Error(ERROR_PROFILE_IS_EMPTY))
+                    }
+                }
             }
-         }
+        }
     }
 
     /*fun onEvent(event: MainEvent) {

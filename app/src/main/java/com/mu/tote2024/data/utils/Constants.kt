@@ -20,5 +20,7 @@ object Constants {
         const val ERROR_FUN_CREATE_GAMBLER = "Ошибка выполнения функции createGambler"
         const val ERROR_NEW_GAMBLER_IS_NOT_CREATED = "Новый игрок не создан"
         const val ERROR_GAMBLER_IS_NOT_FOUND = "Участник (gamblerId = \"%_%\") не найден"
+        const val ERROR_PROFILE_IS_EMPTY = "Профиль не заполнен"
+        const val ERROR_ALL_FIELDS_MUST_BE_FILLED = "Все поля должна быть заполнены"
     }
 }

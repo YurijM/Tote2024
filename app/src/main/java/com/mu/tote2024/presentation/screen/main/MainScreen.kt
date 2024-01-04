@@ -1,7 +1,6 @@
 package com.mu.tote2024.presentation.screen.main
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,12 +12,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mu.tote2024.data.utils.Constants.Errors.ERROR_PROFILE_IS_EMPTY
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.presentation.components.ApplicationBar
 import com.mu.tote2024.presentation.components.BottomNav
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.mu.tote2024.presentation.utils.toLog
 
 /*@Preview(
     name = "Light",
@@ -63,8 +62,9 @@ fun MainScreen(
         }
 
         is UiState.Error -> {
-            // Добавить обработку ошибки
             isLoading.value = false
+            toLog("UiState.Error: ${result.message}")
+            if (result.message == ERROR_PROFILE_IS_EMPTY) toProfile()
         }
 
         else -> {}

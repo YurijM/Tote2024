@@ -1,6 +1,5 @@
 package com.mu.tote2024.presentation.screen.profile
 
-import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
