@@ -1,6 +1,7 @@
 package com.mu.tote2024.presentation.screen.main
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -12,9 +13,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.presentation.components.ApplicationBar
 import com.mu.tote2024.presentation.components.BottomNav
 import com.mu.tote2024.presentation.ui.common.UiState
+import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /*@Preview(
     name = "Light",
@@ -41,16 +45,21 @@ fun MainScreen(
 ) {
     val isLoading = remember { mutableStateOf(false) }
 
-    val gambler by viewModel.gambler.collectAsState()
+    val state by viewModel.state.collectAsState()
 
-    when (gambler.result) {
+    val result = state.result
+    var data = GamblerModel()
+
+    when (result) {
         is UiState.Loading -> {
             isLoading.value = true
         }
 
         is UiState.Success -> {
             isLoading.value = false
-            viewModel.onEvent(MainEvent.OnGamblerChange)
+            data = result.data
+
+            //viewModel.onEvent(MainEvent.OnGamblerChange)
         }
 
         is UiState.Error -> {
@@ -67,7 +76,8 @@ fun MainScreen(
         },
         topBar = {
             ApplicationBar(
-                isAdmin = viewModel.isGamblerAdmin,
+                photoUrl = data.profile?.photoUrl ?: "",
+                isAdmin = data.admin,
                 onImageClick = { toProfile() }
             )
         }

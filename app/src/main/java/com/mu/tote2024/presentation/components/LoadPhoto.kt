@@ -9,20 +9,17 @@ import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,17 +35,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
 import com.mu.tote2024.R
 
 @Composable
 fun LoadPhoto(
     photoUrl: String = "",
-    onClick: (uri: Uri?) -> Unit,
+    onSelect: (uri: Uri?) -> Unit,
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
 ) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
@@ -58,6 +53,7 @@ fun LoadPhoto(
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             imageUri = uri
+            onSelect(imageUri)
         }
 
     Column(
@@ -73,19 +69,16 @@ fun LoadPhoto(
                 bitmap.value = ImageDecoder.decodeBitmap(source)
             }
         }
-        Box(
-            modifier = Modifier
-                .width(148.dp)
-                .height(160.dp),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = modifier,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (bitmap.value != null) {
                 Image(
                     bitmap = bitmap.value!!.asImageBitmap(),
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        //.size(148.dp)
+                        .requiredSize(116.dp)
                         .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop
                 )
@@ -95,53 +88,39 @@ fun LoadPhoto(
                         model = photoUrl,
                         contentDescription = null,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            //.size(148.dp)
+                            .requiredSize(116.dp)
                             .clip(RoundedCornerShape(8.dp)),
-                        contentScale = ContentScale.Crop
-                    ) {
-                        val state = painter.state
-                        if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
+                        contentScale = ContentScale.Crop,
+                        loading = {
                             Box(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier.size(48.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 CircularProgressIndicator(
-                                    modifier = Modifier.fillMaxSize(.25f)
+                                    strokeWidth = 2.dp
                                 )
                             }
-                        } else {
-                            SubcomposeAsyncImageContent()
-                        }
-                    }
+                        },
+                    )
                 } else {
                     Image(
                         painter = painterResource(id = R.drawable.noname),
                         contentDescription = "gambler",
-                        //modifier = Modifier.size(124.dp),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.width(116.dp),
+                        contentScale = ContentScale.Crop,
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
                     )
                 }
             }
-        }
-        Spacer(modifier = Modifier.size(4.dp))
-        OutlinedButton(
-            onClick = {
-                launcher.launch("image/*")
-                onClick(imageUri)
-            },
-            contentPadding = PaddingValues(
-                top = 0.dp,
-                start = 8.dp,
-                end = 8.dp,
-                bottom = 0.dp
-            )
-        ) {
+            Spacer(modifier = Modifier.requiredSize(16.dp))
             Text(
-                text = stringResource(id = R.string.load_photo),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelSmall,
+                text = stringResource(id = (if (photoUrl.isBlank()) R.string.load_photo else R.string.change_photo)),
+                modifier = Modifier.clickable {
+                    launcher.launch("image/*")
+                },
+                style = MaterialTheme.typography.bodySmall,
+                textDecoration = TextDecoration.Underline,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }

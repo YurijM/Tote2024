@@ -1,7 +1,6 @@
 package com.mu.tote2024.presentation.screen.profile
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,7 +11,6 @@ import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GamblerProfileModel
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +35,7 @@ class ProfileViewModel @Inject constructor(
     )
         private set
 
-    var photoUri by mutableStateOf<Uri?>(null)
+    private var photoUri by mutableStateOf<Uri?>(null)
 
     val sex = listOf("мужской", "женский")
 
@@ -83,24 +81,22 @@ class ProfileViewModel @Inject constructor(
                     viewModelScope.launch {
                         gamblerUseCase.saveProfile(profile).collect {
                             _state.value = ProfileState(it)
-
-                            //if ((_state.value as UiState.Success<Boolean>).data) {
-                            /*photoUri?.let { uri ->
-                                    gamblerUseCase.saveGamblerPhoto(CURRENT_ID, uri).collect { state ->
-                                        _state.value = ProfileState(state)
-                                    }
-                                }*/
-                            //}
                         }
                     }
-                    viewModelScope.launch {
-                        Log.d(DEBUG_TAG, "photoUri: $photoUri")
-                        photoUri?.let { uri ->
-                            gamblerUseCase.saveGamblerPhoto(CURRENT_ID, uri).collect { state ->
-                                _state.value = ProfileState(state)
+
+                    val currentValue = state.value.result
+                    if (currentValue is UiState.Success) {
+                        viewModelScope.launch {
+                            photoUri?.let { uri ->
+                                gamblerUseCase.saveGamblerPhoto(CURRENT_ID, uri).collect { state ->
+                                    _state.value = ProfileState(state)
+                                }
                             }
                         }
                     }
+
+                    val (nickname, photoUrl, gender) = profile
+                    GAMBLER = GAMBLER.copy(profile = GamblerProfileModel(nickname, photoUrl, gender))
                 }
             }
         }

@@ -1,12 +1,13 @@
 package com.mu.tote2024.presentation.screen.profile
 
-import android.util.Log
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,7 +41,6 @@ import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.LoadPhoto
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
 
 /*@Preview(
     name = "Light",
@@ -69,7 +70,7 @@ fun ProfileScreen(
 
     val state by viewModel.state.collectAsState()
 
-    when (state.result) {
+    when (val result = state.result) {
         is UiState.Loading -> {
             isLoading.value = true
             error.value = ""
@@ -79,8 +80,12 @@ fun ProfileScreen(
             isLoading.value = false
             error.value = ""
 
-            if ((state.result as UiState.Success).data)
+            /*if ((state.result as UiState.Success).data)
+                toMain()*/
+
+            if (result.data) {
                 toMain()
+            }
         }
 
         is UiState.Error -> {
@@ -126,62 +131,71 @@ fun ProfileScreen(
                             end = 8.dp
                         )
                 ) {
-                    LoadPhoto(
-                        viewModel.profile.photoUrl,
-                        onClick = { uri ->
-                            Log.d(DEBUG_TAG, "uri: $uri")
-                            if (uri != null) {
-                                viewModel.onEvent(ProfileEvent.OnPhotoChange(uri))
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth(.4f)
-                    )
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 4.dp)
-                    ) {
-                        Text(
-                            text = GAMBLER.email,
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Text(
-                            text = "Ставка 378 руб.",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Divider(
-                            thickness = 1.dp,
-                            modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Text(
-                            text = "Пол",
-                            modifier = Modifier.padding(start = 8.dp),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.size(4.dp))
-                        AppRadioGroup(
-                            items = viewModel.sex,
-                            currentValue = viewModel.profile.gender,
-                            onClick = { newValue ->
-                                viewModel.onEvent(ProfileEvent.OnGenderChange(newValue))
-                            },
-                            errorMessage = viewModel.profileErrors.errorGender
-                        )
-                        Spacer(modifier = Modifier.size(4.dp))
-                        AppTextField(
-                            label = stringResource(id = R.string.enter_nick),
-                            value = viewModel.profile.nickname,
-                            onChange = { newValue ->
-                                viewModel.onEvent(ProfileEvent.OnNicknameChange(newValue))
-                            },
-                            errorMessage = viewModel.profileErrors.errorNickname
-                        )
+                    Row {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(.4f)
+                                .fillMaxHeight()
+                        ) {
+                            LoadPhoto(
+                                viewModel.profile.photoUrl,
+                                onSelect = { uri ->
+                                    if (uri != null) {
+                                        viewModel.onEvent(ProfileEvent.OnPhotoChange(uri))
+                                    }
+                                },
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = 4.dp)
+                        ) {
+                            Text(
+                                text = GAMBLER.email,
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Text(
+                                text =  LocalContext.current.getString(R.string.gambler_rate, GAMBLER.rate),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Divider(
+                                thickness = 1.dp,
+                                modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Text(
+                                text = "Пол",
+                                modifier = Modifier.padding(start = 8.dp),
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.size(4.dp))
+                            AppRadioGroup(
+                                items = viewModel.sex,
+                                currentValue = viewModel.profile.gender,
+                                onClick = { newValue ->
+                                    viewModel.onEvent(ProfileEvent.OnGenderChange(newValue))
+                                },
+                                errorMessage = viewModel.profileErrors.errorGender
+                            )
+                            Spacer(modifier = Modifier.size(4.dp))
+                            AppTextField(
+                                label = stringResource(id = R.string.enter_nick),
+                                value = viewModel.profile.nickname,
+                                onChange = { newValue ->
+                                    viewModel.onEvent(ProfileEvent.OnNicknameChange(newValue))
+                                },
+                                errorMessage = viewModel.profileErrors.errorNickname
+                            )
+                        }
                     }
+
                 }
                 Divider(
                     thickness = 1.dp,

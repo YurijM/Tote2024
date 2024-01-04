@@ -1,10 +1,12 @@
 package com.mu.tote2024.data.repository
 
 import android.net.Uri
+import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.getValue
 import com.google.firebase.storage.FirebaseStorage
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_GAMBLER_IS_NOT_FOUND
@@ -19,6 +21,7 @@ import com.mu.tote2024.domain.model.GamblerResultModel
 import com.mu.tote2024.domain.repository.CommonRepository
 import com.mu.tote2024.domain.repository.GamblerRepository
 import com.mu.tote2024.presentation.ui.common.UiState
+import com.mu.tote2024.presentation.utils.Constants.DEBUG_TAG
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -49,6 +52,10 @@ class GamblerRepositoryImpl @Inject constructor(
             .child(CURRENT_ID)
             .child(NODE_PROFILE)
             .setValue(profile)
+            //.await()
+
+        val (nickname, photoUrl, gender) = profile
+        GAMBLER = GAMBLER.copy(profile = GamblerProfileModel(nickname, photoUrl, gender))
 
         trySend(UiState.Success(true))
 
@@ -61,12 +68,22 @@ class GamblerRepositoryImpl @Inject constructor(
         trySend(UiState.Loading)
 
         val path = firebaseStorage.reference.child(FOLDER_PROFILE_PHOTO).child(id)
-        path.putFile(photoUri)
+        path.putFile(photoUri).await()
 
         val uri = path.downloadUrl.await()
 
-        firebaseDatabase.reference.child(NODE_GAMBLERS).child(id).child("profile").child(GAMBLER_PHOTO_URL).setValue(uri.toString())
+        firebaseDatabase.reference
+            .child(NODE_GAMBLERS)
+            .child(id).child("profile")
+            .child(GAMBLER_PHOTO_URL)
+            .setValue(uri.toString())
 
+        val profile = GAMBLER.profile
+        if (profile != null) {
+            profile.photoUrl = uri.toString()
+        }
+
+        GAMBLER = GAMBLER.copy(profile = profile)
 
         trySend(UiState.Success(true))
 
@@ -90,11 +107,11 @@ class GamblerRepositoryImpl @Inject constructor(
 
     override fun getGambler(gamblerId: String): Flow<UiState<GamblerModel>> = callbackFlow {
         trySend(UiState.Loading)
+        GAMBLER = firebaseDatabase.reference.child(NODE_GAMBLERS).child(gamblerId).get().await().getValue(GamblerModel::class.java) ?: GamblerModel()
 
         val valueEvent = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 GAMBLER = snapshot.getValue(GamblerModel::class.java) ?: GamblerModel()
-
                 val isSuccess = GAMBLER.gamblerId?.isNotBlank() ?: false
 
                 if (isSuccess)

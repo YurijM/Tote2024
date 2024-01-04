@@ -23,28 +23,27 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val gamblerUseCase: GamblerUseCase
 ) : ViewModel() {
-    private val _gambler: MutableStateFlow<GamblerState> = MutableStateFlow(GamblerState())
-    val gambler: StateFlow<GamblerState> = _gambler.asStateFlow()
+    private val _state: MutableStateFlow<GamblerState> = MutableStateFlow(GamblerState())
+    val state: StateFlow<GamblerState> = _state.asStateFlow()
 
-    var isGamblerAdmin by mutableStateOf(false)
-        private set
+    /*private val _gambler: MutableStateFlow<GamblerModel> = MutableStateFlow(GAMBLER)
+    val gambler: StateFlow<GamblerModel> = _gambler.asStateFlow()*/
 
     init {
         viewModelScope.launch {
             gamblerUseCase.getGambler(CURRENT_ID).collect {
-                _gambler.value = GamblerState(it)
-                Log.d(DEBUG_TAG, "GAMBLER: $GAMBLER")
+                _state.value = GamblerState(it)
             }
-        }
+         }
     }
 
-    fun onEvent(event: MainEvent) {
+    /*fun onEvent(event: MainEvent) {
         when (event) {
             is MainEvent.OnGamblerChange -> {
-                isGamblerAdmin = GAMBLER.admin
+                _state.value = GAMBLER
             }
         }
-    }
+    }*/
 
     companion object {
         data class GamblerState(

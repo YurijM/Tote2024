@@ -12,6 +12,7 @@ import com.mu.tote2024.presentation.navigation.destination.auth.signIn
 import com.mu.tote2024.presentation.navigation.destination.auth.signUp
 import com.mu.tote2024.presentation.navigation.destination.main
 import com.mu.tote2024.presentation.navigation.destination.navigateToAuth
+import com.mu.tote2024.presentation.navigation.destination.profile.navigateProfileToMain
 import com.mu.tote2024.presentation.navigation.destination.profile.profile
 import com.mu.tote2024.presentation.navigation.destination.splash
 import com.mu.tote2024.presentation.utils.Constants.Routes
@@ -53,7 +54,7 @@ fun NavGraph(
 
         profile(
             toMain = {
-                navController.navigateToMain()
+                navController.navigateProfileToMain()
             }
         )
 

@@ -1,5 +1,6 @@
 package com.mu.tote2024.presentation.screen.auth.signin
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,14 +10,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,16 +31,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
-import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
 
+@SuppressLint("StateFlowValueCalledInComposition")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignInScreen(
     viewModel: SignInViewModel = hiltViewModel(),
@@ -101,7 +110,7 @@ fun SignInScreen(
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    AppTextField(
+                    /*AppTextField(
                         value = viewModel.signInFields.email,
                         onChange = { newValue ->
                             viewModel.onEvent(SignInEvent.OnEmailChange(newValue))
@@ -110,7 +119,38 @@ fun SignInScreen(
                         painterId = R.drawable.ic_mail,
                         description = "email",
                         errorMessage = viewModel.signInFields.errorEmail
-                    )
+                    )*/
+
+                    Column {
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = viewModel.mail.value,
+                            shape = ShapeDefaults.Medium,
+                            onValueChange = { newValue ->
+                                viewModel.onEvent(SignInEvent.OnEmailChange(newValue))
+                            },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                errorLeadingIconColor = MaterialTheme.colorScheme.error
+                            ),
+                            label = {
+                                Text(text = stringResource(id = R.string.enter_email))
+                            },
+                            leadingIcon = {
+                                    Icon(
+                                        modifier = Modifier.size(28.dp),
+                                        painter = painterResource(id = R.drawable.ic_mail),
+                                        contentDescription = "email"
+                                    )
+                                },
+                            singleLine = true,
+                            isError = !viewModel.signInFields.errorEmail.isNullOrBlank()
+                        )
+                        /*if (!viewModel.signInFields.errorEmail.isNullOrBlank()) {
+                            TextError(viewModel.signInFields.errorEmail!!)
+                        }*/
+                    }
+
+
                     Spacer(modifier = Modifier.height(4.dp))
                     PasswordTextField(
                         label = stringResource(id = R.string.enter_password),
