@@ -8,7 +8,6 @@ import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,7 +31,6 @@ class MainViewModel @Inject constructor(
                 _state.value = GamblerState(it)
 
                 val currentValue = state.value.result
-                toLog("currentValue: $currentValue")
                 if (currentValue is UiState.Success) {
                     if (GAMBLER.profile == null
                         || GAMBLER.profile!!.nickname.isBlank()
@@ -48,9 +46,11 @@ class MainViewModel @Inject constructor(
 
     /*fun onEvent(event: MainEvent) {
         when (event) {
-            is MainEvent.OnGamblerChange -> {
-                _state.value = GAMBLER
+            is MainEvent.OnNavigateMain -> {
+                sendUiEvent(UiEvent.NavigateMain(event.route))
             }
+
+            else -> {}
         }
     }*/
 

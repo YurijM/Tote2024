@@ -38,7 +38,10 @@ fun PreviewBottomNav() {
 }*/
 
 @Composable
-fun BottomNav() {
+fun BottomNav(
+    currentRoute: String?,
+    onNavigate: (String) -> Unit
+) {
     val navItems = listOf(
         BottomNavItem.RatingItem,
         BottomNavItem.StakeItem,
@@ -47,12 +50,12 @@ fun BottomNav() {
     )
     Column {
         BottomAppBar {
-            navItems.forEachIndexed { index, item ->
+            navItems.forEach { item ->
                 val title = stringResource(id = item.titleId)
 
                 NavigationBarItem(
-                    selected = (index == 0),
-                    onClick = { /*TODO*/ },
+                    selected = (item.route == currentRoute),
+                    onClick = { onNavigate(item.route) },
                     icon = {
                         Icon(
                             painter = painterResource(id = item.iconId),
@@ -71,7 +74,7 @@ fun BottomNav() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically

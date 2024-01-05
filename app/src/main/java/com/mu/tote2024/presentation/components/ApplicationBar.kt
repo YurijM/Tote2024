@@ -63,6 +63,7 @@ fun ApplicationBar(
     ) {
         TopAppBar(
             colors = TopAppBarDefaults.smallTopAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 actionIconContentColor = MaterialTheme.colorScheme.onSurface
             ),
             title = {
