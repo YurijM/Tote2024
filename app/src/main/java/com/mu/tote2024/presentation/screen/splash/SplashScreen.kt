@@ -35,7 +35,7 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SplashScreen(
-    toSignUp: () -> Unit
+    toAuth: () -> Unit
 ) {
     val scale = remember {
         Animatable(0f)
@@ -79,7 +79,7 @@ fun SplashScreen(
             )
         )
         delay(1000L)
-        toSignUp()
+        toAuth()
     }
 
     Surface(

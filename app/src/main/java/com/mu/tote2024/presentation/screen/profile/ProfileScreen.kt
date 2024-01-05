@@ -157,11 +157,17 @@ fun ProfileScreen(
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
-                            Text(
-                                text =  LocalContext.current.getString(R.string.gambler_rate, GAMBLER.rate),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
+                            if (GAMBLER.rate > 0) {
+                                Text(
+                                    text = LocalContext.current.getString(R.string.gambler_rate, GAMBLER.rate),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                            } else {
+                                TextError(
+                                    errorMessage = LocalContext.current.getString(R.string.money_is_not_transferred_yet)
+                                )
+                            }
                             Divider(
                                 thickness = 1.dp,
                                 modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),

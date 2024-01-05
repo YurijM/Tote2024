@@ -14,11 +14,3 @@ fun NavGraphBuilder.signUp(
         )
     }
 }
-
-/*fun NavController.navigateToMain() {
-    navigate(Constants.Routes.MAIN_SCREEN) {
-        popUpTo(Constants.Routes.AUTH_SCREEN) *//*{
-            inclusive = true
-        }*//*
-    }
-}*/

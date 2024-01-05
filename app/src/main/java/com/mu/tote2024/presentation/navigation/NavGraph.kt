@@ -10,7 +10,7 @@ import com.mu.tote2024.presentation.navigation.destination.auth.navigateToSignIn
 import com.mu.tote2024.presentation.navigation.destination.auth.navigateToSignUp
 import com.mu.tote2024.presentation.navigation.destination.auth.signIn
 import com.mu.tote2024.presentation.navigation.destination.auth.signUp
-import com.mu.tote2024.presentation.navigation.destination.main
+import com.mu.tote2024.presentation.navigation.destination.main.main
 import com.mu.tote2024.presentation.navigation.destination.navigateToAuth
 import com.mu.tote2024.presentation.navigation.destination.profile.navigateProfileToMain
 import com.mu.tote2024.presentation.navigation.destination.profile.profile
@@ -25,8 +25,8 @@ fun NavGraph(
         navController = navController,
         startDestination = Routes.SPLASH_SCREEN
     ) {
-        splash (
-            toSignUp = {
+        splash(
+            toAuth = {
                 navController.navigateToAuth()
             }
         )
@@ -40,13 +40,13 @@ fun NavGraph(
             }
         )
 
-        signUp (
+        signUp(
             toProfile = {
                 navController.navigateToProfile()
             }
         )
 
-        signIn (
+        signIn(
             toMain = {
                 navController.navigateToMain()
             }

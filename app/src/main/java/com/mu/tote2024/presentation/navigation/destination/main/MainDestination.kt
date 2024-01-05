@@ -1,4 +1,4 @@
-package com.mu.tote2024.presentation.navigation.destination
+package com.mu.tote2024.presentation.navigation.destination.main
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
