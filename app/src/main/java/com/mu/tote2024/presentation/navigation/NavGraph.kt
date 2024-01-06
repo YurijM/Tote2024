@@ -61,6 +61,9 @@ fun NavGraph(
         main(
             toProfile = {
                 navController.navigateToProfile()
+            },
+            toAuth = {
+                navController.navigateToAuth()
             }
         )
     }

@@ -7,10 +7,12 @@ import com.mu.tote2024.presentation.utils.Constants
 
 fun NavGraphBuilder.main(
     toProfile: () -> Unit,
+    toAuth: () -> Unit,
 ) {
     composable(Constants.Routes.MAIN_SCREEN) {
         MainScreen(
-            toProfile = toProfile
+            toProfile = toProfile,
+            toAuth = toAuth
         )
     }
 }

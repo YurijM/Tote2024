@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.mu.tote2024.data.utils.Constants.Errors.ERROR_GAMBLER_IS_NOT_FOUND
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_PROFILE_IS_EMPTY
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.presentation.components.ApplicationBar
@@ -48,7 +49,8 @@ fun MainScreenPreview() {
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
-    toProfile: () -> Unit
+    toProfile: () -> Unit,
+    toAuth: () -> Unit
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -76,7 +78,11 @@ fun MainScreen(
         is UiState.Error -> {
             isLoading.value = false
             toLog("UiState.Error: ${result.message}")
-            if (result.message == ERROR_PROFILE_IS_EMPTY) toProfile()
+            when (result.message) {
+                ERROR_PROFILE_IS_EMPTY -> toProfile()
+                ERROR_GAMBLER_IS_NOT_FOUND -> toAuth()
+            }
+
         }
 
         else -> {}
