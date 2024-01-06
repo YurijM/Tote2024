@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -75,13 +76,13 @@ fun ApplicationBar(
                         model = photoUrl,
                         contentDescription = null,
                         modifier = Modifier
-                            .size(44.dp)
+                            .size(dimensionResource(id = R.dimen.app_bar_photo_size))
                             .clip(CircleShape)
                             .clickable { onImageClick() },
                         contentScale = ContentScale.Crop,
                         loading = {
                             Box(
-                                modifier = Modifier.size(24.dp),
+                                modifier = Modifier.size(dimensionResource(id = R.dimen.app_bar_no_name_size)),
                                 contentAlignment = Alignment.Center
                             ) {
                                 CircularProgressIndicator(
@@ -96,7 +97,7 @@ fun ApplicationBar(
                         painter = painterResource(id = R.drawable.noname),
                         contentDescription = "gambler",
                         modifier = Modifier
-                            .size(24.dp)
+                            .size(dimensionResource(id = R.dimen.app_bar_no_name_size))
                             .clip(CircleShape)
                             .clickable { onImageClick() },
                         contentScale = ContentScale.Crop,

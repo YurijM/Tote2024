@@ -8,7 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
 import com.mu.tote2024.data.utils.Constants.GAMBLER
+import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.model.GamblerProfileModel
+import com.mu.tote2024.domain.usecase.auth_usecase.AuthUseCase
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
@@ -21,6 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
+    authUseCase: AuthUseCase,
     private val gamblerUseCase: GamblerUseCase
 ) : ViewModel() {
     private val _state: MutableStateFlow<ProfileState> = MutableStateFlow(ProfileState())
@@ -43,12 +46,20 @@ class ProfileViewModel @Inject constructor(
         private set
 
     init {
-        if (GAMBLER.profile != null) {
-            profile = GamblerProfileModel(
-                nickname = GAMBLER.profile!!.nickname,
-                gender = GAMBLER.profile!!.gender,
-                photoUrl = GAMBLER.profile!!.photoUrl
-            )
+        CURRENT_ID = authUseCase.getCurrentUser()
+
+        viewModelScope.launch {
+            gamblerUseCase.getGambler(CURRENT_ID).collect {
+                if (GamblerState(it).result is UiState.Success) {
+                    if (GAMBLER.profile != null) {
+                        profile = GamblerProfileModel(
+                            nickname = GAMBLER.profile!!.nickname,
+                            gender = GAMBLER.profile!!.gender,
+                            photoUrl = GAMBLER.profile!!.photoUrl
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -117,6 +128,10 @@ class ProfileViewModel @Inject constructor(
     }
 
     companion object {
+        data class GamblerState(
+            val result: UiState<GamblerModel> = UiState.Default,
+        )
+
         data class ProfileState(
             val result: UiState<Boolean> = UiState.Default,
         )

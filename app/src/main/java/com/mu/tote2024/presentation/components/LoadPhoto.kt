@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
@@ -70,7 +71,7 @@ fun LoadPhoto(
             }
         }
         Column(
-            modifier = modifier,
+            modifier = modifier.padding(top = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (bitmap.value != null) {
@@ -78,7 +79,7 @@ fun LoadPhoto(
                     bitmap = bitmap.value!!.asImageBitmap(),
                     contentDescription = null,
                     modifier = Modifier
-                        .requiredSize(116.dp)
+                        .requiredSize(dimensionResource(id = R.dimen.profile_photo_size))
                         .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop
                 )
@@ -88,7 +89,7 @@ fun LoadPhoto(
                         model = photoUrl,
                         contentDescription = null,
                         modifier = Modifier
-                            .requiredSize(116.dp)
+                            .requiredSize(dimensionResource(id = R.dimen.profile_photo_size))
                             .clip(RoundedCornerShape(8.dp)),
                         contentScale = ContentScale.Crop,
                         loading = {
@@ -106,13 +107,13 @@ fun LoadPhoto(
                     Image(
                         painter = painterResource(id = R.drawable.noname),
                         contentDescription = "gambler",
-                        modifier = Modifier.width(116.dp),
+                        modifier = Modifier.width(dimensionResource(id = R.dimen.profile_photo_size)),
                         contentScale = ContentScale.Crop,
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
                     )
                 }
             }
-            Spacer(modifier = Modifier.requiredSize(16.dp))
+            Spacer(modifier = Modifier.requiredSize(12.dp))
             Text(
                 text = stringResource(id = (if (photoUrl.isBlank()) R.string.load_photo else R.string.change_photo)),
                 modifier = Modifier.clickable {
