@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
@@ -27,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -217,18 +219,37 @@ fun ProfileScreen(
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Button(
-                        onClick = {
-                            viewModel.onEvent(
-                                ProfileEvent.OnSave
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+                        Button(
+                            onClick = {
+                                viewModel.onEvent(
+                                    ProfileEvent.OnSave
+                                )
+                            }
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.save),
+                                style = MaterialTheme.typography.titleMedium
                             )
                         }
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.save),
-                            style = MaterialTheme.typography.titleMedium
-                        )
+                        Button(
+                            onClick = {
+                               toMain()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Gray
+                            )
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.cancel),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
                     }
+
                     if (error.value.isNotBlank()) {
                         TextError(
                             errorMessage = error.value,
