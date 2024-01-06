@@ -6,6 +6,7 @@ import com.mu.tote2024.data.utils.Constants.CURRENT_ID
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_PROFILE_IS_EMPTY
 import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GamblerModel
+import com.mu.tote2024.domain.usecase.auth_usecase.AuthUseCase
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    private val authUseCase: AuthUseCase,
     private val gamblerUseCase: GamblerUseCase
 ) : ViewModel() {
     private val _state: MutableStateFlow<GamblerState> = MutableStateFlow(GamblerState())
@@ -27,6 +29,8 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            CURRENT_ID = authUseCase.getCurrentUser()
+
             gamblerUseCase.getGambler(CURRENT_ID).collect {
                 _state.value = GamblerState(it)
 

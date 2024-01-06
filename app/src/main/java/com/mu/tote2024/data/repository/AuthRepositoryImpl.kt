@@ -82,4 +82,6 @@ class AuthRepositoryImpl @Inject constructor(
             close()
         }
     }
+
+    override fun getCurrentUser() = firebaseAuth.currentUser?.uid ?: ""
 }
