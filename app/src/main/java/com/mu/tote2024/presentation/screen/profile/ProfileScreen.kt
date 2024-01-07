@@ -91,7 +91,7 @@ fun ProfileScreen(
 
         is UiState.Error -> {
             isLoading.value = false
-            error.value = (state.result as UiState.Error).message
+            error.value = result.message
         }
 
         else -> {}

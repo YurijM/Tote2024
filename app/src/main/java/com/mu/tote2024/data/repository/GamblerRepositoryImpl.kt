@@ -48,14 +48,15 @@ class GamblerRepositoryImpl @Inject constructor(
             .child(CURRENT_ID)
             .child(NODE_PROFILE)
             .setValue(profile)
-            //.await()
+        //.await()
 
         val (nickname, photoUrl, gender) = profile
         GAMBLER = GAMBLER.copy(profile = GamblerProfileModel(nickname, photoUrl, gender))
 
         if (profile.nickname.isBlank()
             || profile.photoUrl.isBlank()
-            || profile.gender.isBlank()) {
+            || profile.gender.isBlank()
+        ) {
             trySend(UiState.Error(ERROR_ALL_FIELDS_MUST_BE_FILLED))
         } else {
             trySend(UiState.Success(true))
@@ -132,6 +133,31 @@ class GamblerRepositoryImpl @Inject constructor(
 
         awaitClose {
             firebaseDatabase.reference.child(NODE_GAMBLERS).child(gamblerId).removeEventListener(valueEvent)
+            close()
+        }
+    }
+
+    override fun getGamblerList(): Flow<UiState<List<GamblerModel>>> = callbackFlow {
+        trySend(UiState.Loading)
+
+        val valueEvent = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val list = snapshot.children.map {
+                    it.getValue(GamblerModel::class.java) ?: GamblerModel()
+                }
+
+                trySend(UiState.Success(list))
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                trySend(UiState.Error(error.message))
+            }
+        }
+
+        firebaseDatabase.reference.child(NODE_GAMBLERS).addValueEventListener(valueEvent)
+
+        awaitClose {
+            firebaseDatabase.reference.child(NODE_GAMBLERS).removeEventListener(valueEvent)
             close()
         }
     }

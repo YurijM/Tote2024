@@ -13,4 +13,6 @@ interface GamblerRepository {
     fun saveGamblerPhoto(id: String, photoUri: Uri): Flow<UiState<Boolean>>
     fun saveGamblerResult(result: GamblerResultModel): Flow<UiState<GamblerResultModel>>
     fun getGambler(gamblerId: String): Flow<UiState<GamblerModel>>
+
+    fun getGamblerList(): Flow<UiState<List<GamblerModel>>>
 }
