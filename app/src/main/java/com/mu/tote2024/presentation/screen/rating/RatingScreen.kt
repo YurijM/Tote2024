@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,7 +31,13 @@ fun RatingScreen(
 
         is UiState.Success -> {
             isLoading = false
-            gamblers = result.data.filter { it.rate > 0 }
+            gamblers = result.data
+                //.filter { it.rate > 0 }
+                //.sortedWith(compareBy { it.result?.points ?: 0.00 })
+                .sortedWith(
+                    compareByDescending<GamblerModel> { it.result?.points ?: 0.00 }
+                        .thenBy { it.profile?.nickname ?: "" }
+                )
         }
 
         is UiState.Error -> {
@@ -42,9 +47,13 @@ fun RatingScreen(
         else -> {}
     }
 
-    LazyColumn() {
+    LazyColumn {
         items(gamblers) { gambler ->
-            Text(text = gambler.profile?.nickname ?: "")
+            RatingItemScreen(
+                nickname = gambler.profile?.nickname ?: "",
+                photoUrl = gambler.profile?.photoUrl ?: "",
+                points = gambler.result?.points ?: 0.0
+            )
         }
     }
 
