@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
+import com.mu.tote2024.data.utils.Constants.Errors.ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_PROFILE_IS_EMPTY
 import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GamblerModel
@@ -88,13 +89,16 @@ class ProfileViewModel @Inject constructor(
                 profile = profile.copy(
                     gender = event.gender
                 )
+                profileErrors = profileErrors.copy(
+                    errorGender = checkIsFieldEmpty(event.gender)
+                )
             }
 
             is ProfileEvent.OnCancel -> {
                 if (checkValues()) {
                     _state.value = ProfileState(UiState.Success(true))
                 } else {
-                    _state.value = ProfileState(UiState.Error(ERROR_PROFILE_IS_EMPTY))
+                    _state.value = ProfileState(UiState.Error(ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY))
                 }
             }
 
@@ -119,6 +123,8 @@ class ProfileViewModel @Inject constructor(
 
                     val (nickname, photoUrl, gender) = profile
                     GAMBLER = GAMBLER.copy(profile = GamblerProfileModel(nickname, photoUrl, gender))
+                } else {
+                    _state.value = ProfileState(UiState.Error(ERROR_PROFILE_IS_EMPTY))
                 }
             }
         }

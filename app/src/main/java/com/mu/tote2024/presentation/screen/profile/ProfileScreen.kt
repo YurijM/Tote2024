@@ -36,7 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
-import com.mu.tote2024.data.utils.Constants.Errors.ERROR_PROFILE_IS_EMPTY
+import com.mu.tote2024.data.utils.Constants.Errors.ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY
 import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.presentation.components.AppRadioGroup
 import com.mu.tote2024.presentation.components.AppTextField
@@ -83,9 +83,6 @@ fun ProfileScreen(
             isLoading.value = false
             error.value = ""
 
-            /*if ((state.result as UiState.Success).data)
-                toMain()*/
-
             if (result.data) {
                 toMain()
             }
@@ -94,7 +91,7 @@ fun ProfileScreen(
         is UiState.Error -> {
             isLoading.value = false
 
-            if (result.message == ERROR_PROFILE_IS_EMPTY) toAuth()
+            if (result.message == ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY) toAuth()
 
             error.value = result.message
         }

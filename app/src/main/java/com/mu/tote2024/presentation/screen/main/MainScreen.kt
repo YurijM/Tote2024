@@ -26,7 +26,6 @@ import com.mu.tote2024.presentation.components.ApplicationBar
 import com.mu.tote2024.presentation.components.BottomNav
 import com.mu.tote2024.presentation.navigation.NavGraphMainScreen
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.toLog
 
 /*@Preview(
     name = "Light",
@@ -77,7 +76,6 @@ fun MainScreen(
 
         is UiState.Error -> {
             isLoading.value = false
-            toLog("UiState.Error: ${result.message}")
             when (result.message) {
                 ERROR_PROFILE_IS_EMPTY -> toProfile()
                 ERROR_GAMBLER_IS_NOT_FOUND -> toAuth()
