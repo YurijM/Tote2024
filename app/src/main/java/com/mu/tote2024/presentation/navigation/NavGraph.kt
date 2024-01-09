@@ -11,10 +11,10 @@ import com.mu.tote2024.presentation.navigation.destination.auth.navigateToSignUp
 import com.mu.tote2024.presentation.navigation.destination.auth.signIn
 import com.mu.tote2024.presentation.navigation.destination.auth.signUp
 import com.mu.tote2024.presentation.navigation.destination.main.main
-import com.mu.tote2024.presentation.navigation.destination.navigateToAuth
 import com.mu.tote2024.presentation.navigation.destination.profile.navigateProfileToMain
 import com.mu.tote2024.presentation.navigation.destination.profile.profile
-import com.mu.tote2024.presentation.navigation.destination.splash
+import com.mu.tote2024.presentation.navigation.destination.splash.navigateToAuth
+import com.mu.tote2024.presentation.navigation.destination.splash.splash
 import com.mu.tote2024.presentation.utils.Constants.Routes
 
 @Composable
@@ -55,6 +55,9 @@ fun NavGraph(
         profile(
             toMain = {
                 navController.navigateProfileToMain()
+            },
+            toAuth = {
+                navController.navigateToAuth()
             }
         )
 

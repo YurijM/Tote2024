@@ -1,6 +1,5 @@
-package com.mu.tote2024.presentation.navigation.destination
+package com.mu.tote2024.presentation.navigation.destination.splash
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.mu.tote2024.presentation.screen.splash.SplashScreen
@@ -13,13 +12,5 @@ fun NavGraphBuilder.splash(
         SplashScreen(
             toAuth = toAuth
         )
-    }
-}
-
-fun NavController.navigateToAuth() {
-    navigate(Constants.Routes.AUTH_SCREEN) {
-        popUpTo(Constants.Routes.SPLASH_SCREEN) {
-            //inclusive = true
-        }
     }
 }

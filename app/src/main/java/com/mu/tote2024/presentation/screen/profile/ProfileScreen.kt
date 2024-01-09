@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
+import com.mu.tote2024.data.utils.Constants.Errors.ERROR_PROFILE_IS_EMPTY
 import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.presentation.components.AppRadioGroup
 import com.mu.tote2024.presentation.components.AppTextField
@@ -64,7 +65,8 @@ fun PreviewProfileScreen() {
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
-    toMain: () -> Unit
+    toMain: () -> Unit,
+    toAuth: () -> Unit
 ) {
     val isLoading = remember { mutableStateOf(false) }
     val error = remember { mutableStateOf("") }
@@ -91,6 +93,9 @@ fun ProfileScreen(
 
         is UiState.Error -> {
             isLoading.value = false
+
+            if (result.message == ERROR_PROFILE_IS_EMPTY) toAuth()
+
             error.value = result.message
         }
 
@@ -237,7 +242,7 @@ fun ProfileScreen(
                         }
                         Button(
                             onClick = {
-                               toMain()
+                               viewModel.onEvent(ProfileEvent.OnCancel)
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Gray
