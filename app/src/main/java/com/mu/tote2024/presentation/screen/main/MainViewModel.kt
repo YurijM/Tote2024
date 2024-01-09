@@ -36,10 +36,9 @@ class MainViewModel @Inject constructor(
 
                 val currentValue = state.value.result
                 if (currentValue is UiState.Success) {
-                    if (GAMBLER.profile == null
-                        || GAMBLER.profile!!.nickname.isBlank()
-                        || GAMBLER.profile!!.photoUrl.isBlank()
-                        || GAMBLER.profile!!.gender.isBlank()
+                    if (GAMBLER.profile.nickname.isBlank()
+                        || GAMBLER.profile.photoUrl.isBlank()
+                        || GAMBLER.profile.gender.isBlank()
                     ) {
                         _state.value = GamblerState(UiState.Error(ERROR_PROFILE_IS_EMPTY))
                     }

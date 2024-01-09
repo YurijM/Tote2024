@@ -35,8 +35,8 @@ fun RatingScreen(
                 //.filter { it.rate > 0 }
                 //.sortedWith(compareBy { it.result?.points ?: 0.00 })
                 .sortedWith(
-                    compareByDescending<GamblerModel> { it.result?.points ?: 0.00 }
-                        .thenBy { it.profile?.nickname ?: "" }
+                    compareByDescending<GamblerModel> { it.result.points }
+                        .thenBy { it.profile.nickname }
                 )
         }
 
@@ -50,9 +50,9 @@ fun RatingScreen(
     LazyColumn {
         items(gamblers) { gambler ->
             RatingItemScreen(
-                nickname = gambler.profile?.nickname ?: "",
-                photoUrl = gambler.profile?.photoUrl ?: "",
-                points = gambler.result?.points ?: 0.0
+                nickname = gambler.profile.nickname,
+                photoUrl = gambler.profile.photoUrl,
+                points = gambler.result.points
             )
         }
     }

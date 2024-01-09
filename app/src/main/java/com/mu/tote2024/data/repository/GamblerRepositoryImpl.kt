@@ -83,9 +83,7 @@ class GamblerRepositoryImpl @Inject constructor(
             .setValue(uri.toString())
 
         val profile = GAMBLER.profile
-        if (profile != null) {
-            profile.photoUrl = uri.toString()
-        }
+        profile.photoUrl = uri.toString()
 
         GAMBLER = GAMBLER.copy(profile = profile)
 

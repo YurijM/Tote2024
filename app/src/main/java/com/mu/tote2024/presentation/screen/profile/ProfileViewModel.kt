@@ -51,13 +51,11 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             gamblerUseCase.getGambler(CURRENT_ID).collect {
                 if (GamblerState(it).result is UiState.Success) {
-                    if (GAMBLER.profile != null) {
-                        profile = GamblerProfileModel(
-                            nickname = GAMBLER.profile!!.nickname,
-                            gender = GAMBLER.profile!!.gender,
-                            photoUrl = GAMBLER.profile!!.photoUrl
-                        )
-                    }
+                    profile = GamblerProfileModel(
+                        nickname = GAMBLER.profile.nickname,
+                        gender = GAMBLER.profile.gender,
+                        photoUrl = GAMBLER.profile.photoUrl
+                    )
                 }
             }
         }

@@ -5,6 +5,6 @@ data class GamblerModel(
     val email: String = "",
     val rate: Int = 0,
     val admin: Boolean = false,
-    val profile: GamblerProfileModel? = null,
-    val result: GamblerResultModel? = null
+    val profile: GamblerProfileModel = GamblerProfileModel(),
+    val result: GamblerResultModel = GamblerResultModel()
 )

@@ -96,7 +96,7 @@ fun MainScreen(
         },
         topBar = {
             ApplicationBar(
-                photoUrl = data.profile?.photoUrl ?: "",
+                photoUrl = data.profile.photoUrl,
                 isAdmin = data.admin,
                 onImageClick = { toProfile() }
             )
