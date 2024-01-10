@@ -57,7 +57,8 @@ fun PreviewApplicationBar() {
 fun ApplicationBar(
     photoUrl: String,
     isAdmin: Boolean,
-    onImageClick: () -> Unit
+    onImageClick: () -> Unit,
+    onSignOut: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -115,7 +116,7 @@ fun ApplicationBar(
                     }
                 }
                 IconButton(
-                    onClick = { /*TODO*/ }
+                    onClick = { onSignOut() }
                 ) {
                     Icon(
                         imageVector = Icons.Default.ExitToApp,

@@ -24,9 +24,6 @@ class MainViewModel @Inject constructor(
     private val _state: MutableStateFlow<GamblerState> = MutableStateFlow(GamblerState())
     val state: StateFlow<GamblerState> = _state.asStateFlow()
 
-    /*private val _gambler: MutableStateFlow<GamblerModel> = MutableStateFlow(GAMBLER)
-    val gambler: StateFlow<GamblerModel> = _gambler.asStateFlow()*/
-
     init {
         viewModelScope.launch {
             CURRENT_ID = authUseCase.getCurrentUser()
@@ -45,6 +42,10 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun signOut() {
+        authUseCase.signOut
     }
 
     /*fun onEvent(event: MainEvent) {

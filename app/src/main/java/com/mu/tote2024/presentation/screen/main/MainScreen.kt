@@ -96,7 +96,10 @@ fun MainScreen(
             ApplicationBar(
                 photoUrl = data.profile.photoUrl,
                 isAdmin = data.admin,
-                onImageClick = { toProfile() }
+                onImageClick = { toProfile() },
+                onSignOut = {
+                    viewModel.signOut()
+                }
             )
         }
     ) { paddingValues ->

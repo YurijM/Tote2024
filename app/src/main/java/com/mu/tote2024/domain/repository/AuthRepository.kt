@@ -15,4 +15,6 @@ interface AuthRepository {
     ): Flow<UiState<Boolean>>
 
     fun getCurrentUser(): String
+
+    fun signOut()
 }
