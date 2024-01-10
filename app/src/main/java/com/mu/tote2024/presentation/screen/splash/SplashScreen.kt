@@ -29,14 +29,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SplashScreen(
-    toAuth: () -> Unit
+    toAuth: () -> Unit,
+    toMain: () -> Unit
 ) {
+    val viewModel: SplashViewModel = hiltViewModel()
+
     val scale = remember {
         Animatable(0f)
     }
@@ -79,7 +83,7 @@ fun SplashScreen(
             )
         )
         delay(1000L)
-        toAuth()
+        if (viewModel.isAuth) toMain() else toAuth()
     }
 
     Surface(

@@ -28,6 +28,9 @@ fun NavGraph(
         splash(
             toAuth = {
                 navController.navigateToAuth()
+            },
+            toMain = {
+                navController.navigateToMain()
             }
         )
 

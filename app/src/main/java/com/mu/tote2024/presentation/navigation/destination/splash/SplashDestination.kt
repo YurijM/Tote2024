@@ -7,10 +7,12 @@ import com.mu.tote2024.presentation.utils.Constants
 
 fun NavGraphBuilder.splash(
     toAuth: () -> Unit,
+    toMain: () -> Unit,
 ) {
     composable(Constants.Routes.SPLASH_SCREEN) {
         SplashScreen(
-            toAuth = toAuth
+            toAuth = toAuth,
+            toMain = toMain
         )
     }
 }
