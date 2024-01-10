@@ -1,6 +1,7 @@
 package com.mu.tote2024.presentation.screen.main
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -51,6 +53,8 @@ fun MainScreen(
     toProfile: () -> Unit,
     toAuth: () -> Unit
 ) {
+    val activity = (LocalContext.current as? Activity)
+
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -99,6 +103,7 @@ fun MainScreen(
                 onImageClick = { toProfile() },
                 onSignOut = {
                     viewModel.signOut()
+                    activity?.finish()
                 }
             )
         }

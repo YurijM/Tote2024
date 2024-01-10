@@ -10,7 +10,6 @@ import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.data.utils.Constants.Nodes.NODE_GAMBLERS
 import com.mu.tote2024.domain.repository.AuthRepository
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.toLog
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -85,9 +84,4 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun getCurrentUser() = firebaseAuth.currentUser?.uid ?: ""
-
-    override fun signOut() {
-        toLog("signOut")
-        firebaseAuth.signOut()
-    }
 }

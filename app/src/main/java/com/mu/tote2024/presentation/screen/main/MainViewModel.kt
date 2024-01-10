@@ -2,6 +2,7 @@ package com.mu.tote2024.presentation.screen.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_PROFILE_IS_EMPTY
 import com.mu.tote2024.data.utils.Constants.GAMBLER
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val authUseCase: AuthUseCase,
-    private val gamblerUseCase: GamblerUseCase
+    private val gamblerUseCase: GamblerUseCase,
+    private val firebaseAuth: FirebaseAuth
 ) : ViewModel() {
     private val _state: MutableStateFlow<GamblerState> = MutableStateFlow(GamblerState())
     val state: StateFlow<GamblerState> = _state.asStateFlow()
@@ -45,7 +47,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun signOut() {
-        authUseCase.signOut
+        firebaseAuth.signOut()
     }
 
     /*fun onEvent(event: MainEvent) {

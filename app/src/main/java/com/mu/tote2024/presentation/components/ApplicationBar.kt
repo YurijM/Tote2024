@@ -116,7 +116,9 @@ fun ApplicationBar(
                     }
                 }
                 IconButton(
-                    onClick = { onSignOut() }
+                    onClick = {
+                        onSignOut()
+                    }
                 ) {
                     Icon(
                         imageVector = Icons.Default.ExitToApp,
