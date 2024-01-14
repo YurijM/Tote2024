@@ -29,8 +29,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
+import com.mu.tote2024.presentation.utils.Constants.Routes.ADMIN_MAIN_SCREEN
 
 /*@Preview(
     name = "Light",
@@ -55,6 +57,7 @@ fun PreviewApplicationBar() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApplicationBar(
+    navController: NavHostController,
     photoUrl: String,
     isAdmin: Boolean,
     onImageClick: () -> Unit,
@@ -107,7 +110,7 @@ fun ApplicationBar(
                 }
                 if (isAdmin) {
                     IconButton(
-                        onClick = { TODO() }
+                        onClick = { navController.navigate(ADMIN_MAIN_SCREEN) }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,

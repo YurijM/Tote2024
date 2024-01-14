@@ -49,7 +49,7 @@ import com.mu.tote2024.presentation.ui.common.UiState
 @Composable
 fun AdminProfileScreen(
     viewModel: AdminProfileViewModel = hiltViewModel(),
-    toBackstack: () -> Unit
+    //toBackstack: () -> Unit
 ) {
     val isLoading = remember { mutableStateOf(false) }
     val error = remember { mutableStateOf("") }
@@ -66,7 +66,7 @@ fun AdminProfileScreen(
             isLoading.value = false
             error.value = ""
 
-            toBackstack()
+            //toBackstack()
         }
 
         is UiState.Error -> {

@@ -22,13 +22,14 @@
     <string name="confirm_password">Подтвердите пароль</string>
 
     <string name="profile">Профиль</string>
-    <string name="profile_admin">Профиль (админка)</string>
     <string name="gambler_rate">Ставка %1$d руб.</string>
     <string name="enter_nick">Введите Ник</string>
     <string name="load_photo">Загрузить фото</string>
     <string name="change_photo">Сменить фото</string>
     <string name="money_is_not_transferred_yet">Деньги ещё не переведены</string>
     <string name="transferred_money">Переведённые деньги</string>
+
+    <string name="profile_admin">Профиль (админка)</string>
 
     <string name="error_min_length">Поле должно содержать не меньше %1$s символов</string>
     <string name="error_field_empty">Поле не может быть пустым</string>

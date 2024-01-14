@@ -26,7 +26,7 @@ import com.mu.tote2024.data.utils.Constants.Errors.ERROR_PROFILE_IS_EMPTY
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.presentation.components.ApplicationBar
 import com.mu.tote2024.presentation.components.BottomNav
-import com.mu.tote2024.presentation.navigation.NavGraphMainScreen
+import com.mu.tote2024.presentation.navigation.NavGraphMain
 import com.mu.tote2024.presentation.ui.common.UiState
 
 /*@Preview(
@@ -55,8 +55,8 @@ fun MainScreen(
 ) {
     val activity = (LocalContext.current as? Activity)
 
-    val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val navMainController = rememberNavController()
+    val navBackStackEntry by navMainController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     val isLoading = remember { mutableStateOf(false) }
@@ -93,11 +93,12 @@ fun MainScreen(
     Scaffold(
         bottomBar = {
             BottomNav(currentRoute) { route ->
-                navController.navigate(route)
+                navMainController.navigate(route)
             }
         },
         topBar = {
             ApplicationBar(
+                navController = navMainController,
                 photoUrl = data.profile.photoUrl,
                 isAdmin = data.admin,
                 onImageClick = { toProfile() },
@@ -118,7 +119,7 @@ fun MainScreen(
             contentColor = MaterialTheme.colorScheme.primary,
             color = MaterialTheme.colorScheme.surface
         ) {
-            NavGraphMainScreen(navController = navController)
+            NavGraphMain(navMainController = navMainController)
         }
         if (isLoading.value) {
             Box(
