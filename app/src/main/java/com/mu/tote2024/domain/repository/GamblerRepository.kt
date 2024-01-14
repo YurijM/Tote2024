@@ -1,6 +1,7 @@
 package com.mu.tote2024.domain.repository
 
 import android.net.Uri
+import com.mu.tote2024.domain.model.EmailModel
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.model.GamblerProfileModel
 import com.mu.tote2024.domain.model.GamblerResultModel
@@ -15,4 +16,6 @@ interface GamblerRepository {
     fun getGambler(gamblerId: String): Flow<UiState<GamblerModel>>
 
     fun getGamblerList(): Flow<UiState<List<GamblerModel>>>
+
+    fun getEmailList(): Flow<List<EmailModel>>
 }

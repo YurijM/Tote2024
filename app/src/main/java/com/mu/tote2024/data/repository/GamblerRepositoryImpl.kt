@@ -6,6 +6,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import com.mu.tote2024.data.utils.Constants
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_ALL_FIELDS_MUST_BE_FILLED
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_GAMBLER_IS_NOT_FOUND
@@ -14,11 +15,13 @@ import com.mu.tote2024.data.utils.Constants.Nodes.FOLDER_PROFILE_PHOTO
 import com.mu.tote2024.data.utils.Constants.Nodes.GAMBLER_PHOTO_URL
 import com.mu.tote2024.data.utils.Constants.Nodes.NODE_GAMBLERS
 import com.mu.tote2024.data.utils.Constants.Nodes.NODE_PROFILE
+import com.mu.tote2024.domain.model.EmailModel
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.model.GamblerProfileModel
 import com.mu.tote2024.domain.model.GamblerResultModel
 import com.mu.tote2024.domain.repository.GamblerRepository
 import com.mu.tote2024.presentation.ui.common.UiState
+import com.mu.tote2024.presentation.utils.toLog
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -156,6 +159,28 @@ class GamblerRepositoryImpl @Inject constructor(
 
         awaitClose {
             firebaseDatabase.reference.child(NODE_GAMBLERS).removeEventListener(valueEvent)
+            close()
+        }
+    }
+
+    override fun getEmailList(): Flow<List<EmailModel>> = callbackFlow {
+        val valueEvent = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val list = snapshot.children.map {
+                    it.getValue(EmailModel::class.java) ?: EmailModel()
+                }
+                toLog("list: $list")
+                trySend(list)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        }
+
+        firebaseDatabase.reference.child(Constants.Nodes.NODE_EMAILS).addValueEventListener(valueEvent)
+
+        awaitClose {
+            firebaseDatabase.reference.child(Constants.Nodes.NODE_EMAILS).removeEventListener(valueEvent)
             close()
         }
     }

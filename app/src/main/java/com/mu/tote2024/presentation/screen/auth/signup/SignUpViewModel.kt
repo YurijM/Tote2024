@@ -6,9 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.domain.usecase.auth_usecase.AuthUseCase
+import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.checkEmail
 import com.mu.tote2024.presentation.utils.checkPassword
+import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val authUseCase: AuthUseCase
+    private val authUseCase: AuthUseCase,
+    private val gamblerUseCase: GamblerUseCase
 ) : ViewModel() {
     private val _state: MutableStateFlow<SignUpState> = MutableStateFlow(SignUpState())
     val state: StateFlow<SignUpState> = _state.asStateFlow()
@@ -68,8 +71,20 @@ class SignUpViewModel @Inject constructor(
 
             is SignUpEvent.OnSignUp -> {
                 viewModelScope.launch {
-                    authUseCase.signUp(event.email, event.password).collect {
-                        _state.value = SignUpState(it)
+                    var emailIsCorrect = false
+                    gamblerUseCase.getEmailList().collect { emails ->
+                        toLog("emails: $emails")
+                        emailIsCorrect = emails.any { email -> email.email == event.email }
+                    }
+
+                    toLog("emailIsCorrect: $emailIsCorrect")
+
+                    if (emailIsCorrect) {
+                        authUseCase.signUp(event.email, event.password).collect {
+                            _state.value = SignUpState(it)
+                        }
+                    } else {
+                        _state.value = SignUpState(UiState.Error("Неразрешённый email"))
                     }
                 }
             }
