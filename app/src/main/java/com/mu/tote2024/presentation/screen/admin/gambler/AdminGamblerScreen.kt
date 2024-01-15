@@ -1,4 +1,4 @@
-package com.mu.tote2024.presentation.screen.admin.profile
+package com.mu.tote2024.presentation.screen.admin.gambler
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -47,8 +47,8 @@ import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
 
 @Composable
-fun AdminProfileScreen(
-    viewModel: AdminProfileViewModel = hiltViewModel(),
+fun AdminGamblerScreen(
+    viewModel: AdminGamblerViewModel = hiltViewModel(),
     //toBackstack: () -> Unit
 ) {
     val isLoading = remember { mutableStateOf(false) }
@@ -94,7 +94,7 @@ fun AdminProfileScreen(
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center,
-                text = stringResource(id = R.string.profile_admin),
+                text = stringResource(id = R.string.admin_gambler_list),
                 style = MaterialTheme.typography.titleLarge
             )
             Card(
@@ -171,7 +171,7 @@ fun AdminProfileScreen(
                                 label = stringResource(id = R.string.transferred_money),
                                 value = viewModel.gambler.rate.toString(),
                                 onChange = { newValue ->
-                                    viewModel.onEvent(AdminProfileEvent.OnRateChange(newValue))
+                                    viewModel.onEvent(AdminGamblerEvent.OnRateChange(newValue))
                                 },
                                 errorMessage = viewModel.errorRate
                             )
@@ -201,7 +201,7 @@ fun AdminProfileScreen(
                         Button(
                             onClick = {
                                 viewModel.onEvent(
-                                    AdminProfileEvent.OnSave
+                                    AdminGamblerEvent.OnSave
                                 )
                             }
                         ) {
@@ -212,7 +212,7 @@ fun AdminProfileScreen(
                         }
                         Button(
                             onClick = {
-                               viewModel.onEvent(AdminProfileEvent.OnCancel)
+                               viewModel.onEvent(AdminGamblerEvent.OnCancel)
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Gray

@@ -9,7 +9,7 @@ sealed class AdminNavItem(
     val route: String
 ) {
     object AdminProfileItem: AdminNavItem(
-        itemId = R.string.profile_admin,
-        route = Constants.Routes.ADMIN_PROFILE_SCREEN
+        itemId = R.string.admin_gambler_list,
+        route = Constants.Routes.ADMIN_GAMBLER_LIST_SCREEN
     )
 }

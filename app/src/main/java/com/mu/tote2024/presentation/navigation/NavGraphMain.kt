@@ -4,7 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.mu.tote2024.presentation.navigation.destination.admin.adminMain
-import com.mu.tote2024.presentation.navigation.destination.admin.adminProfile
+import com.mu.tote2024.presentation.navigation.destination.admin.adminGambler
+import com.mu.tote2024.presentation.navigation.destination.admin.adminGamblerList
 import com.mu.tote2024.presentation.navigation.destination.game.game
 import com.mu.tote2024.presentation.navigation.destination.prognosis.prognosis
 import com.mu.tote2024.presentation.navigation.destination.rating.rating
@@ -29,6 +30,9 @@ fun NavGraphMain(
                 navMainController.navigate(route)
             }
         )
-        adminProfile()
+
+        adminGamblerList()
+
+        adminGambler()
     }
 }

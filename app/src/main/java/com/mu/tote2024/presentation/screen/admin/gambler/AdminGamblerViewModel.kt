@@ -1,4 +1,4 @@
-package com.mu.tote2024.presentation.screen.admin.profile
+package com.mu.tote2024.presentation.screen.admin.gambler
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AdminProfileViewModel @Inject constructor(
+class AdminGamblerViewModel @Inject constructor(
     authUseCase: AuthUseCase,
     private val gamblerUseCase: GamblerUseCase
 ) : ViewModel() {
@@ -46,9 +46,9 @@ class AdminProfileViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: AdminProfileEvent) {
+    fun onEvent(event: AdminGamblerEvent) {
         when (event) {
-            is AdminProfileEvent.OnRateChange -> {
+            is AdminGamblerEvent.OnRateChange -> {
                 errorRate = checkRate(event.rate)
 
                 if (errorRate.isBlank()) {
@@ -58,17 +58,17 @@ class AdminProfileViewModel @Inject constructor(
                 }
             }
 
-            is AdminProfileEvent.OnIsAdminChange -> {
+            is AdminGamblerEvent.OnIsAdminChange -> {
                 gambler = gambler.copy(
                     admin = event.isAdmin
                 )
             }
 
-            is AdminProfileEvent.OnCancel -> {
+            is AdminGamblerEvent.OnCancel -> {
                 _state.value = AdminProfileState(UiState.Success(GAMBLER))
             }
 
-            is AdminProfileEvent.OnSave -> {
+            is AdminGamblerEvent.OnSave -> {
                 if (errorRate.isBlank()) {
                     viewModelScope.launch {
                         gamblerUseCase.saveGambler(gambler).collect {

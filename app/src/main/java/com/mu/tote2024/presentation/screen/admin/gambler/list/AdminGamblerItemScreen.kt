@@ -1,4 +1,4 @@
-package com.mu.tote2024.presentation.screen.rating
+package com.mu.tote2024.presentation.screen.admin.gambler.list
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -19,21 +19,21 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
-import java.text.DecimalFormat
 
 @Composable
-fun RatingItemScreen(
+fun AdminGamblerItemScreen(
     nickname: String,
     photoUrl: String,
-    points: Double
+    isAdmin: Boolean,
+    rate: Int
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
                 top = 4.dp,
-                start = 4.dp,
-                end = 4.dp
+                start = 8.dp,
+                end = 8.dp
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -57,14 +57,15 @@ fun RatingItemScreen(
             },
         )
         Text(
-            text = nickname,
+            text = nickname + if (isAdmin) " (администратор)" else "",
             modifier = Modifier
                 .weight(1f)
                 .padding(start = 8.dp),
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
-            text = DecimalFormat("0.00").format(points),
+            text = "$rate руб.",
+            //modifier = Modifier.weight(1f),
             color = MaterialTheme.colorScheme.onSurface
         )
     }
