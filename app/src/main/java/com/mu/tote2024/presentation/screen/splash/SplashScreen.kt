@@ -69,7 +69,7 @@ fun SplashScreen(
             animationSpec = tween(
                 durationMillis = 3000,
                 easing = {
-                    OvershootInterpolator(10f).getInterpolation(it)
+                    OvershootInterpolator(12f).getInterpolation(it)
                 }
             )
         )
@@ -78,7 +78,7 @@ fun SplashScreen(
             animationSpec = tween(
                 durationMillis = 3000,
                 easing = {
-                    OvershootInterpolator(4f).getInterpolation(it)
+                    OvershootInterpolator(8f).getInterpolation(it)
                 }
             )
         )

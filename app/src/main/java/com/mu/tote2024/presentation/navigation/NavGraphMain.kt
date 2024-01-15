@@ -3,6 +3,7 @@ package com.mu.tote2024.presentation.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.mu.tote2024.presentation.navigation.destination.admin.adminEmailList
 import com.mu.tote2024.presentation.navigation.destination.admin.adminMain
 import com.mu.tote2024.presentation.navigation.destination.admin.adminGambler
 import com.mu.tote2024.presentation.navigation.destination.admin.adminGamblerList
@@ -30,6 +31,8 @@ fun NavGraphMain(
                 navMainController.navigate(route)
             }
         )
+
+        adminEmailList()
 
         adminGamblerList()
 

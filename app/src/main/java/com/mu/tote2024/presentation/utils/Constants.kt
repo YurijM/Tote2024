@@ -19,6 +19,7 @@ object Constants {
         const val GAMES_SCREEN = "games_screen"
 
         const val ADMIN_MAIN_SCREEN = "admin_main_screen"
+        const val ADMIN_EMAIL_LIST_SCREEN = "admin_email_list_screen"
         const val ADMIN_GAMBLER_LIST_SCREEN = "admin_gambler_list_screen"
         const val ADMIN_GAMBLER_SCREEN = "admin_gambler_screen"
     }

@@ -25,7 +25,7 @@ fun AdminItemScreen(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 4.dp)
+            .padding(bottom = 8.dp)
     ) {
         Row(
             modifier = Modifier
