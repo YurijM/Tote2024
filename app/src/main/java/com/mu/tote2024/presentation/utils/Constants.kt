@@ -28,5 +28,6 @@ object Constants {
         const val FIELD_MUST_CONTAIN_LEAST_N_CHARS = "Поле должно содержать не меньше %_% символов"
         const val PASSWORDS_DO_NOT_MATCH = "Значения паролей не совпадают"
         const val EMAIL_INCORRECT = "Некорректное значение email"
+        const val UNAUTHORIZED_EMAIL = "Неразрешённый email"
     }
 }

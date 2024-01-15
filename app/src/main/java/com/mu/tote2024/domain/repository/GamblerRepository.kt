@@ -17,5 +17,5 @@ interface GamblerRepository {
 
     fun getGamblerList(): Flow<UiState<List<GamblerModel>>>
 
-    fun getEmailList(): Flow<List<EmailModel>>
+    fun getEmailList(): Flow<UiState<List<EmailModel>>>
 }

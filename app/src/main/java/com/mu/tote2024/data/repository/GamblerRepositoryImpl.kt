@@ -21,7 +21,6 @@ import com.mu.tote2024.domain.model.GamblerProfileModel
 import com.mu.tote2024.domain.model.GamblerResultModel
 import com.mu.tote2024.domain.repository.GamblerRepository
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.toLog
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -163,17 +162,20 @@ class GamblerRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getEmailList(): Flow<List<EmailModel>> = callbackFlow {
+    override fun getEmailList(): Flow<UiState<List<EmailModel>>> = callbackFlow {
+        trySend(UiState.Loading)
+
         val valueEvent = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val list = snapshot.children.map {
                     it.getValue(EmailModel::class.java) ?: EmailModel()
                 }
-                toLog("list: $list")
-                trySend(list)
+
+                trySend(UiState.Success(list))
             }
 
             override fun onCancelled(error: DatabaseError) {
+                trySend(UiState.Error(error.message))
             }
         }
 

@@ -5,12 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mu.tote2024.domain.model.EmailModel
 import com.mu.tote2024.domain.usecase.auth_usecase.AuthUseCase
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
+import com.mu.tote2024.presentation.utils.Constants.Errors.UNAUTHORIZED_EMAIL
 import com.mu.tote2024.presentation.utils.checkEmail
 import com.mu.tote2024.presentation.utils.checkPassword
-import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -71,20 +72,19 @@ class SignUpViewModel @Inject constructor(
 
             is SignUpEvent.OnSignUp -> {
                 viewModelScope.launch {
-                    var emailIsCorrect = false
-                    gamblerUseCase.getEmailList().collect { emails ->
-                        toLog("emails: $emails")
-                        emailIsCorrect = emails.any { email -> email.email == event.email }
-                    }
+                    gamblerUseCase.getEmailList().collect { state ->
+                        if (state is UiState.Success<*>) {
+                            val result = (state as UiState.Success<List<EmailModel>>).data
+                            val emailIsCorrect = result.any { email -> email.email == event.email }
 
-                    toLog("emailIsCorrect: $emailIsCorrect")
-
-                    if (emailIsCorrect) {
-                        authUseCase.signUp(event.email, event.password).collect {
-                            _state.value = SignUpState(it)
+                            if (emailIsCorrect) {
+                                authUseCase.signUp(event.email, event.password).collect {
+                                    _state.value = SignUpState(it)
+                                }
+                            } else {
+                                _state.value = SignUpState(UiState.Error(UNAUTHORIZED_EMAIL))
+                            }
                         }
-                    } else {
-                        _state.value = SignUpState(UiState.Error("Неразрешённый email"))
                     }
                 }
             }
