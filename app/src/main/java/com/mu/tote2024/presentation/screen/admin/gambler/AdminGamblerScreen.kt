@@ -1,5 +1,6 @@
 package com.mu.tote2024.presentation.screen.admin.gambler
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,19 +44,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
 import com.mu.tote2024.data.utils.Constants.GAMBLER
+import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
+import com.mu.tote2024.presentation.utils.toLog
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun AdminGamblerScreen(
-    viewModel: AdminGamblerViewModel = hiltViewModel(),
+    viewModel: AdminGamblerViewModel = hiltViewModel()
     //toBackstack: () -> Unit
 ) {
     val isLoading = remember { mutableStateOf(false) }
     val error = remember { mutableStateOf("") }
 
     val state by viewModel.state.collectAsState()
+
+    var gambler by mutableStateOf(GamblerModel())
 
     when (val result = state.result) {
         is UiState.Loading -> {
@@ -65,6 +72,10 @@ fun AdminGamblerScreen(
         is UiState.Success -> {
             isLoading.value = false
             error.value = ""
+
+            gambler = result.data
+            toLog("gambler: $gambler")
+            toLog("GAMBLER: $GAMBLER")
 
             //toBackstack()
         }
@@ -120,7 +131,7 @@ fun AdminGamblerScreen(
                                 .fillMaxHeight()
                         ) {
                             SubcomposeAsyncImage(
-                                model = GAMBLER.profile.photoUrl,
+                                model = gambler.profile.photoUrl,
                                 contentDescription = null,
                                 modifier = Modifier
                                     .requiredSize(dimensionResource(id = R.dimen.profile_photo_size))
@@ -145,17 +156,17 @@ fun AdminGamblerScreen(
                                 .padding(end = 4.dp)
                         ) {
                             Text(
-                                text = GAMBLER.profile.nickname,
+                                text = gambler.profile.nickname,
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
-                                text = GAMBLER.email,
+                                text = gambler.email,
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
-                                text = "Пол: ${GAMBLER.profile.gender}",
+                                text = "Пол: ${gambler.profile.gender}",
                                 modifier = Modifier.padding(start = 8.dp),
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onSurface,

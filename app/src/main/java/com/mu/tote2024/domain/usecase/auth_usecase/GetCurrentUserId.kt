@@ -2,9 +2,9 @@ package com.mu.tote2024.domain.usecase.auth_usecase
 
 import com.mu.tote2024.domain.repository.AuthRepository
 
-class GetCurrentUser(
+class GetCurrentUserId(
     private val authRepository: AuthRepository
 ) {
     operator fun invoke() =
-        authRepository.getCurrentUser()
+        authRepository.getCurrentUserId()
 }

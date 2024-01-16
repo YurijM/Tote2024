@@ -14,5 +14,5 @@ interface AuthRepository {
         password: String
     ): Flow<UiState<Boolean>>
 
-    fun getCurrentUser(): String
+    fun getCurrentUserId(): String
 }

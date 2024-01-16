@@ -28,7 +28,7 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            CURRENT_ID = authUseCase.getCurrentUser()
+            CURRENT_ID = authUseCase.getCurrentUserId()
 
             gamblerUseCase.getGambler(CURRENT_ID).collect {
                 _state.value = GamblerState(it)

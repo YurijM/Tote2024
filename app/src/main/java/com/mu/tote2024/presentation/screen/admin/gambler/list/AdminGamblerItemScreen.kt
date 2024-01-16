@@ -1,5 +1,6 @@
 package com.mu.tote2024.presentation.screen.admin.gambler.list
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,13 +20,12 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
+import com.mu.tote2024.domain.model.GamblerModel
 
 @Composable
 fun AdminGamblerItemScreen(
-    nickname: String,
-    photoUrl: String,
-    isAdmin: Boolean,
-    rate: Int
+    gambler: GamblerModel,
+    onClick: (String) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -34,11 +34,12 @@ fun AdminGamblerItemScreen(
                 top = 4.dp,
                 start = 8.dp,
                 end = 8.dp
-            ),
+            )
+            .clickable { gambler.gamblerId?.let { onClick(it) } },
         verticalAlignment = Alignment.CenterVertically
     ) {
         SubcomposeAsyncImage(
-            model = photoUrl,
+            model = gambler.profile.photoUrl,
             contentDescription = null,
             modifier = Modifier
                 .size(36.dp)
@@ -57,14 +58,14 @@ fun AdminGamblerItemScreen(
             },
         )
         Text(
-            text = nickname + if (isAdmin) " (администратор)" else "",
+            text = gambler.profile.nickname + if (gambler.admin) " (администратор)" else "",
             modifier = Modifier
                 .weight(1f)
                 .padding(start = 8.dp),
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
-            text = "$rate руб.",
+            text = "${gambler.rate} руб.",
             //modifier = Modifier.weight(1f),
             color = MaterialTheme.colorScheme.onSurface
         )

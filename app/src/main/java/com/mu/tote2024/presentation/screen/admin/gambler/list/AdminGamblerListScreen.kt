@@ -28,7 +28,8 @@ import com.mu.tote2024.presentation.ui.common.UiState
 
 @Composable
 fun AdminGamblerListScreen(
-    viewModel: AdminProfileListViewModel = hiltViewModel()
+    viewModel: AdminGamblerListViewModel = hiltViewModel(),
+    toGambler: (id: String) -> Unit
 ) {
     val isLoading = remember { mutableStateOf(false) }
     var gamblers by remember { mutableStateOf<List<GamblerModel>>(listOf()) }
@@ -72,10 +73,8 @@ fun AdminGamblerListScreen(
         ) {
             items(gamblers) { gambler ->
                 AdminGamblerItemScreen(
-                    nickname = gambler.profile.nickname,
-                    photoUrl = gambler.profile.photoUrl,
-                    isAdmin = gambler.admin,
-                    rate = gambler.rate
+                    gambler = gambler,
+                    onClick = { gambler.gamblerId?.let { toGambler(it) } }
                 )
             }
         }

@@ -6,6 +6,8 @@ object Constants {
     const val YEAR_START = 2023
     const val MIN_PASSWORD_LENGTH = 6
 
+    const val KEY_ID = "id"
+
     object Routes {
         const val SPLASH_SCREEN = "splash_screen"
         const val MAIN_SCREEN = "main_screen"

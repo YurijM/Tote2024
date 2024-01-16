@@ -3,16 +3,15 @@ package com.mu.tote2024.presentation.screen.admin.gambler
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mu.tote2024.data.utils.Constants.CURRENT_ID
-import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GamblerModel
-import com.mu.tote2024.domain.usecase.auth_usecase.AuthUseCase
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.Errors.FIELD_CAN_NOT_EMPTY
 import com.mu.tote2024.presentation.utils.Constants.Errors.FIELD_CAN_NOT_NEGATIVE
+import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,11 +21,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AdminGamblerViewModel @Inject constructor(
-    authUseCase: AuthUseCase,
-    private val gamblerUseCase: GamblerUseCase
+    private val gamblerUseCase: GamblerUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _state: MutableStateFlow<AdminProfileState> = MutableStateFlow(AdminProfileState())
-    val state: StateFlow<AdminProfileState> = _state.asStateFlow()
+    private val _state: MutableStateFlow<AdminGamblerState> = MutableStateFlow(AdminGamblerState())
+    val state: StateFlow<AdminGamblerState> = _state.asStateFlow()
 
     var errorRate by mutableStateOf("")
         private set
@@ -35,12 +34,14 @@ class AdminGamblerViewModel @Inject constructor(
         private set
 
     init {
-        CURRENT_ID = authUseCase.getCurrentUser()
+        val gamblerId = savedStateHandle.get<String>(KEY_ID)
 
         viewModelScope.launch {
-            gamblerUseCase.getGambler(CURRENT_ID).collect {
-                if (AdminProfileState(it).result is UiState.Success) {
-                    gambler = GAMBLER
+            if (gamblerId != null) {
+                gamblerUseCase.getGambler(gamblerId).collect { state ->
+                    if (state is UiState.Success) {
+                        _state.value = AdminGamblerState(state)
+                    }
                 }
             }
         }
@@ -65,23 +66,18 @@ class AdminGamblerViewModel @Inject constructor(
             }
 
             is AdminGamblerEvent.OnCancel -> {
-                _state.value = AdminProfileState(UiState.Success(GAMBLER))
+                _state.value = AdminGamblerState(UiState.Success(gambler))
             }
 
             is AdminGamblerEvent.OnSave -> {
                 if (errorRate.isBlank()) {
                     viewModelScope.launch {
                         gamblerUseCase.saveGambler(gambler).collect {
-                            _state.value = AdminProfileState(it)
+                            _state.value = AdminGamblerState(it)
                         }
                     }
-
-                    GAMBLER = GAMBLER.copy(
-                        rate = gambler.rate,
-                        admin = gambler.admin
-                    )
                 } else {
-                    _state.value = AdminProfileState(UiState.Error(errorRate))
+                    _state.value = AdminGamblerState(UiState.Error(errorRate))
                 }
             }
         }
@@ -96,7 +92,7 @@ class AdminGamblerViewModel @Inject constructor(
     }
 
     companion object {
-        data class AdminProfileState(
+        data class AdminGamblerState(
             val result: UiState<GamblerModel> = UiState.Default,
         )
     }

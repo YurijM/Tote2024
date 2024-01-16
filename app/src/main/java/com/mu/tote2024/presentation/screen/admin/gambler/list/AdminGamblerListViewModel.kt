@@ -13,22 +13,22 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AdminProfileListViewModel @Inject constructor(
+class AdminGamblerListViewModel @Inject constructor(
     private val gamblerUseCase: GamblerUseCase
 ) : ViewModel() {
-    private val _state: MutableStateFlow<AdminProfileListState> = MutableStateFlow(AdminProfileListState())
-    val state: StateFlow<AdminProfileListState> = _state.asStateFlow()
+    private val _state: MutableStateFlow<AdminGamblerListState> = MutableStateFlow(AdminGamblerListState())
+    val state: StateFlow<AdminGamblerListState> = _state.asStateFlow()
 
     init {
         viewModelScope.launch {
             gamblerUseCase.getGamblerList().collect {
-                _state.value = AdminProfileListState(it)
+                _state.value = AdminGamblerListState(it)
             }
         }
     }
 
     companion object {
-        data class AdminProfileListState(
+        data class AdminGamblerListState(
             val result: UiState<List<GamblerModel>> = UiState.Default,
         )
     }

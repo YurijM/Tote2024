@@ -48,7 +48,7 @@ class ProfileViewModel @Inject constructor(
         private set
 
     init {
-        CURRENT_ID = authUseCase.getCurrentUser()
+        CURRENT_ID = authUseCase.getCurrentUserId()
 
         viewModelScope.launch {
             gamblerUseCase.getGambler(CURRENT_ID).collect {

@@ -116,10 +116,13 @@ class GamblerRepositoryImpl @Inject constructor(
         val valueEvent = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 GAMBLER = snapshot.getValue(GamblerModel::class.java) ?: GamblerModel()
+                //val gambler = snapshot.getValue(GamblerModel::class.java) ?: GamblerModel()
                 val isSuccess = GAMBLER.gamblerId?.isNotBlank() ?: false
+                //val isSuccess = gambler.gamblerId?.isNotBlank() ?: false
 
                 if (isSuccess)
                     trySend(UiState.Success(GAMBLER))
+                    //trySend(UiState.Success(gambler))
                 else
                     trySend(UiState.Error(ERROR_GAMBLER_IS_NOT_FOUND.replace("%_%", gamblerId)))
             }

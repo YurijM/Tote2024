@@ -12,6 +12,6 @@ class SplashViewModel @Inject constructor(
     var isAuth = false
 
     init {
-        isAuth = authUseCase.getCurrentUser().isNotBlank()
+        isAuth = authUseCase.getCurrentUserId().isNotBlank()
     }
 }
