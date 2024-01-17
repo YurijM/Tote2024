@@ -43,12 +43,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
-import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.toLog
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
@@ -74,8 +72,6 @@ fun AdminGamblerScreen(
             error.value = ""
 
             gambler = result.data
-            toLog("gambler: $gambler")
-            toLog("GAMBLER: $GAMBLER")
 
             //toBackstack()
         }

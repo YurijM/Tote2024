@@ -111,18 +111,18 @@ class GamblerRepositoryImpl @Inject constructor(
 
     override fun getGambler(gamblerId: String): Flow<UiState<GamblerModel>> = callbackFlow {
         trySend(UiState.Loading)
-        GAMBLER = firebaseDatabase.reference.child(NODE_GAMBLERS).child(gamblerId).get().await().getValue(GamblerModel::class.java) ?: GamblerModel()
+        //GAMBLER = firebaseDatabase.reference.child(NODE_GAMBLERS).child(gamblerId).get().await().getValue(GamblerModel::class.java) ?: GamblerModel()
 
         val valueEvent = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                GAMBLER = snapshot.getValue(GamblerModel::class.java) ?: GamblerModel()
-                //val gambler = snapshot.getValue(GamblerModel::class.java) ?: GamblerModel()
-                val isSuccess = GAMBLER.gamblerId?.isNotBlank() ?: false
-                //val isSuccess = gambler.gamblerId?.isNotBlank() ?: false
+                //GAMBLER = snapshot.getValue(GamblerModel::class.java) ?: GamblerModel()
+                val gambler = snapshot.getValue(GamblerModel::class.java) ?: GamblerModel()
+                //val isSuccess = GAMBLER.gamblerId?.isNotBlank() ?: false
+                val isSuccess = gambler.gamblerId?.isNotBlank() ?: false
 
                 if (isSuccess)
-                    trySend(UiState.Success(GAMBLER))
-                    //trySend(UiState.Success(gambler))
+                    //trySend(UiState.Success(GAMBLER))
+                    trySend(UiState.Success(gambler))
                 else
                     trySend(UiState.Error(ERROR_GAMBLER_IS_NOT_FOUND.replace("%_%", gamblerId)))
             }
