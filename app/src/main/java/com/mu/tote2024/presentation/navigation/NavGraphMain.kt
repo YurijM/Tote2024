@@ -41,6 +41,10 @@ fun NavGraphMain(
             }
         )
 
-        adminGambler()
+        adminGambler(
+            toAdminGamblerList = {
+                navMainController.popBackStack()
+            }
+        )
     }
 }

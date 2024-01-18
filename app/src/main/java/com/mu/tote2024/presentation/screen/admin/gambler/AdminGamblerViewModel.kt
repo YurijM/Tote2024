@@ -39,8 +39,9 @@ class AdminGamblerViewModel @Inject constructor(
         viewModelScope.launch {
             if (gamblerId != null) {
                 gamblerUseCase.getGambler(gamblerId).collect { state ->
+                    //_state.value = AdminGamblerState(state)
                     if (state is UiState.Success) {
-                        _state.value = AdminGamblerState(state)
+                        gambler = state.data
                     }
                 }
             }

@@ -40,6 +40,10 @@ class GamblerRepositoryImpl @Inject constructor(
             .setValue(gambler)
 
         trySend(UiState.Success(gambler))
+
+        awaitClose {
+            close()
+        }
     }
 
     override fun saveGamblerProfile(profile: GamblerProfileModel): Flow<UiState<Boolean>> = callbackFlow {

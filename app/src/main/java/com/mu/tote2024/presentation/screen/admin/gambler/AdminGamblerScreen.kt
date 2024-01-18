@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -29,7 +31,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,13 +38,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
-import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
@@ -51,15 +54,18 @@ import com.mu.tote2024.presentation.ui.common.UiState
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun AdminGamblerScreen(
-    viewModel: AdminGamblerViewModel = hiltViewModel()
-    //toBackstack: () -> Unit
+    viewModel: AdminGamblerViewModel = hiltViewModel(),
+    toAdminGamblerList: () -> Unit
 ) {
     val isLoading = remember { mutableStateOf(false) }
     val error = remember { mutableStateOf("") }
 
+    //var rate by mutableIntStateOf(0)
+    //val isAdmin by mutableStateOf(false)
+
     val state by viewModel.state.collectAsState()
 
-    var gambler by mutableStateOf(GamblerModel())
+    val gambler by mutableStateOf(viewModel.gambler)
 
     when (val result = state.result) {
         is UiState.Loading -> {
@@ -71,9 +77,7 @@ fun AdminGamblerScreen(
             isLoading.value = false
             error.value = ""
 
-            gambler = result.data
-
-            //toBackstack()
+            toAdminGamblerList()
         }
 
         is UiState.Error -> {
@@ -101,11 +105,12 @@ fun AdminGamblerScreen(
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center,
-                text = stringResource(id = R.string.admin_gambler_list),
+                text = stringResource(id = R.string.profile),
                 style = MaterialTheme.typography.titleLarge
             )
             Card(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 border = BorderStroke(
                     width = 2.dp,
                     color = MaterialTheme.colorScheme.outline
@@ -114,17 +119,14 @@ fun AdminGamblerScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(
-                            top = 8.dp,
-                            start = 8.dp,
-                            end = 8.dp
-                        )
+                        .padding(8.dp)
                 ) {
                     Row {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth(.4f)
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            contentAlignment = Alignment.Center
                         ) {
                             SubcomposeAsyncImage(
                                 model = gambler.profile.photoUrl,
@@ -149,7 +151,7 @@ fun AdminGamblerScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(end = 4.dp)
+                                .padding(start = 4.dp)
                         ) {
                             Text(
                                 text = gambler.profile.nickname,
@@ -161,12 +163,32 @@ fun AdminGamblerScreen(
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
+                            val sex = stringResource(R.string.sex)
+                            val sexValue = gambler.profile.gender
+                            val text = buildAnnotatedString {
+                                withStyle(
+                                    style = SpanStyle(
+                                        fontSize = MaterialTheme.typography.labelSmall.fontSize,
+                                        fontWeight = MaterialTheme.typography.labelSmall.fontWeight
+                                    )
+                                ) {
+                                    pushStringAnnotation(tag = sex, annotation = sex)
+                                    append("$sex: ")
+                                }
+                                withStyle(
+                                    style = SpanStyle(
+                                        fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                                        fontWeight = MaterialTheme.typography.labelMedium.fontWeight
+                                    )
+                                ) {
+                                    pushStringAnnotation(tag = sexValue, annotation = sexValue)
+                                    append(sexValue)
+                                }
+                            }
                             Text(
-                                text = "Пол: ${gambler.profile.gender}",
-                                modifier = Modifier.padding(start = 8.dp),
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold
+                                text = text,
+                                //style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Divider(
                                 thickness = 1.dp,
@@ -176,28 +198,51 @@ fun AdminGamblerScreen(
                             Spacer(modifier = Modifier.size(4.dp))
                             AppTextField(
                                 label = stringResource(id = R.string.transferred_money),
-                                value = viewModel.gambler.rate.toString(),
+                                value = gambler.rate.toString(),
                                 onChange = { newValue ->
                                     viewModel.onEvent(AdminGamblerEvent.OnRateChange(newValue))
                                 },
                                 errorMessage = viewModel.errorRate
                             )
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp)
+                                    .toggleable(
+                                        value = gambler.admin,
+                                        onValueChange = { newValue ->
+                                            viewModel.onEvent(AdminGamblerEvent.OnIsAdminChange(newValue))
+                                        },
+                                        role = Role.Checkbox
+                                    ),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Checkbox(
+                                    //modifier = Modifier.scale(.75f),
+                                    checked = gambler.admin,
+                                    onCheckedChange = null
+                                )
+                                Text(
+                                    modifier = Modifier.padding(start = 4.dp),
+                                    text = stringResource(R.string.admin),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                            }
                         }
                     }
-
                 }
                 Divider(
                     thickness = 1.dp,
-                    modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),
+                    //modifier = Modifier.padding(top = 2.dp),
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
-                            start = 8.dp,
-                            end = 8.dp,
-                            bottom = 8.dp
+                            vertical = 8.dp
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -219,7 +264,7 @@ fun AdminGamblerScreen(
                         }
                         Button(
                             onClick = {
-                               viewModel.onEvent(AdminGamblerEvent.OnCancel)
+                                viewModel.onEvent(AdminGamblerEvent.OnCancel)
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Gray
