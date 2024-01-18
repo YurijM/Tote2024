@@ -36,8 +36,8 @@ class SignInViewModel @Inject constructor(
     )
         private set
 
-    private val _mail = MutableStateFlow("")
-    val mail = _mail.asStateFlow()
+    /*private val _mail = MutableStateFlow("")
+    val mail = _mail.asStateFlow()*/
 
     fun onEvent(event: SignInEvent) {
         when (event) {
@@ -46,7 +46,7 @@ class SignInViewModel @Inject constructor(
                     email = event.email,
                     errorEmail = checkEmail(event.email)
                 )
-                _mail.value = event.email
+                //_mail.value = event.email
                 enabledButton = checkValues()
             }
 

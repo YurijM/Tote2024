@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,11 +48,13 @@ fun AppTextField(
     onChange: (newValue: String) -> Unit,
     @DrawableRes painterId: Int? = null,
     description: String? = null,
-    errorMessage: String?
+    errorMessage: String?,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     Column {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = keyboardOptions,
             value = value ?: "",
             shape = ShapeDefaults.Medium,
             onValueChange = { newValue ->
