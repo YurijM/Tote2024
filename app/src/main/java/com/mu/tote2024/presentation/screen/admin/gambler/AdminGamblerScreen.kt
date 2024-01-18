@@ -202,7 +202,14 @@ fun AdminGamblerScreen(
                                 label = stringResource(id = R.string.transferred_money),
                                 value = gambler.rate.toString(),
                                 onChange = { newValue ->
-                                    viewModel.onEvent(AdminGamblerEvent.OnRateChange(newValue))
+                                    try {
+                                        Integer.parseInt(newValue)
+                                        viewModel.onEvent(AdminGamblerEvent.OnRateChange(newValue))
+                                    } catch (_: NumberFormatException) {
+                                        if (newValue.isBlank()) {
+                                            viewModel.onEvent(AdminGamblerEvent.OnRateChange("0"))
+                                        }
+                                    }
                                 },
                                 errorMessage = viewModel.errorRate,
                                 keyboardOptions = KeyboardOptions(
