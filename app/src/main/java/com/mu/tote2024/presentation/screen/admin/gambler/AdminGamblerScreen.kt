@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
+import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
@@ -299,11 +300,7 @@ fun AdminGamblerScreen(
             }
         }
         if (isLoading.value) {
-            Box(
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
+            AppProgressBar()
         }
     }
 }

@@ -2,10 +2,8 @@ package com.mu.tote2024.presentation.screen.main
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -15,7 +13,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_GAMBLER_IS_NOT_FOUND
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_PROFILE_IS_EMPTY
 import com.mu.tote2024.domain.model.GamblerModel
+import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.ApplicationBar
 import com.mu.tote2024.presentation.components.BottomNav
 import com.mu.tote2024.presentation.navigation.NavGraphMain
@@ -122,11 +120,7 @@ fun MainScreen(
             NavGraphMain(navMainController = navMainController)
         }
         if (isLoading.value) {
-            Box(
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
+            AppProgressBar()
         }
     }
 }

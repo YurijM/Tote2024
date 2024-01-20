@@ -1,18 +1,16 @@
 package com.mu.tote2024.presentation.screen.rating
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.domain.model.GamblerModel
+import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.ui.common.UiState
 
 @Composable
@@ -58,10 +56,6 @@ fun RatingScreen(
     }
 
     if (isLoading) {
-        Box(
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
+        AppProgressBar()
     }
 }
