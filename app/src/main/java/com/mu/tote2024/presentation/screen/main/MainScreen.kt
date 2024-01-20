@@ -118,9 +118,10 @@ fun MainScreen(
             color = MaterialTheme.colorScheme.surface
         ) {
             NavGraphMain(navMainController = navMainController)
-        }
-        if (isLoading.value) {
-            AppProgressBar()
+
+            if (isLoading.value) {
+                AppProgressBar()
+            }
         }
     }
 }
