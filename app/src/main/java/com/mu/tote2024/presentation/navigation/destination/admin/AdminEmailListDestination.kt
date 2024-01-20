@@ -18,7 +18,7 @@ fun NavGraphBuilder.adminEmailList(
 
 fun NavController.navigateToAdminEmailList() {
     navigate(Constants.Routes.ADMIN_EMAIL_LIST_SCREEN) {
-        popUpTo(Constants.Routes.ADMIN_EMAIL_SCREEN) {
+        popUpTo(Constants.Routes.ADMIN_EMAIL_LIST_SCREEN) {
             inclusive = true
         }
     }
