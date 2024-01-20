@@ -1,5 +1,6 @@
 package com.mu.tote2024.presentation.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -14,12 +15,9 @@ fun TextError(
     textAlign: TextAlign? = null,
 ) {
     Text(
-        modifier = Modifier.padding(
-            top = 4.dp,
-            start = 4.dp,
-            end = 4.dp,
-            bottom = 0.dp
-        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp),
         text = errorMessage,
         color = MaterialTheme.colorScheme.error,
         style = MaterialTheme.typography.labelSmall,

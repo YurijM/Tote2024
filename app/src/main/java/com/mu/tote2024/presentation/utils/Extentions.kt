@@ -22,6 +22,7 @@ fun checkEmail(email: String?): String {
     return if (email != null) {
         when {
             email.isBlank() -> FIELD_CAN_NOT_EMPTY
+
             !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> EMAIL_INCORRECT
 
             else -> ""

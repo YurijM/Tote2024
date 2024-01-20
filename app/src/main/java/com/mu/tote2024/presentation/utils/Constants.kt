@@ -8,6 +8,8 @@ object Constants {
 
     const val KEY_ID = "id"
 
+    const val ID_NEW_EMAIL = "-1"
+
     object Routes {
         const val SPLASH_SCREEN = "splash_screen"
         const val MAIN_SCREEN = "main_screen"
@@ -22,6 +24,7 @@ object Constants {
 
         const val ADMIN_MAIN_SCREEN = "admin_main_screen"
         const val ADMIN_EMAIL_LIST_SCREEN = "admin_email_list_screen"
+        const val ADMIN_EMAIL_SCREEN = "admin_email_screen"
         const val ADMIN_GAMBLER_LIST_SCREEN = "admin_gambler_list_screen"
         const val ADMIN_GAMBLER_SCREEN = "admin_gambler_screen"
     }

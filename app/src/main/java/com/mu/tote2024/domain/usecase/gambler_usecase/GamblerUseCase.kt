@@ -6,5 +6,7 @@ data class GamblerUseCase(
     val saveProfile: SaveGamblerProfile,
     val saveGamblerPhoto: SaveGamblerPhoto,
     val getGamblerList: GetGamblerList,
+    val getEmail: GetEmail,
+    val saveEmail: SaveEmail,
     val getEmailList: GetEmailList,
 )

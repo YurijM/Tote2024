@@ -43,6 +43,7 @@ fun PreviewAppFieldWithIcon() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTextField(
+    modifier: Modifier = Modifier,
     label: String,
     value: String?,
     onChange: (newValue: String) -> Unit,
@@ -51,7 +52,9 @@ fun AppTextField(
     errorMessage: String?,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
-    Column {
+    Column(
+        modifier = modifier
+    ) {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = keyboardOptions,

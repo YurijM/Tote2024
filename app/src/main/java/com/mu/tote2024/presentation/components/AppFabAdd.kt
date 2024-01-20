@@ -15,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AppFabAdd() {
+fun AppFabAdd(
+    onAdd: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -26,7 +28,7 @@ fun AppFabAdd() {
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
             contentColor = MaterialTheme.colorScheme.onSurface,
             shape = CircleShape,
-            onClick = {}
+            onClick = { onAdd() }
         ) {
             Icon(Icons.Filled.Add,null)
         }
