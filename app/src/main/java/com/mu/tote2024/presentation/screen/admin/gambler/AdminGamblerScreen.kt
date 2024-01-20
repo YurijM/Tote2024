@@ -1,6 +1,5 @@
 package com.mu.tote2024.presentation.screen.admin.gambler
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -54,7 +53,7 @@ import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
 
-@SuppressLint("UnrememberedMutableState")
+//@SuppressLint("UnrememberedMutableState")
 @Composable
 fun AdminGamblerScreen(
     viewModel: AdminGamblerViewModel = hiltViewModel(),
@@ -63,12 +62,10 @@ fun AdminGamblerScreen(
     val isLoading = remember { mutableStateOf(false) }
     val error = remember { mutableStateOf("") }
 
-    //var rate by mutableIntStateOf(0)
-    //val isAdmin by mutableStateOf(false)
-
     val state by viewModel.state.collectAsState()
 
-    val gambler by mutableStateOf(viewModel.gambler)
+    //val gambler by mutableStateOf(viewModel.gambler)
+    val gambler = viewModel.gambler
 
     when (val result = state.result) {
         is UiState.Loading -> {
