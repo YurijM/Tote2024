@@ -99,7 +99,7 @@ fun SignUpScreen(
                     .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center,
                 text = stringResource(id = R.string.sign_up),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.headlineSmall,
             )
             Card(
                 modifier = Modifier.fillMaxWidth(),
