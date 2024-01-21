@@ -119,7 +119,7 @@ fun LoadPhoto(
                 modifier = Modifier.clickable {
                     launcher.launch("image/*")
                 },
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.labelLarge,
                 textDecoration = TextDecoration.Underline,
                 color = MaterialTheme.colorScheme.onSurface
             )

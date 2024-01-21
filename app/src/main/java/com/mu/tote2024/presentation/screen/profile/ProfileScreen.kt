@@ -111,7 +111,7 @@ fun ProfileScreen(
                     .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center,
                 text = stringResource(id = R.string.profile),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.headlineSmall
             )
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -151,13 +151,13 @@ fun ProfileScreen(
                     ) {
                         Text(
                             text = GAMBLER.email,
-                            style = MaterialTheme.typography.labelMedium,
+                            style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                         if (GAMBLER.rate > 0) {
                             Text(
                                 text = LocalContext.current.getString(R.string.gambler_rate, GAMBLER.rate),
-                                style = MaterialTheme.typography.labelMedium,
+                                style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                         } else {
@@ -173,7 +173,7 @@ fun ProfileScreen(
                         Text(
                             text = "Пол",
                             //modifier = Modifier.padding(start = 8.dp),
-                            style = MaterialTheme.typography.labelMedium,
+                            style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Bold
                         )
