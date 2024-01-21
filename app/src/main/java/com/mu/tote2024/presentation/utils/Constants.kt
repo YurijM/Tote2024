@@ -6,6 +6,9 @@ object Constants {
     const val YEAR_START = 2023
     const val MIN_PASSWORD_LENGTH = 6
 
+    const val MALE = "мужской"
+    const val FEMALE = "женский"
+
     const val KEY_ID = "id"
 
     const val ID_NEW_EMAIL = "-1"

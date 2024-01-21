@@ -3,7 +3,6 @@ package com.mu.tote2024.presentation.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -20,13 +19,14 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun AppRadioGroup(
+    modifier: Modifier = Modifier,
     items: List<String>,
     currentValue: String,
     onClick: (newValue: String) -> Unit,
     errorMessage: String?
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         border = BorderStroke(
             width = 1.dp,
             color = MaterialTheme.colorScheme.outline

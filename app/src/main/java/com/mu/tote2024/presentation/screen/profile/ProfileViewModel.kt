@@ -15,6 +15,8 @@ import com.mu.tote2024.domain.model.GamblerProfileModel
 import com.mu.tote2024.domain.usecase.auth_usecase.AuthUseCase
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
+import com.mu.tote2024.presentation.utils.Constants.FEMALE
+import com.mu.tote2024.presentation.utils.Constants.MALE
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,9 +42,12 @@ class ProfileViewModel @Inject constructor(
     )
         private set
 
+    var disabled by mutableStateOf(false)
+        private set
+
     private var photoUri by mutableStateOf<Uri?>(null)
 
-    val sex = listOf("мужской", "женский")
+    val sex = listOf(MALE, FEMALE)
 
     var profile by mutableStateOf(GamblerProfileModel())
         private set
@@ -62,6 +67,8 @@ class ProfileViewModel @Inject constructor(
                         gender = GAMBLER.profile.gender,
                         photoUrl = GAMBLER.profile.photoUrl
                     )
+
+                    disabled = checkValues()
                 }
             }
         }
@@ -73,9 +80,10 @@ class ProfileViewModel @Inject constructor(
                 profile = profile.copy(
                     nickname = event.nickname
                 )
-                profileErrors = profileErrors.copy(
+                /*profileErrors = profileErrors.copy(
                     errorNickname = checkIsFieldEmpty(event.nickname)
-                )
+                )*/
+                disabled = checkValues()
             }
 
             is ProfileEvent.OnPhotoChange -> {
@@ -84,18 +92,20 @@ class ProfileViewModel @Inject constructor(
                 )
                 photoUri = event.photoUri
 
-                profileErrors = profileErrors.copy(
+                /*profileErrors = profileErrors.copy(
                     errorPhotoUrl = checkIsFieldEmpty(event.photoUri.toString())
-                )
+                )*/
+                disabled = checkValues()
             }
 
             is ProfileEvent.OnGenderChange -> {
                 profile = profile.copy(
                     gender = event.gender
                 )
-                profileErrors = profileErrors.copy(
+                /*profileErrors = profileErrors.copy(
                     errorGender = checkIsFieldEmpty(event.gender)
-                )
+                )*/
+                disabled = checkValues()
             }
 
             is ProfileEvent.OnCancel -> {
