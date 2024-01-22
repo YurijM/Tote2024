@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.EmailModel
-import com.mu.tote2024.presentation.components.AdminTitle
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.components.AppFabAdd
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.ui.common.UiState
@@ -61,7 +61,7 @@ fun AdminEmailListScreen(
             .fillMaxSize()
             .padding(4.dp)
     ) {
-        AdminTitle(R.string.admin_email_list)
+        Title(R.string.admin_email_list)
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

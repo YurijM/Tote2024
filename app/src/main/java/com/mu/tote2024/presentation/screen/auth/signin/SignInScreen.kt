@@ -30,7 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
-import com.mu.tote2024.presentation.components.AdminTitle
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
@@ -87,7 +87,7 @@ fun SignInScreen(
                 text = stringResource(id = R.string.sign_in),
                 style = MaterialTheme.typography.titleLarge
             )*/
-            AdminTitle(title = R.string.sign_in)
+            Title(title = R.string.sign_in)
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(

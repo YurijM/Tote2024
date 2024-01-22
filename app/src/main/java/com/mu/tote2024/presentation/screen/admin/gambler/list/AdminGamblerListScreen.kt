@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.GamblerModel
-import com.mu.tote2024.presentation.components.AdminTitle
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.ui.common.UiState
 
@@ -54,7 +54,7 @@ fun AdminGamblerListScreen(
             .fillMaxSize()
             .padding(4.dp)
     ) {
-        AdminTitle(R.string.admin_gambler_list)
+        Title(R.string.admin_gambler_list)
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

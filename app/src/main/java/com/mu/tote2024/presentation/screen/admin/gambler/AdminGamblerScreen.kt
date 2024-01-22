@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
-import com.mu.tote2024.presentation.components.AdminTitle
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.SaveAndCancel
@@ -105,7 +105,7 @@ fun AdminGamblerScreen(
                 text = stringResource(id = R.string.profile),
                 style = MaterialTheme.typography.titleLarge
             )*/
-            AdminTitle(title = R.string.profile)
+            Title(title = R.string.profile)
             Card(
                 modifier = Modifier
                     .fillMaxWidth(),

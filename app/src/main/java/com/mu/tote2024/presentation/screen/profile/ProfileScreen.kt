@@ -30,7 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY
 import com.mu.tote2024.data.utils.Constants.GAMBLER
-import com.mu.tote2024.presentation.components.AdminTitle
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppRadioGroup
 import com.mu.tote2024.presentation.components.AppTextField
@@ -113,7 +113,7 @@ fun ProfileScreen(
                 text = stringResource(id = R.string.profile),
                 style = MaterialTheme.typography.headlineSmall
             )*/
-            AdminTitle(title = R.string.profile)
+            Title(title = R.string.profile)
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(

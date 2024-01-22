@@ -25,7 +25,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
-import com.mu.tote2024.presentation.components.AdminTitle
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.SaveAndCancel
 import com.mu.tote2024.presentation.ui.common.UiState
@@ -75,7 +75,7 @@ fun AdminEmailScreen(
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            AdminTitle(title = R.string.email)
+            Title(title = R.string.email)
             Card(
                 modifier = Modifier
                     .fillMaxWidth(),
