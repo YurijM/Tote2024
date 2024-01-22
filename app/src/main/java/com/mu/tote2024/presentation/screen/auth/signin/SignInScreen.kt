@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
+import com.mu.tote2024.presentation.components.AdminTitle
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
@@ -78,14 +79,15 @@ fun SignInScreen(
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
+            /*Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center,
                 text = stringResource(id = R.string.sign_in),
                 style = MaterialTheme.typography.titleLarge
-            )
+            )*/
+            AdminTitle(title = R.string.sign_in)
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(
@@ -170,7 +172,7 @@ fun SignInScreen(
                     ) {
                         Text(
                             text = stringResource(id = R.string.to_log_into),
-                            style = MaterialTheme.typography.titleMedium
+                            //style = MaterialTheme.typography.titleMedium
                         )
                     }
                     if (error.value.isNotBlank()) {

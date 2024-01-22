@@ -17,8 +17,6 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -42,15 +39,15 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
+import com.mu.tote2024.presentation.components.AdminTitle
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
-import com.mu.tote2024.presentation.components.TextError
+import com.mu.tote2024.presentation.components.SaveAndCancel
 import com.mu.tote2024.presentation.ui.common.UiState
 
 //@SuppressLint("UnrememberedMutableState")
@@ -100,14 +97,15 @@ fun AdminGamblerScreen(
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
+            /*Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center,
                 text = stringResource(id = R.string.profile),
                 style = MaterialTheme.typography.titleLarge
-            )
+            )*/
+            AdminTitle(title = R.string.profile)
             Card(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -155,12 +153,12 @@ fun AdminGamblerScreen(
                         ) {
                             Text(
                                 text = gambler.profile.nickname,
-                                style = MaterialTheme.typography.labelMedium,
+                                //style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
                                 text = gambler.email,
-                                style = MaterialTheme.typography.labelMedium,
+                                //style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             val sex = stringResource(R.string.sex)
@@ -168,8 +166,8 @@ fun AdminGamblerScreen(
                             val text = buildAnnotatedString {
                                 withStyle(
                                     style = SpanStyle(
-                                        fontSize = MaterialTheme.typography.labelSmall.fontSize,
-                                        fontWeight = MaterialTheme.typography.labelSmall.fontWeight
+                                        //fontSize = MaterialTheme.typography.labelSmall.fontSize,
+                                        //fontWeight = MaterialTheme.typography.labelSmall.fontWeight
                                     )
                                 ) {
                                     pushStringAnnotation(tag = sex, annotation = sex)
@@ -177,8 +175,8 @@ fun AdminGamblerScreen(
                                 }
                                 withStyle(
                                     style = SpanStyle(
-                                        fontSize = MaterialTheme.typography.labelMedium.fontSize,
-                                        fontWeight = MaterialTheme.typography.labelMedium.fontWeight
+                                        //fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                                        //fontWeight = MaterialTheme.typography.labelMedium.fontWeight
                                     )
                                 ) {
                                     pushStringAnnotation(tag = sexValue, annotation = sexValue)
@@ -236,7 +234,7 @@ fun AdminGamblerScreen(
                                 Text(
                                     modifier = Modifier.padding(start = 4.dp),
                                     text = stringResource(R.string.admin),
-                                    style = MaterialTheme.typography.labelMedium,
+                                    //style = MaterialTheme.typography.labelMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
                             }
@@ -256,7 +254,7 @@ fun AdminGamblerScreen(
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Row(
+                    /*Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
@@ -285,14 +283,20 @@ fun AdminGamblerScreen(
                                 style = MaterialTheme.typography.titleMedium
                             )
                         }
-                    }
+                    }*/
 
-                    if (error.value.isNotBlank()) {
+                   SaveAndCancel(
+                       enabled = viewModel.errorRate.isBlank(),
+                       onSave = { viewModel.onEvent(AdminGamblerEvent.OnSave) },
+                       onCancel = { viewModel.onEvent(AdminGamblerEvent.OnCancel) }
+                   )
+
+                    /*if (error.value.isNotBlank()) {
                         TextError(
                             errorMessage = error.value,
                             textAlign = TextAlign.Center
                         )
-                    }
+                    }*/
                 }
             }
         }

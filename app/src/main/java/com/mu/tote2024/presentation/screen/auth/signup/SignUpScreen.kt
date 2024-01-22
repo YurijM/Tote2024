@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
+import com.mu.tote2024.presentation.components.AdminTitle
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
@@ -93,14 +94,15 @@ fun SignUpScreen(
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
+            /*Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center,
                 text = stringResource(id = R.string.sign_up),
                 style = MaterialTheme.typography.headlineSmall,
-            )
+            )*/
+            AdminTitle(title = R.string.sign_up)
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(
@@ -168,7 +170,7 @@ fun SignUpScreen(
                     ) {
                         Text(
                             text = stringResource(id = R.string.to_register),
-                            style = MaterialTheme.typography.titleMedium
+                            //style = MaterialTheme.typography.titleMedium
                         )
                     }
                     if (error.value.isNotBlank()) {

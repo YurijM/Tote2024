@@ -25,12 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY
 import com.mu.tote2024.data.utils.Constants.GAMBLER
+import com.mu.tote2024.presentation.components.AdminTitle
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppRadioGroup
 import com.mu.tote2024.presentation.components.AppTextField
@@ -105,14 +105,15 @@ fun ProfileScreen(
                 .padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
+            /*Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center,
                 text = stringResource(id = R.string.profile),
                 style = MaterialTheme.typography.headlineSmall
-            )
+            )*/
+            AdminTitle(title = R.string.profile)
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(
@@ -151,13 +152,13 @@ fun ProfileScreen(
                     ) {
                         Text(
                             text = GAMBLER.email,
-                            style = MaterialTheme.typography.bodyLarge,
+                            //style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                         if (GAMBLER.rate > 0) {
                             Text(
                                 text = LocalContext.current.getString(R.string.gambler_rate, GAMBLER.rate),
-                                style = MaterialTheme.typography.bodyLarge,
+                                //style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                         } else {
@@ -173,7 +174,7 @@ fun ProfileScreen(
                         Text(
                             text = "Пол",
                             //modifier = Modifier.padding(start = 8.dp),
-                            style = MaterialTheme.typography.bodyLarge,
+                            //style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Bold
                         )

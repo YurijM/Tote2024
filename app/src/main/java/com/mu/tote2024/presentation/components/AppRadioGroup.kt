@@ -58,7 +58,7 @@ fun AppRadioGroup(
                     Text(
                         text = item,
                         modifier = Modifier.padding(start = 12.dp),
-                        style = MaterialTheme.typography.bodyLarge,
+                        //style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
