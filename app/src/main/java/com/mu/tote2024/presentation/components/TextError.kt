@@ -20,7 +20,7 @@ fun TextError(
             .padding(4.dp),
         text = errorMessage,
         color = MaterialTheme.colorScheme.error,
-        //style = MaterialTheme.typography.labelLarge,
+        style = MaterialTheme.typography.bodySmall,
         textAlign = textAlign
     )
 }
