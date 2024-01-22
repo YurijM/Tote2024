@@ -11,11 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,15 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
-import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
-import com.mu.tote2024.presentation.components.TextError
+import com.mu.tote2024.presentation.components.SaveAndCancel
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
 
 /*@Preview(
@@ -94,14 +91,6 @@ fun SignUpScreen(
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            /*Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                textAlign = TextAlign.Center,
-                text = stringResource(id = R.string.sign_up),
-                style = MaterialTheme.typography.headlineSmall,
-            )*/
             Title(title = R.string.sign_up)
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -122,6 +111,9 @@ fun SignUpScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AppTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
                         value = viewModel.signUpFields.email,
                         onChange = { newValue ->
                             viewModel.onEvent(SignUpEvent.OnEmailChange(newValue))
@@ -134,7 +126,6 @@ fun SignUpScreen(
                             keyboardType = KeyboardType.Email,
                         )
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
                     PasswordTextField(
                         label = stringResource(id = R.string.enter_password),
                         value = viewModel.signUpFields.password,
@@ -145,7 +136,7 @@ fun SignUpScreen(
                         description = "password",
                         errorMessage = viewModel.signUpFields.errorPassword
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     PasswordTextField(
                         label = stringResource(id = R.string.confirm_password),
                         value = viewModel.signUpFields.passwordConfirm,
@@ -157,7 +148,7 @@ fun SignUpScreen(
                         errorMessage = viewModel.signUpFields.errorPasswordConfirm
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    Button(
+                    /*Button(
                         enabled = viewModel.enabledButton,
                         onClick = {
                             viewModel.onEvent(
@@ -178,7 +169,20 @@ fun SignUpScreen(
                             errorMessage = error.value,
                             textAlign = TextAlign.Center
                         )
-                    }
+                    }*/
+                    SaveAndCancel(
+                        enabledSave = true,
+                        showCancel = false,
+                        onSave = {
+                            viewModel.onEvent(
+                                SignUpEvent.OnSignUp(
+                                    email = viewModel.signUpFields.email,
+                                    password = viewModel.signUpFields.password
+                                )
+                            )
+                        },
+                        onCancel = {}
+                    )
                 }
             }
         }

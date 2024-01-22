@@ -17,7 +17,8 @@ import com.mu.tote2024.R
 
 @Composable
 fun SaveAndCancel(
-    enabled: Boolean = false,
+    enabledSave: Boolean = false,
+    showCancel: Boolean = true,
     onSave: () -> Unit,
     onCancel: () -> Unit
 ) {
@@ -28,7 +29,7 @@ fun SaveAndCancel(
         horizontalArrangement = Arrangement.SpaceAround
     ) {
         Button(
-            enabled = enabled,
+            enabled = enabledSave,
             onClick = { onSave() }
         ) {
             Text(
@@ -36,16 +37,18 @@ fun SaveAndCancel(
                 style = MaterialTheme.typography.titleMedium
             )
         }
-        Button(
-            onClick = { onCancel() },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Gray
-            )
-        ) {
-            Text(
-                text = stringResource(id = R.string.cancel),
-                style = MaterialTheme.typography.titleMedium
-            )
+        if (showCancel) {
+            Button(
+                onClick = { onCancel() },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Gray
+                )
+            ) {
+                Text(
+                    text = stringResource(id = R.string.cancel),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
         }
     }
 }

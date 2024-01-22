@@ -207,7 +207,7 @@ fun ProfileScreen(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 SaveAndCancel(
-                    enabled = viewModel.disabled,
+                    enabledSave = viewModel.disabled,
                     onSave = { viewModel.onEvent(ProfileEvent.OnSave) },
                     onCancel = { viewModel.onEvent(ProfileEvent.OnCancel) }
                 )

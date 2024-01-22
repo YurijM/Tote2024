@@ -286,7 +286,7 @@ fun AdminGamblerScreen(
                     }*/
 
                    SaveAndCancel(
-                       enabled = viewModel.errorRate.isBlank(),
+                       enabledSave = viewModel.errorRate.isBlank(),
                        onSave = { viewModel.onEvent(AdminGamblerEvent.OnSave) },
                        onCancel = { viewModel.onEvent(AdminGamblerEvent.OnCancel) }
                    )

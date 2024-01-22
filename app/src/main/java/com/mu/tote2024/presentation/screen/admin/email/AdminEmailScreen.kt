@@ -103,7 +103,7 @@ fun AdminEmailScreen(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 SaveAndCancel(
-                    enabled = viewModel.errorEmail.isBlank(),
+                    enabledSave = viewModel.errorEmail.isBlank(),
                     onSave = { viewModel.onEvent(AdminEmailEvent.OnSave) },
                     onCancel = { viewModel.onEvent(AdminEmailEvent.OnCancel) }
                 )
