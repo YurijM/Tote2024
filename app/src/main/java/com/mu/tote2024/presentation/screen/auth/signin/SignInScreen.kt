@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
@@ -29,6 +30,7 @@ import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
 import com.mu.tote2024.presentation.components.SaveAndCancel
+import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
 
@@ -122,41 +124,20 @@ fun SignInScreen(
                         description = "password",
                         errorMessage = viewModel.signInFields.errorPassword
                     )
-                    /*Button(
-                        enabled = viewModel.enabledButton,
-                        onClick = {
-                            viewModel.onEvent(
-                                SignInEvent.OnSignIn(
-                                    email = viewModel.signInFields.email,
-                                    password = viewModel.signInFields.password
-                                )
-                            )
-                        }
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.to_log_into),
-                            //style = MaterialTheme.typography.titleMedium
-                        )
-                    }
+                    SaveAndCancel(
+                        enabledSave = viewModel.enabledButton,
+                        showCancel = false,
+                        onSave = {
+                            viewModel.onEvent(SignInEvent.OnSignIn)
+                        },
+                        onCancel = {}
+                    )
                     if (error.value.isNotBlank()) {
                         TextError(
                             errorMessage = error.value,
                             textAlign = TextAlign.Center
                         )
-                    }*/
-                    SaveAndCancel(
-                        enabledSave = true,
-                        showCancel = false,
-                        onSave = {
-                            viewModel.onEvent(
-                                SignInEvent.OnSignIn(
-                                    email = viewModel.signInFields.email,
-                                    password = viewModel.signInFields.password
-                                )
-                            )
-                        },
-                        onCancel = {}
-                    )
+                    }
                 }
             }
         }

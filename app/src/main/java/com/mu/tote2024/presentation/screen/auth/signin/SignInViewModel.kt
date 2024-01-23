@@ -60,7 +60,10 @@ class SignInViewModel @Inject constructor(
 
             is SignInEvent.OnSignIn -> {
                 viewModelScope.launch {
-                    authUseCase.signIn(event.email, event.password).collect {
+                    authUseCase.signIn(
+                        signInFields.email,
+                        signInFields.password
+                    ).collect {
                         _state.value = SignInState(it)
                     }
                 }
