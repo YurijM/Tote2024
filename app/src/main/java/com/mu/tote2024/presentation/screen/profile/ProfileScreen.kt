@@ -141,53 +141,12 @@ fun ProfileScreen(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         ShowProfile()
-                        /*Text(
-                            text = GAMBLER.email,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        if (GAMBLER.rate > 0) {
-                            Text(
-                                text = LocalContext.current.getString(R.string.gambler_rate, GAMBLER.rate),
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        } else {
-                            TextError(
-                                errorMessage = LocalContext.current.getString(R.string.money_is_not_transferred_yet)
-                            )
-                        }*/
                         Divider(
                             thickness = 1.dp,
                             modifier = Modifier.padding(vertical = 4.dp),
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                         EditProfile(viewModel = viewModel)
-                        /*Text(
-                            text = "Пол",
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontWeight = FontWeight.Bold
-                        )
-                        AppRadioGroup(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp),
-                            items = viewModel.sex,
-                            currentValue = viewModel.profile.gender,
-                            onClick = { newValue ->
-                                viewModel.onEvent(ProfileEvent.OnGenderChange(newValue))
-                            },
-                            errorMessage = viewModel.profileErrors.errorGender
-                        )
-                        AppTextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp),
-                            label = stringResource(id = R.string.enter_nick),
-                            value = viewModel.profile.nickname,
-                            onChange = { newValue ->
-                                viewModel.onEvent(ProfileEvent.OnNicknameChange(newValue))
-                            },
-                            errorMessage = viewModel.profileErrors.errorNickname
-                        )*/
                     }
                 }
                 Divider(
