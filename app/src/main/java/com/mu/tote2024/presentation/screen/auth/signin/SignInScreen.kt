@@ -125,6 +125,7 @@ fun SignInScreen(
                         errorMessage = viewModel.signInFields.errorPassword
                     )
                     OkAndCancel(
+                        titleOk = R.string.to_log_into,
                         enabledOk = viewModel.enabledButton,
                         showCancel = false,
                         onSave = {
