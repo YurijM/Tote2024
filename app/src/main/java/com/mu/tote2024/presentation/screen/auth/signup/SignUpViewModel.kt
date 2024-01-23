@@ -75,10 +75,14 @@ class SignUpViewModel @Inject constructor(
                     gamblerUseCase.getEmailList().collect { state ->
                         if (state is UiState.Success<*>) {
                             val result = (state as UiState.Success<List<EmailModel>>).data
-                            val emailIsCorrect = result.any { email -> email.email == event.email }
+                            val emailIsCorrect = result.any { email ->
+                                email.email == signUpFields.email
+                            }
 
                             if (emailIsCorrect) {
-                                authUseCase.signUp(event.email, event.password).collect {
+                                authUseCase.signUp(
+                                    signUpFields.email, signUpFields.password
+                                ).collect {
                                     _state.value = SignUpState(it)
                                 }
                             } else {

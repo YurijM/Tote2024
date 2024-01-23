@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
@@ -28,6 +29,7 @@ import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
 import com.mu.tote2024.presentation.components.OkAndCancel
+import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
 
@@ -150,41 +152,20 @@ fun SignUpScreen(
                         description = "passwordConfirm",
                         errorMessage = viewModel.signUpFields.errorPasswordConfirm
                     )
-                    /*Button(
-                        enabled = viewModel.enabledButton,
-                        onClick = {
-                            viewModel.onEvent(
-                                SignUpEvent.OnSignUp(
-                                    email = viewModel.signUpFields.email,
-                                    password = viewModel.signUpFields.password
-                                )
-                            )
-                        }
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.to_register),
-                            //style = MaterialTheme.typography.titleMedium
-                        )
-                    }
+                    OkAndCancel(
+                        enabledOk = viewModel.enabledButton,
+                        showCancel = false,
+                        onSave = {
+                            viewModel.onEvent( SignUpEvent.OnSignUp )
+                        },
+                        onCancel = {}
+                    )
                     if (error.value.isNotBlank()) {
                         TextError(
                             errorMessage = error.value,
                             textAlign = TextAlign.Center
                         )
-                    }*/
-                    OkAndCancel(
-                        enabledOk = viewModel.enabledButton,
-                        showCancel = false,
-                        onSave = {
-                            viewModel.onEvent(
-                                SignUpEvent.OnSignUp(
-                                    email = viewModel.signUpFields.email,
-                                    password = viewModel.signUpFields.password
-                                )
-                            )
-                        },
-                        onCancel = {}
-                    )
+                    }
                 }
             }
         }
