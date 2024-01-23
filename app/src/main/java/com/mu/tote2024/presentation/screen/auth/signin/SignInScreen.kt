@@ -29,7 +29,7 @@ import com.mu.tote2024.R
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
-import com.mu.tote2024.presentation.components.SaveAndCancel
+import com.mu.tote2024.presentation.components.OkAndCancel
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
@@ -124,8 +124,8 @@ fun SignInScreen(
                         description = "password",
                         errorMessage = viewModel.signInFields.errorPassword
                     )
-                    SaveAndCancel(
-                        enabledSave = viewModel.enabledButton,
+                    OkAndCancel(
+                        enabledOk = viewModel.enabledButton,
                         showCancel = false,
                         onSave = {
                             viewModel.onEvent(SignInEvent.OnSignIn)

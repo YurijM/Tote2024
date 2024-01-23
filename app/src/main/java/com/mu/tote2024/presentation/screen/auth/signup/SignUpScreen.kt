@@ -27,7 +27,7 @@ import com.mu.tote2024.R
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.PasswordTextField
-import com.mu.tote2024.presentation.components.SaveAndCancel
+import com.mu.tote2024.presentation.components.OkAndCancel
 import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
 
@@ -172,8 +172,8 @@ fun SignUpScreen(
                             textAlign = TextAlign.Center
                         )
                     }*/
-                    SaveAndCancel(
-                        enabledSave = viewModel.enabledButton,
+                    OkAndCancel(
+                        enabledOk = viewModel.enabledButton,
                         showCancel = false,
                         onSave = {
                             viewModel.onEvent(

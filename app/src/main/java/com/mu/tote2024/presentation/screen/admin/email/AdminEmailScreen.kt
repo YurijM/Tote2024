@@ -27,7 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
 import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.components.AppTextField
-import com.mu.tote2024.presentation.components.SaveAndCancel
+import com.mu.tote2024.presentation.components.OkAndCancel
 import com.mu.tote2024.presentation.ui.common.UiState
 
 @SuppressLint("UnrememberedMutableState")
@@ -102,8 +102,8 @@ fun AdminEmailScreen(
                     thickness = 1.dp,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                SaveAndCancel(
-                    enabledSave = viewModel.errorEmail.isBlank(),
+                OkAndCancel(
+                    enabledOk = viewModel.errorEmail.isBlank(),
                     onSave = { viewModel.onEvent(AdminEmailEvent.OnSave) },
                     onCancel = { viewModel.onEvent(AdminEmailEvent.OnCancel) }
                 )

@@ -47,7 +47,7 @@ import com.mu.tote2024.R
 import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
-import com.mu.tote2024.presentation.components.SaveAndCancel
+import com.mu.tote2024.presentation.components.OkAndCancel
 import com.mu.tote2024.presentation.ui.common.UiState
 
 //@SuppressLint("UnrememberedMutableState")
@@ -285,8 +285,8 @@ fun AdminGamblerScreen(
                         }
                     }*/
 
-                   SaveAndCancel(
-                       enabledSave = viewModel.errorRate.isBlank(),
+                   OkAndCancel(
+                       enabledOk = viewModel.errorRate.isBlank(),
                        onSave = { viewModel.onEvent(AdminGamblerEvent.OnSave) },
                        onCancel = { viewModel.onEvent(AdminGamblerEvent.OnCancel) }
                    )

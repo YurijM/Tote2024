@@ -35,7 +35,7 @@ import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppRadioGroup
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.LoadPhoto
-import com.mu.tote2024.presentation.components.SaveAndCancel
+import com.mu.tote2024.presentation.components.OkAndCancel
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
 
@@ -206,8 +206,8 @@ fun ProfileScreen(
                     thickness = 1.dp,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                SaveAndCancel(
-                    enabledSave = viewModel.disabled,
+                OkAndCancel(
+                    enabledOk = viewModel.disabled,
                     onSave = { viewModel.onEvent(ProfileEvent.OnSave) },
                     onCancel = { viewModel.onEvent(ProfileEvent.OnCancel) }
                 )
