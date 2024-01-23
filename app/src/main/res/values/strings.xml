@@ -9,6 +9,7 @@
 
     <string name="ok">OK</string>
     <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
 
     <string name="rating">Рейтинг</string>
     <string name="stake">Ставки</string>

@@ -30,13 +30,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY
 import com.mu.tote2024.data.utils.Constants.GAMBLER
-import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppRadioGroup
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.LoadPhoto
 import com.mu.tote2024.presentation.components.OkAndCancel
 import com.mu.tote2024.presentation.components.TextError
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
 
 /*@Preview(
@@ -105,14 +105,6 @@ fun ProfileScreen(
                 .padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            /*Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                textAlign = TextAlign.Center,
-                text = stringResource(id = R.string.profile),
-                style = MaterialTheme.typography.headlineSmall
-            )*/
             Title(title = R.string.profile)
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -146,35 +138,31 @@ fun ProfileScreen(
                         )
                     }
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                        //.padding(8.dp)
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
+                        ShowProfile()
+                        /*Text(
                             text = GAMBLER.email,
-                            //style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                         if (GAMBLER.rate > 0) {
                             Text(
                                 text = LocalContext.current.getString(R.string.gambler_rate, GAMBLER.rate),
-                                //style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                         } else {
                             TextError(
                                 errorMessage = LocalContext.current.getString(R.string.money_is_not_transferred_yet)
                             )
-                        }
+                        }*/
                         Divider(
                             thickness = 1.dp,
                             modifier = Modifier.padding(vertical = 4.dp),
                             color = MaterialTheme.colorScheme.onSurface,
                         )
-                        Text(
+                        EditProfile(viewModel = viewModel)
+                        /*Text(
                             text = "Пол",
-                            //modifier = Modifier.padding(start = 8.dp),
-                            //style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Bold
                         )
@@ -199,7 +187,7 @@ fun ProfileScreen(
                                 viewModel.onEvent(ProfileEvent.OnNicknameChange(newValue))
                             },
                             errorMessage = viewModel.profileErrors.errorNickname
-                        )
+                        )*/
                     }
                 }
                 Divider(
@@ -207,6 +195,7 @@ fun ProfileScreen(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 OkAndCancel(
+                    titleOk = R.string.save,
                     enabledOk = viewModel.disabled,
                     onSave = { viewModel.onEvent(ProfileEvent.OnSave) },
                     onCancel = { viewModel.onEvent(ProfileEvent.OnCancel) }
@@ -217,4 +206,53 @@ fun ProfileScreen(
             AppProgressBar()
         }
     }
+}
+
+@Composable
+private fun ShowProfile() {
+    Text(
+        text = GAMBLER.email,
+        color = MaterialTheme.colorScheme.onSurface,
+    )
+    if (GAMBLER.rate > 0) {
+        Text(
+            text = LocalContext.current.getString(R.string.gambler_rate, GAMBLER.rate),
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+    } else {
+        TextError(
+            errorMessage = LocalContext.current.getString(R.string.money_is_not_transferred_yet)
+        )
+    }
+}
+
+@Composable
+private fun EditProfile(viewModel: ProfileViewModel) {
+    Text(
+        text = "Пол",
+        color = MaterialTheme.colorScheme.onSurface,
+        fontWeight = FontWeight.Bold
+    )
+    AppRadioGroup(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        items = viewModel.sex,
+        currentValue = viewModel.profile.gender,
+        onClick = { newValue ->
+            viewModel.onEvent(ProfileEvent.OnGenderChange(newValue))
+        },
+        errorMessage = viewModel.profileErrors.errorGender
+    )
+    AppTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        label = stringResource(id = R.string.enter_nick),
+        value = viewModel.profile.nickname,
+        onChange = { newValue ->
+            viewModel.onEvent(ProfileEvent.OnNicknameChange(newValue))
+        },
+        errorMessage = viewModel.profileErrors.errorNickname
+    )
 }
