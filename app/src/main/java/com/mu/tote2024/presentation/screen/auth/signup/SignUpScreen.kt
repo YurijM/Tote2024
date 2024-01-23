@@ -3,10 +3,8 @@ package com.mu.tote2024.presentation.screen.auth.signup
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -127,6 +125,9 @@ fun SignUpScreen(
                         )
                     )
                     PasswordTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
                         label = stringResource(id = R.string.enter_password),
                         value = viewModel.signUpFields.password,
                         onChange = { newValue ->
@@ -136,8 +137,10 @@ fun SignUpScreen(
                         description = "password",
                         errorMessage = viewModel.signUpFields.errorPassword
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
                     PasswordTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp),
                         label = stringResource(id = R.string.confirm_password),
                         value = viewModel.signUpFields.passwordConfirm,
                         onChange = { newValue ->
@@ -147,7 +150,6 @@ fun SignUpScreen(
                         description = "passwordConfirm",
                         errorMessage = viewModel.signUpFields.errorPasswordConfirm
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
                     /*Button(
                         enabled = viewModel.enabledButton,
                         onClick = {
@@ -171,7 +173,7 @@ fun SignUpScreen(
                         )
                     }*/
                     SaveAndCancel(
-                        enabledSave = true,
+                        enabledSave = viewModel.enabledButton,
                         showCancel = false,
                         onSave = {
                             viewModel.onEvent(

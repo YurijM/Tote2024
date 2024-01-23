@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -112,6 +110,9 @@ fun SignInScreen(
                         )
                     )
                     PasswordTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp),
                         label = stringResource(id = R.string.enter_password),
                         value = viewModel.signInFields.password,
                         onChange = { newValue ->
@@ -121,7 +122,6 @@ fun SignInScreen(
                         description = "password",
                         errorMessage = viewModel.signInFields.errorPassword
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
                     /*Button(
                         enabled = viewModel.enabledButton,
                         onClick = {

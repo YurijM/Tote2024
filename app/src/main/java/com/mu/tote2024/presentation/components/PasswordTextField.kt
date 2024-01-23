@@ -52,6 +52,7 @@ fun PreviewPasswordField() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordTextField(
+    modifier: Modifier = Modifier,
     label: String,
     value: String?,
     onChange: (newValue: String) -> Unit,
@@ -63,7 +64,9 @@ fun PasswordTextField(
         mutableStateOf(false)
     }
 
-    Column {
+    Column(
+        modifier = modifier
+    ) {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = value ?: "",
