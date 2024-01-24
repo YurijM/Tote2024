@@ -10,6 +10,7 @@ object Constants {
     const val FEMALE = "женский"
 
     const val KEY_ID = "id"
+    const val KEY_PHOTO_URL = "photoUrl"
 
     const val ID_NEW_EMAIL = "-1"
 
@@ -30,6 +31,7 @@ object Constants {
         const val ADMIN_EMAIL_SCREEN = "admin_email_screen"
         const val ADMIN_GAMBLER_LIST_SCREEN = "admin_gambler_list_screen"
         const val ADMIN_GAMBLER_SCREEN = "admin_gambler_screen"
+        const val ADMIN_GAMBLER_PHOTO_SCREEN = "admin_gambler_photo_screen"
     }
 
     object Errors {

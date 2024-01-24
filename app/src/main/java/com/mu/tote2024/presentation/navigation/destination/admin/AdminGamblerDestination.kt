@@ -10,7 +10,8 @@ import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import com.mu.tote2024.presentation.utils.Constants.Routes.ADMIN_GAMBLER_SCREEN
 
 fun NavGraphBuilder.adminGambler(
-    toAdminGamblerList: () -> Unit
+    toAdminGamblerList: () -> Unit,
+    toAdminGamblerPhoto: (String) -> Unit
 ) {
     composable(
         "$ADMIN_GAMBLER_SCREEN/{$KEY_ID}",
@@ -20,14 +21,10 @@ fun NavGraphBuilder.adminGambler(
                 nullable = false
             }
         )
-    ) { /*navBackStackEntry ->
-        val arguments = requireNotNull(navBackStackEntry.arguments)
-        val id = arguments.getString(KEY_ID)
-
-        toLog("id: $id")*/
-
+    ) {
         AdminGamblerScreen(
-            toAdminGamblerList = toAdminGamblerList
+            toAdminGamblerList = toAdminGamblerList,
+            toAdminGamblerPhoto = toAdminGamblerPhoto
         )
     }
 }
