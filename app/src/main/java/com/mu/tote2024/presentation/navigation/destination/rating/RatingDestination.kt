@@ -5,8 +5,12 @@ import androidx.navigation.compose.composable
 import com.mu.tote2024.presentation.screen.rating.RatingScreen
 import com.mu.tote2024.presentation.utils.Constants.Routes.RATING_SCREEN
 
-fun NavGraphBuilder.rating() {
+fun NavGraphBuilder.rating(
+    toAdminGamblerPhoto: (String) -> Unit
+) {
     composable(RATING_SCREEN) {
-        RatingScreen()
+        RatingScreen(
+            toAdminGamblerPhoto = toAdminGamblerPhoto
+        )
     }
 }

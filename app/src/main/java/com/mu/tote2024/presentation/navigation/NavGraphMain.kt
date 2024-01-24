@@ -27,7 +27,12 @@ fun NavGraphMain(
         navController = navMainController,
         startDestination = RATING_SCREEN
     ) {
-        rating()
+        rating(
+            toAdminGamblerPhoto = { photoUrl ->
+                navMainController.navigateToAdminGamblerPhoto(photoUrl)
+            }
+        )
+
         stake()
         prognosis()
         game()

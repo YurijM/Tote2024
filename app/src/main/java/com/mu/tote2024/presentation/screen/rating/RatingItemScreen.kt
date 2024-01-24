@@ -1,5 +1,6 @@
 package com.mu.tote2024.presentation.screen.rating
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,7 +26,8 @@ import java.text.DecimalFormat
 fun RatingItemScreen(
     nickname: String,
     photoUrl: String,
-    points: Double
+    points: Double,
+    toAdminGamblerPhoto: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -42,7 +44,10 @@ fun RatingItemScreen(
             contentDescription = null,
             modifier = Modifier
                 .size(36.dp)
-                .clip(CircleShape),
+                .clip(CircleShape)
+                .clickable {
+                    toAdminGamblerPhoto()
+                },
             contentScale = ContentScale.Crop,
             loading = {
                 Box(
