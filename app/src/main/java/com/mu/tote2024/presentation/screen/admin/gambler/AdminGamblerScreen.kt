@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,18 +35,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
-import com.mu.tote2024.presentation.components.Title
+import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.OkAndCancel
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
 
 //@SuppressLint("UnrememberedMutableState")
@@ -61,7 +58,6 @@ fun AdminGamblerScreen(
 
     val state by viewModel.state.collectAsState()
 
-    //val gambler by mutableStateOf(viewModel.gambler)
     val gambler = viewModel.gambler
 
     when (val result = state.result) {
@@ -97,14 +93,6 @@ fun AdminGamblerScreen(
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            /*Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                textAlign = TextAlign.Center,
-                text = stringResource(id = R.string.profile),
-                style = MaterialTheme.typography.titleLarge
-            )*/
             Title(title = R.string.profile)
             Card(
                 modifier = Modifier
@@ -145,163 +133,101 @@ fun AdminGamblerScreen(
                                 }
                             )
                         }
-
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(start = 4.dp)
                         ) {
-                            Text(
-                                text = gambler.profile.nickname,
-                                //style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                            Text(
-                                text = gambler.email,
-                                //style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                            val sex = stringResource(R.string.sex)
-                            val sexValue = gambler.profile.gender
-                            val text = buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        //fontSize = MaterialTheme.typography.labelSmall.fontSize,
-                                        //fontWeight = MaterialTheme.typography.labelSmall.fontWeight
-                                    )
-                                ) {
-                                    pushStringAnnotation(tag = sex, annotation = sex)
-                                    append("$sex: ")
-                                }
-                                withStyle(
-                                    style = SpanStyle(
-                                        //fontSize = MaterialTheme.typography.labelMedium.fontSize,
-                                        //fontWeight = MaterialTheme.typography.labelMedium.fontWeight
-                                    )
-                                ) {
-                                    pushStringAnnotation(tag = sexValue, annotation = sexValue)
-                                    append(sexValue)
-                                }
-                            }
-                            Text(
-                                text = text,
-                                //style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
+                            ShowProfile(gambler)
                             Divider(
                                 thickness = 1.dp,
-                                modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),
+                                modifier = Modifier.padding(vertical = 4.dp),
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
-                            Spacer(modifier = Modifier.size(4.dp))
-                            AppTextField(
-                                label = stringResource(id = R.string.transferred_money),
-                                value = gambler.rate.toString(),
-                                onChange = { newValue ->
-                                    try {
-                                        Integer.parseInt(newValue)
-                                        viewModel.onEvent(AdminGamblerEvent.OnRateChange(newValue))
-                                    } catch (_: NumberFormatException) {
-                                        if (newValue.isBlank()) {
-                                            viewModel.onEvent(AdminGamblerEvent.OnRateChange("0"))
-                                        }
-                                    }
-                                },
-                                errorMessage = viewModel.errorRate,
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.NumberPassword,
-                                )
+                            EditProfile(
+                                gambler = gambler,
+                                viewModel = viewModel
                             )
-                            Row(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 8.dp)
-                                    .toggleable(
-                                        value = gambler.admin,
-                                        onValueChange = { newValue ->
-                                            viewModel.onEvent(AdminGamblerEvent.OnIsAdminChange(newValue))
-                                        },
-                                        role = Role.Checkbox
-                                    ),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Checkbox(
-                                    //modifier = Modifier.scale(.75f),
-                                    checked = gambler.admin,
-                                    onCheckedChange = null
-                                )
-                                Text(
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    text = stringResource(R.string.admin),
-                                    //style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                )
-                            }
                         }
                     }
                 }
                 Divider(
                     thickness = 1.dp,
-                    //modifier = Modifier.padding(top = 2.dp),
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            vertical = 8.dp
-                        ),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    /*Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        Button(
-                            onClick = {
-                                viewModel.onEvent(
-                                    AdminGamblerEvent.OnSave
-                                )
-                            }
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.save),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
-                        Button(
-                            onClick = {
-                                viewModel.onEvent(AdminGamblerEvent.OnCancel)
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Gray
-                            )
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.cancel),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
-                    }*/
-
-                   OkAndCancel(
-                       enabledOk = viewModel.errorRate.isBlank(),
-                       onSave = { viewModel.onEvent(AdminGamblerEvent.OnSave) },
-                       onCancel = { viewModel.onEvent(AdminGamblerEvent.OnCancel) }
-                   )
-
-                    /*if (error.value.isNotBlank()) {
-                        TextError(
-                            errorMessage = error.value,
-                            textAlign = TextAlign.Center
-                        )
-                    }*/
-                }
+                OkAndCancel(
+                    enabledOk = viewModel.errorRate.isBlank(),
+                    onSave = { viewModel.onEvent(AdminGamblerEvent.OnSave) },
+                    onCancel = { viewModel.onEvent(AdminGamblerEvent.OnCancel) }
+                )
             }
         }
         if (isLoading.value) {
             AppProgressBar()
         }
+    }
+}
+
+@Composable
+private fun ShowProfile(gambler: GamblerModel) {
+    Text(
+        text = gambler.profile.nickname,
+        color = MaterialTheme.colorScheme.onSurface,
+    )
+    Text(
+        text = gambler.email,
+        color = MaterialTheme.colorScheme.onSurface,
+    )
+    val sex = stringResource(R.string.sex)
+    val sexValue = gambler.profile.gender
+    Text(
+        text = "$sex: $sexValue",
+        color = MaterialTheme.colorScheme.onSurface
+    )
+}
+
+@Composable
+fun EditProfile(gambler: GamblerModel, viewModel: AdminGamblerViewModel) {
+    AppTextField(
+        label = stringResource(id = R.string.transferred_money),
+        value = gambler.rate.toString(),
+        onChange = { newValue ->
+            try {
+                Integer.parseInt(newValue)
+                viewModel.onEvent(AdminGamblerEvent.OnRateChange(newValue))
+            } catch (_: NumberFormatException) {
+                if (newValue.isBlank()) {
+                    viewModel.onEvent(AdminGamblerEvent.OnRateChange("0"))
+                }
+            }
+        },
+        errorMessage = viewModel.errorRate,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.NumberPassword,
+        )
+    )
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp)
+            .toggleable(
+                value = gambler.admin,
+                onValueChange = { newValue ->
+                    viewModel.onEvent(AdminGamblerEvent.OnIsAdminChange(newValue))
+                },
+                role = Role.Checkbox
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Checkbox(
+            checked = gambler.admin,
+            onCheckedChange = null
+        )
+        Text(
+            modifier = Modifier.padding(start = 4.dp),
+            text = stringResource(R.string.admin),
+            color = MaterialTheme.colorScheme.onSurface,
+        )
     }
 }
