@@ -135,8 +135,8 @@ class ProfileViewModel @Inject constructor(
                         }
                     }
 
-                    val (nickname, photoUrl, gender) = profile
-                    GAMBLER = GAMBLER.copy(profile = GamblerProfileModel(nickname, photoUrl, gender))
+                    //val (nickname, photoUrl, gender) = profile
+                    //GAMBLER = GAMBLER.copy(profile = GamblerProfileModel(nickname, photoUrl, gender))
                 } else {
                     _state.value = ProfileState(UiState.Error(ERROR_PROFILE_IS_EMPTY))
                 }
