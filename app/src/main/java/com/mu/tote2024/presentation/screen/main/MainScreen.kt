@@ -20,6 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_GAMBLER_IS_NOT_FOUND
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_PROFILE_IS_EMPTY
+import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.ApplicationBar
@@ -90,8 +91,10 @@ fun MainScreen(
 
     Scaffold(
         bottomBar = {
-            BottomNav(currentRoute) { route ->
-                navMainController.navigate(route)
+            if (GAMBLER.rate > 0) {
+                BottomNav(currentRoute) { route ->
+                    navMainController.navigate(route)
+                }
             }
         },
         topBar = {
