@@ -197,21 +197,6 @@ class GamblerRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun saveEmail(email: EmailModel): Flow<UiState<EmailModel>> = callbackFlow {
-        trySend(UiState.Loading)
-
-        firebaseDatabase.reference
-            .child(NODE_EMAILS)
-            .child(email.emailId)
-            .setValue(email)
-
-        trySend(UiState.Success(email))
-
-        awaitClose {
-            close()
-        }
-    }
-
     override fun getEmailList(): Flow<UiState<List<EmailModel>>> = callbackFlow {
         trySend(UiState.Loading)
 
@@ -233,6 +218,36 @@ class GamblerRepositoryImpl @Inject constructor(
 
         awaitClose {
             firebaseDatabase.reference.child(NODE_EMAILS).removeEventListener(valueEvent)
+            close()
+        }
+    }
+
+    override fun saveEmail(email: EmailModel): Flow<UiState<EmailModel>> = callbackFlow {
+        trySend(UiState.Loading)
+
+        firebaseDatabase.reference
+            .child(NODE_EMAILS)
+            .child(email.emailId)
+            .setValue(email)
+
+        trySend(UiState.Success(email))
+
+        awaitClose {
+            close()
+        }
+    }
+
+    override fun deleteEmail(id: String): Flow<UiState<Boolean>> = callbackFlow {
+        trySend(UiState.Loading)
+
+        firebaseDatabase.reference
+            .child(NODE_EMAILS)
+            .child(id)
+            .removeValue()
+
+        trySend(UiState.Success(true))
+
+        awaitClose {
             close()
         }
     }

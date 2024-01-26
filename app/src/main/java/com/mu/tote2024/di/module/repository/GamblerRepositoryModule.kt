@@ -4,6 +4,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.mu.tote2024.data.repository.GamblerRepositoryImpl
 import com.mu.tote2024.domain.repository.GamblerRepository
+import com.mu.tote2024.domain.usecase.gambler_usecase.DeleteEmail
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.domain.usecase.gambler_usecase.GetEmail
 import com.mu.tote2024.domain.usecase.gambler_usecase.GetEmailList
@@ -27,7 +28,7 @@ object GamblerRepositoryModule {
     fun provideGamblerRepository(
         database: FirebaseDatabase,
         storage: FirebaseStorage
-    ) : GamblerRepository = GamblerRepositoryImpl(database, storage)
+    ): GamblerRepository = GamblerRepositoryImpl(database, storage)
 
     @Provides
     @Singleton
@@ -38,7 +39,8 @@ object GamblerRepositoryModule {
         saveGamblerPhoto = SaveGamblerPhoto(gamblerRepository),
         getGamblerList = GetGamblerList(gamblerRepository),
         getEmail = GetEmail(gamblerRepository),
+        getEmailList = GetEmailList(gamblerRepository),
         saveEmail = SaveEmail(gamblerRepository),
-        getEmailList = GetEmailList(gamblerRepository)
+        deleteEmail = DeleteEmail(gamblerRepository)
     )
 }

@@ -26,6 +26,16 @@ class AdminEmailListViewModel @Inject constructor(
         }
     }
 
+    fun onEvent(event: AdminEmailListEvent) {
+        when (event) {
+            is AdminEmailListEvent.OnDelete -> {
+                viewModelScope.launch {
+                    gamblerUseCase.deleteEmail(event.id).collect {}
+                }
+            }
+        }
+    }
+
     companion object {
         data class AdminEmailListState(
             val result: UiState<List<EmailModel>> = UiState.Default

@@ -17,6 +17,7 @@ interface GamblerRepository {
     fun getGamblerList(): Flow<UiState<List<GamblerModel>>>
 
     fun getEmail(emailId: String): Flow<UiState<EmailModel>>
-    fun saveEmail(email: EmailModel): Flow<UiState<EmailModel>>
     fun getEmailList(): Flow<UiState<List<EmailModel>>>
+    fun saveEmail(email: EmailModel): Flow<UiState<EmailModel>>
+    fun deleteEmail(id: String): Flow<UiState<Boolean>>
 }
