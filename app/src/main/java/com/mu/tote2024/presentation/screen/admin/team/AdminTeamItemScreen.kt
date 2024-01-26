@@ -28,18 +28,14 @@ fun AdminTeamItemScreen(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                top = 4.dp,
-                start = 8.dp,
-                end = 8.dp
-            ),
+            .padding(bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         SubcomposeAsyncImage(
             model = team.flag,
             contentDescription = null,
             modifier = Modifier
-                .size(36.dp)
+                .size(24.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop,
             loading = {
@@ -56,9 +52,7 @@ fun AdminTeamItemScreen(
         )
         Text(
             text = "${team.team} (группа ${team.group})",
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 8.dp),
+            modifier = Modifier.padding(start = 8.dp),
             color = MaterialTheme.colorScheme.onSurface
         )
     }
