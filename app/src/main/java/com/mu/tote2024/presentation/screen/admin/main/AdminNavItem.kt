@@ -16,4 +16,8 @@ sealed class AdminNavItem(
         itemId = R.string.admin_gambler_list,
         route = Constants.Routes.ADMIN_GAMBLER_LIST_SCREEN
     )
+    object AdminTeamItem: AdminNavItem(
+        itemId = R.string.admin_team_list,
+        route = Constants.Routes.ADMIN_TEAM_LIST_SCREEN
+    )
 }

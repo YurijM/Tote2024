@@ -12,6 +12,7 @@ object Constants {
         const val NODE_GAMBLERS = "gamblers"
         const val NODE_PROFILE = "profile"
         const val NODE_EMAILS = "emails"
+        const val NODE_TEAMS = "teams"
 
         const val GAMBLER_PHOTO_URL = "photoUrl"
     }
@@ -21,6 +22,7 @@ object Constants {
         const val ERROR_NEW_GAMBLER_IS_NOT_CREATED = "Новый игрок не создан"
         const val ERROR_GAMBLER_IS_NOT_FOUND = "Участник не найден"
         const val ERROR_EMAIL_IS_NOT_FOUND = "Email адрес не найден"
+        const val ERROR_TEAM_IS_NOT_FOUND = "Команда не найдена"
         const val ERROR_PROFILE_IS_EMPTY = "Профиль не заполнен"
         const val ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY = "Отмена (профиль не заполнен)"
         const val ERROR_ALL_FIELDS_MUST_BE_FILLED = "Все поля должна быть заполнены"

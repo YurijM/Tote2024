@@ -195,7 +195,6 @@ class GamblerRepositoryImpl @Inject constructor(
             firebaseDatabase.reference.child(NODE_EMAILS).child(emailId).removeEventListener(valueEvent)
             close()
         }
-
     }
 
     override fun saveEmail(email: EmailModel): Flow<UiState<EmailModel>> = callbackFlow {

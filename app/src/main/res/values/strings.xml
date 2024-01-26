@@ -10,6 +10,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Отмена</string>
     <string name="save">Сохранить</string>
+    <string name="load">Загрузить</string>
 
     <string name="rating">Рейтинг</string>
     <string name="stake">Ставки</string>
@@ -34,6 +35,7 @@
 
     <string name="admin_email_list">Список разрешённых email</string>
     <string name="admin_gambler_list">Список участников</string>
+    <string name="admin_team_list">Список команд</string>
 
     <string name="email">Email</string>
 
