@@ -16,7 +16,8 @@ fun AdminMainScreen(
     val navItems = listOf(
         AdminNavItem.AdminEmailItem,
         AdminNavItem.AdminGamblerItem,
-        AdminNavItem.AdminTeamItem
+        AdminNavItem.AdminTeamItem,
+        AdminNavItem.AdminGameItem
     )
     Box(
         modifier = Modifier

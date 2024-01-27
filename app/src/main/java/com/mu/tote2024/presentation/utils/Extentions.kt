@@ -7,6 +7,10 @@ import com.mu.tote2024.presentation.utils.Constants.Errors.FIELD_CAN_NOT_EMPTY
 import com.mu.tote2024.presentation.utils.Constants.Errors.FIELD_MUST_CONTAIN_LEAST_N_CHARS
 import com.mu.tote2024.presentation.utils.Constants.Errors.PASSWORDS_DO_NOT_MATCH
 import com.mu.tote2024.presentation.utils.Constants.MIN_PASSWORD_LENGTH
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 fun toLog(message: String) {
     Log.d(DEBUG_TAG, message)
@@ -47,3 +51,26 @@ fun checkPassword(password: String?, passwordConfirm: String?): String {
         }
     } else ""
 }
+
+fun convertDateTimeToTimestamp(datetime: String, toLocale: Boolean = false): String {
+    val simpleDateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+    if (toLocale) simpleDateFormat.timeZone = TimeZone.getTimeZone("Europe/Moscow")
+    val date = simpleDateFormat.parse(datetime)
+
+    return date?.time.toString()
+}
+
+fun String.asTime(withSeconds: Boolean = false, toLocale: Boolean = false): String {
+    val format = if (withSeconds) {
+        "dd.MM.y HH:mm:ss"
+    } else {
+        "dd.MM.y HH:mm"
+    }
+    val formatter = SimpleDateFormat(format, Locale.getDefault())
+
+    if (toLocale) formatter.timeZone = TimeZone.getTimeZone("Europe/Moscow")
+
+    return formatter.format(Date(this.toLong()))
+}
+
+

@@ -36,6 +36,7 @@
     <string name="admin_email_list">Список разрешённых email</string>
     <string name="admin_gambler_list">Список участников</string>
     <string name="admin_team_list">Список команд</string>
+    <string name="admin_game_list">Список игр</string>
 
     <string name="email">Email</string>
 
