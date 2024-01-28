@@ -70,6 +70,11 @@ fun AdminGameItemScreen(
                 textAlign = TextAlign.End
             )
             ShowFlag(listFlags.flag1)
+            Text(
+                //modifier = Modifier.padding(horizontal = 4.dp),
+                text = game.goal1,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
         Text(
             text = ":",
@@ -78,6 +83,11 @@ fun AdminGameItemScreen(
         Row(
             modifier = Modifier.weight(1f)
         ) {
+            Text(
+                //modifier = Modifier.padding(horizontal = 4.dp),
+                text = game.goal2,
+                color = MaterialTheme.colorScheme.onSurface
+            )
             ShowFlag(listFlags.flag2)
             Text(
                 text = game.team2,

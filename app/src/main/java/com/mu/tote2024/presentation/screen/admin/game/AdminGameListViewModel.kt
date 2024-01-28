@@ -102,12 +102,229 @@ class AdminGameListViewModel @Inject constructor(
                 team1 = "Италия",
                 team2 = "Албания"
             ),
+            /*GameModel(
+                gameId = "5",
+                start = convertDateTimeToTimestamp("16.06.2024 16:00"),
+                group = "D",
+                team1 = "",
+                team2 = "Нидерланды"
+            ),*/
             GameModel(
                 gameId = "6",
                 start = convertDateTimeToTimestamp("16.06.2024 19:00"),
                 group = "C",
                 team1 = "Словения",
                 team2 = "Дания"
+            ),
+            GameModel(
+                gameId = "7",
+                start = convertDateTimeToTimestamp("16.06.2024 22:00"),
+                group = "C",
+                team1 = "Сербия",
+                team2 = "Англия"
+            ),
+            /*GameModel(
+                gameId = "8",
+                start = convertDateTimeToTimestamp("17.06.2024 16:00"),
+                group = "E",
+                team1 = "Румыния",
+                team2 = ""
+            ),*/
+            GameModel(
+                gameId = "9",
+                start = convertDateTimeToTimestamp("17.06.2024 19:00"),
+                group = "E",
+                team1 = "Бельгия",
+                team2 = "Словакия"
+            ),
+            GameModel(
+                gameId = "10",
+                start = convertDateTimeToTimestamp("17.06.2024 22:00"),
+                group = "D",
+                team1 = "Австрия",
+                team2 = "Франция"
+            ),
+            /*GameModel(
+                gameId = "11",
+                start = convertDateTimeToTimestamp("18.06.2024 19:00"),
+                group = "F",
+                team1 = "Турция",
+                team2 = ""
+            ),*/
+            GameModel(
+                gameId = "12",
+                start = convertDateTimeToTimestamp("18.06.2024 22:00"),
+                group = "F",
+                team1 = "Португалия",
+                team2 = "Чехия"
+            ),
+            GameModel(
+                gameId = "13",
+                start = convertDateTimeToTimestamp("19.06.2024 16:00"),
+                group = "B",
+                team1 = "Хорватия",
+                team2 = "Албания"
+            ),
+            GameModel(
+                gameId = "14",
+                start = convertDateTimeToTimestamp("19.06.2024 19:00"),
+                group = "A",
+                team1 = "Германия",
+                team2 = "Венгрия"
+            ),
+            GameModel(
+                gameId = "15",
+                start = convertDateTimeToTimestamp("19.06.2024 22:00"),
+                group = "A",
+                team1 = "Шотландия",
+                team2 = "Швейцария"
+            ),
+            GameModel(
+                gameId = "16",
+                start = convertDateTimeToTimestamp("20.06.2024 16:00"),
+                group = "C",
+                team1 = "Словения",
+                team2 = "Сербия"
+            ),
+            GameModel(
+                gameId = "17",
+                start = convertDateTimeToTimestamp("20.06.2024 19:00"),
+                group = "C",
+                team1 = "Дания",
+                team2 = "Англия"
+            ),
+            GameModel(
+                gameId = "18",
+                start = convertDateTimeToTimestamp("20.06.2024 22:00"),
+                group = "B",
+                team1 = "Испания",
+                team2 = "Италия"
+            ),
+            /*GameModel(
+                gameId = "19",
+                start = convertDateTimeToTimestamp("21.06.2024 16:00"),
+                group = "E",
+                team1 = "Словакия",
+                team2 = ""
+            ),*/
+            /*GameModel(
+                gameId = "20",
+                start = convertDateTimeToTimestamp("21.06.2024 19:00"),
+                group = "D",
+                team1 = "",
+                team2 = "Австрия"
+            ),*/
+            GameModel(
+                gameId = "21",
+                start = convertDateTimeToTimestamp("21.06.2024 22:00"),
+                group = "D",
+                team1 = "Нидерланды",
+                team2 = "Франция"
+            ),
+            /*GameModel(
+                gameId = "22",
+                start = convertDateTimeToTimestamp("22.06.2024 16:00"),
+                group = "F",
+                team1 = "",
+                team2 = "Чехия"
+            ),*/
+            GameModel(
+                gameId = "23",
+                start = convertDateTimeToTimestamp("22.06.2024 19:00"),
+                group = "F",
+                team1 = "Турция",
+                team2 = "Португалия"
+            ),
+            GameModel(
+                gameId = "24",
+                start = convertDateTimeToTimestamp("22.06.2024 22:00"),
+                group = "E",
+                team1 = "Бельгия",
+                team2 = "Румыния"
+            ),
+            GameModel(
+                gameId = "25",
+                start = convertDateTimeToTimestamp("23.06.2024 22:00"),
+                group = "A",
+                team1 = "Швейцария",
+                team2 = "Германия"
+            ),
+            GameModel(
+                gameId = "26",
+                start = convertDateTimeToTimestamp("23.06.2024 22:00"),
+                group = "A",
+                team1 = "Шотландия",
+                team2 = "Венгрия"
+            ),
+            GameModel(
+                gameId = "27",
+                start = convertDateTimeToTimestamp("24.06.2024 22:00"),
+                group = "B",
+                team1 = "Албания",
+                team2 = "Испания"
+            ),
+            GameModel(
+                gameId = "28",
+                start = convertDateTimeToTimestamp("24.06.2024 22:00"),
+                group = "B",
+                team1 = "Хорватия",
+                team2 = "Италия"
+            ),
+            GameModel(
+                gameId = "29",
+                start = convertDateTimeToTimestamp("25.06.2024 19:00"),
+                group = "D",
+                team1 = "Нидерланды",
+                team2 = "Австрия"
+            ),
+            /*GameModel(
+                gameId = "30",
+                start = convertDateTimeToTimestamp("25.06.2024 19:00"),
+                group = "D",
+                team1 = "Франция",
+                team2 = ""
+            ),*/
+            GameModel(
+                gameId = "31",
+                start = convertDateTimeToTimestamp("25.06.2024 22:00"),
+                group = "C",
+                team1 = "Англия",
+                team2 = "Словения"
+            ),
+            GameModel(
+                gameId = "32",
+                start = convertDateTimeToTimestamp("25.06.2024 22:00"),
+                group = "C",
+                team1 = "Дания",
+                team2 = "Сербия"
+            ),
+            GameModel(
+                gameId = "33",
+                start = convertDateTimeToTimestamp("26.06.2024 19:00"),
+                group = "E",
+                team1 = "Словакия",
+                team2 = "Румыния"
+            ),
+            /*GameModel(
+                gameId = "34",
+                start = convertDateTimeToTimestamp("26.06.2024 19:00"),
+                group = "E",
+                team1 = "",
+                team2 = "Бельгия"
+            ),*/
+            /*GameModel(
+                gameId = "35",
+                start = convertDateTimeToTimestamp("26.06.2024 22:00"),
+                group = "F",
+                team1 = "",
+                team2 = "Португалия"
+            ),*/
+            GameModel(
+                gameId = "36",
+                start = convertDateTimeToTimestamp("26.06.2024 22:00"),
+                group = "F",
+                team1 = "Чехия",
+                team2 = "Турция"
             ),
         )
     }

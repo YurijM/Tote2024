@@ -46,7 +46,7 @@ fun AdminGameListScreen(
             flagList = viewModel.listGameFlags
 
             gameList = result.data
-                .sortedBy { it.gameId }
+                .sortedBy { it.gameId.toInt() }
         }
 
         is UiState.Error -> {
@@ -88,7 +88,6 @@ fun AdminGameListScreen(
                 )
                 Divider(
                     thickness = 1.dp,
-                    //modifier = Modifier.padding(vertical = 4.dp),
                     color = MaterialTheme.colorScheme.onSurface,
                 )
             }
