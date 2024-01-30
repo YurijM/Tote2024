@@ -15,7 +15,7 @@ import com.mu.tote2024.presentation.navigation.destination.admin.navigateToAdmin
 import com.mu.tote2024.presentation.navigation.destination.admin.navigateToAdminEmailList
 import com.mu.tote2024.presentation.navigation.destination.admin.navigateToAdminGambler
 import com.mu.tote2024.presentation.navigation.destination.admin.navigateToAdminGamblerPhoto
-import com.mu.tote2024.presentation.navigation.destination.game.game
+import com.mu.tote2024.presentation.navigation.destination.game.gameList
 import com.mu.tote2024.presentation.navigation.destination.prognosis.prognosis
 import com.mu.tote2024.presentation.navigation.destination.rating.rating
 import com.mu.tote2024.presentation.navigation.destination.stake.stake
@@ -37,7 +37,8 @@ fun NavGraphMain(
 
         stake()
         prognosis()
-        game()
+
+        gameList()
 
         adminMain(
             toItem = { route ->

@@ -26,6 +26,6 @@ sealed class BottomNavItem(
     object GamesItem: BottomNavItem(
         titleId = R.string.games,
         iconId = R.drawable.ic_games,
-        route = Constants.Routes.GAMES_SCREEN
+        route = Constants.Routes.GAME_LIST_SCREEN
     )
 }

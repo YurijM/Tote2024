@@ -24,7 +24,8 @@ object Constants {
         const val RATING_SCREEN = "rating_screen"
         const val STAKES_SCREEN = "stakes_screen"
         const val PROGNOSIS_SCREEN = "prognosis_screen"
-        const val GAMES_SCREEN = "games_screen"
+        const val GAME_LIST_SCREEN = "game_list_screen"
+        const val GAME_SCREEN = "game_screen"
 
         const val ADMIN_MAIN_SCREEN = "admin_main_screen"
         const val ADMIN_EMAIL_LIST_SCREEN = "admin_email_list_screen"
