@@ -121,7 +121,7 @@ class AdminTeamListViewModel @Inject constructor(
             TeamModel(
                 group = "D",
                 itemNo = 1,
-                team = "",
+                team = "Team-D",
                 flag = ""
             ),
             TeamModel(
@@ -163,7 +163,7 @@ class AdminTeamListViewModel @Inject constructor(
             TeamModel(
                 group = "E",
                 itemNo = 4,
-                team = "",
+                team = "Team-E",
                 flag = ""
             ),
             TeamModel(
@@ -175,7 +175,7 @@ class AdminTeamListViewModel @Inject constructor(
             TeamModel(
                 group = "F",
                 itemNo = 2,
-                team = "",
+                team = "Team-F",
                 flag = ""
             ),
             TeamModel(

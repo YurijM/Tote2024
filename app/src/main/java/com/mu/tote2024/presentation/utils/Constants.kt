@@ -15,6 +15,7 @@ object Constants {
     const val ID_NEW_EMAIL = "-1"
 
     const val GROUPS_COUNT = 6
+    const val TEAMS_COUNT_INTO_GROUP = 4
 
     object Routes {
         const val SPLASH_SCREEN = "splash_screen"

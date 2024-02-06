@@ -102,13 +102,13 @@ class AdminGameListViewModel @Inject constructor(
                 team1 = "Италия",
                 team2 = "Албания"
             ),
-            /*GameModel(
+            GameModel(
                 gameId = "5",
                 start = convertDateTimeToTimestamp("16.06.2024 16:00"),
                 group = "D",
-                team1 = "",
+                team1 = "Team-D",
                 team2 = "Нидерланды"
-            ),*/
+            ),
             GameModel(
                 gameId = "6",
                 start = convertDateTimeToTimestamp("16.06.2024 19:00"),
@@ -123,13 +123,13 @@ class AdminGameListViewModel @Inject constructor(
                 team1 = "Сербия",
                 team2 = "Англия"
             ),
-            /*GameModel(
+            GameModel(
                 gameId = "8",
                 start = convertDateTimeToTimestamp("17.06.2024 16:00"),
                 group = "E",
                 team1 = "Румыния",
-                team2 = ""
-            ),*/
+                team2 = "Team-E"
+            ),
             GameModel(
                 gameId = "9",
                 start = convertDateTimeToTimestamp("17.06.2024 19:00"),
@@ -144,13 +144,13 @@ class AdminGameListViewModel @Inject constructor(
                 team1 = "Австрия",
                 team2 = "Франция"
             ),
-            /*GameModel(
+            GameModel(
                 gameId = "11",
                 start = convertDateTimeToTimestamp("18.06.2024 19:00"),
                 group = "F",
                 team1 = "Турция",
-                team2 = ""
-            ),*/
+                team2 = "Team-F"
+            ),
             GameModel(
                 gameId = "12",
                 start = convertDateTimeToTimestamp("18.06.2024 22:00"),
@@ -200,20 +200,20 @@ class AdminGameListViewModel @Inject constructor(
                 team1 = "Испания",
                 team2 = "Италия"
             ),
-            /*GameModel(
+            GameModel(
                 gameId = "19",
                 start = convertDateTimeToTimestamp("21.06.2024 16:00"),
                 group = "E",
                 team1 = "Словакия",
-                team2 = ""
-            ),*/
-            /*GameModel(
+                team2 = "Team-E"
+            ),
+            GameModel(
                 gameId = "20",
                 start = convertDateTimeToTimestamp("21.06.2024 19:00"),
                 group = "D",
-                team1 = "",
+                team1 = "Team-D",
                 team2 = "Австрия"
-            ),*/
+            ),
             GameModel(
                 gameId = "21",
                 start = convertDateTimeToTimestamp("21.06.2024 22:00"),
@@ -221,13 +221,13 @@ class AdminGameListViewModel @Inject constructor(
                 team1 = "Нидерланды",
                 team2 = "Франция"
             ),
-            /*GameModel(
+            GameModel(
                 gameId = "22",
                 start = convertDateTimeToTimestamp("22.06.2024 16:00"),
                 group = "F",
-                team1 = "",
+                team1 = "Team-F",
                 team2 = "Чехия"
-            ),*/
+            ),
             GameModel(
                 gameId = "23",
                 start = convertDateTimeToTimestamp("22.06.2024 19:00"),
@@ -277,13 +277,13 @@ class AdminGameListViewModel @Inject constructor(
                 team1 = "Нидерланды",
                 team2 = "Австрия"
             ),
-            /*GameModel(
+            GameModel(
                 gameId = "30",
                 start = convertDateTimeToTimestamp("25.06.2024 19:00"),
                 group = "D",
                 team1 = "Франция",
-                team2 = ""
-            ),*/
+                team2 = "Team-D"
+            ),
             GameModel(
                 gameId = "31",
                 start = convertDateTimeToTimestamp("25.06.2024 22:00"),
@@ -305,20 +305,20 @@ class AdminGameListViewModel @Inject constructor(
                 team1 = "Словакия",
                 team2 = "Румыния"
             ),
-            /*GameModel(
+            GameModel(
                 gameId = "34",
                 start = convertDateTimeToTimestamp("26.06.2024 19:00"),
                 group = "E",
-                team1 = "",
+                team1 = "Team-E",
                 team2 = "Бельгия"
-            ),*/
-            /*GameModel(
+            ),
+            GameModel(
                 gameId = "35",
                 start = convertDateTimeToTimestamp("26.06.2024 22:00"),
                 group = "F",
-                team1 = "",
+                team1 = "Team-F",
                 team2 = "Португалия"
-            ),*/
+            ),
             GameModel(
                 gameId = "36",
                 start = convertDateTimeToTimestamp("26.06.2024 22:00"),

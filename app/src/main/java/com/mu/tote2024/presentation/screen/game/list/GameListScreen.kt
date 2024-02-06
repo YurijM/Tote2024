@@ -36,7 +36,7 @@ import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.EMPTY
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
-import com.mu.tote2024.presentation.utils.toLog
+import com.mu.tote2024.presentation.utils.Constants.TEAMS_COUNT_INTO_GROUP
 
 @Composable
 fun GameListScreen(
@@ -79,7 +79,7 @@ fun GameListScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             (1..GROUPS_COUNT).forEach { index ->
-                val group = listTeam[(index - 1) * 4].group
+                val group = listTeam[(index - 1) * TEAMS_COUNT_INTO_GROUP].group
                 val list = listTeam.filter { team -> team.group == group }
                 Text(
                     modifier = Modifier.fillMaxWidth(),
@@ -87,7 +87,6 @@ fun GameListScreen(
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleMedium
                 )
-                toLog("group $group games: ${listGame.filter { game -> game.group == group }}")
                 Games_Table(listTeam = list)
             }
         }
@@ -197,7 +196,7 @@ fun Games_Table(listTeam: List<TeamModel>) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.onSurface)
+                    .background(Color.LightGray)
             ) {
                 Text(
                     modifier = Modifier.padding(4.dp),
