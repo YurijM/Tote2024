@@ -2,7 +2,7 @@ package com.mu.tote2024.presentation.utils
 
 object Constants {
     const val DEBUG_TAG = "tote2024"
-    //const val EMPTY = "empty"
+    const val EMPTY = "empty"
     const val YEAR_START = 2023
     const val MIN_PASSWORD_LENGTH = 6
 
@@ -13,6 +13,8 @@ object Constants {
     const val KEY_PHOTO_URL = "photoUrl"
 
     const val ID_NEW_EMAIL = "-1"
+
+    const val GROUPS_COUNT = 6
 
     object Routes {
         const val SPLASH_SCREEN = "splash_screen"

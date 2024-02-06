@@ -1,6 +1,8 @@
 package com.mu.tote2024.presentation.screen.game.list
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -29,13 +32,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.model.TeamModel
+import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.ui.common.UiState
+import com.mu.tote2024.presentation.utils.Constants.EMPTY
+import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
+import com.mu.tote2024.presentation.utils.toLog
 
 @Composable
 fun GameListScreen(
     viewModel: GameListViewModel = hiltViewModel()
 ) {
-    val isLoading = remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
     var listGame by remember { mutableStateOf<List<GameModel>>(listOf()) }
     var listTeam by remember { mutableStateOf<List<TeamModel>>(listOf()) }
 
@@ -43,11 +50,11 @@ fun GameListScreen(
 
     when (val result = state.result) {
         is UiState.Loading -> {
-            isLoading.value = true
+            isLoading = true
         }
 
         is UiState.Success -> {
-            isLoading.value = false
+            isLoading = false
 
             listTeam = viewModel.listTeam
                 .sortedWith(
@@ -59,39 +66,36 @@ fun GameListScreen(
         }
 
         is UiState.Error -> {
-            isLoading.value = false
+            isLoading = false
         }
 
         else -> {}
     }
 
-    if (listTeam.isNotEmpty()) {
+    if (listGame.isNotEmpty()) {
         Column(
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-        ) {
-            (1..6).forEach { index ->
-                val group = listTeam[(index - 1) * 4].group
-                val list = listTeam.filter { team -> team.group == group }
-                    Text(text = "группа $group")
-                    Demo_Table(list = list)
-            }
-        }
-
-    }
-
-        /*var group = ""
-        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            items(listTeam) { team ->
-                if (group != team.group) {
-                    group = team.group
-                    Text(text = team.group)
-                }
-                Text(text = "${team.itemNo} ${team.team}")
+            (1..GROUPS_COUNT).forEach { index ->
+                val group = listTeam[(index - 1) * 4].group
+                val list = listTeam.filter { team -> team.group == group }
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "группа $group",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                toLog("group $group games: ${listGame.filter { game -> game.group == group }}")
+                Games_Table(listTeam = list)
             }
-        }*/
+        }
+    }
+
+    if (isLoading) {
+        AppProgressBar()
+    }
 }
 
 /**
@@ -142,22 +146,15 @@ fun <T> Table(
 }
 
 @Composable
-fun Demo_Table(list: List<TeamModel>) {
-    /*val people = listOf(
-        Person("Alex", 21, false, "alex@demo-email.com"),
-        Person("Adam", 35, true, "adam@demo-email.com"),
-        Person("Iris", 26, false, "iris@demo-email.com"),
-        Person("Maria", 32, false, "maria@demo-email.com")
-    )*/
-
+fun Games_Table(listTeam: List<TeamModel>) {
     val cellWidth: (Int) -> Dp = { index ->
         when (index) {
-            0 -> 100.dp
+            0 -> 112.dp
             1, 2, 3, 4 -> 40.dp
             5, 6, 7, 10 -> 32.dp
-            8 -> 49.dp
+            8 -> 56.dp
             9 -> 36.dp
-            else -> 200.dp
+            else -> 0.dp
         }
     }
     val headerCellTitle: @Composable (Int) -> Unit = { index ->
@@ -176,6 +173,7 @@ fun Demo_Table(list: List<TeamModel>) {
         Text(
             text = value,
             color = MaterialTheme.colorScheme.onSurface,
+            style = TextStyle(fontSize = MaterialTheme.typography.titleSmall.fontSize),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(4.dp),
             maxLines = 1,
@@ -188,35 +186,41 @@ fun Demo_Table(list: List<TeamModel>) {
     val cellText: @Composable (Int, TeamModel) -> Unit = { index, item ->
         val value = when (index) {
             0 -> item.team
-            1, 2, 3, 4 -> if (index == item.itemNo) "" else "${(0..9).random()}:${(0..9).random()}"
+            1, 2, 3, 4 -> if (index == item.itemNo) EMPTY else "${(0..9).random()}:${(0..9).random()}"
             5, 6, 7, 10 -> "1"
             8 -> "12:10"
             9 -> "15"
             else -> ""
         }
-        /*val background = if (value == "empty") {
-            MaterialTheme.colorScheme.onSurface
-        } else {
-            Color.Transparent
-        }*/
 
-        Text(
-            text = if (value == "empty") "" else value,
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = if (value.isEmpty() || value[0].isDigit()) TextAlign.Center else TextAlign.Start,
-            modifier = Modifier.padding(4.dp),
-            maxLines = 1,
-            overflow = if (value.isEmpty() || value[0].isDigit()) TextOverflow.Clip else TextOverflow.Ellipsis
-        )
+        if (value == EMPTY) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.onSurface)
+            ) {
+                Text(
+                    modifier = Modifier.padding(4.dp),
+                    text = ""
+                )
+            }
+        } else {
+            Text(
+                text = value, //if (value == "empty") "" else value,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = if (value.isEmpty() || value[0].isDigit()) TextAlign.Center else TextAlign.Start,
+                modifier = Modifier.padding(4.dp),
+                maxLines = 1,
+                overflow = if (value.isEmpty() || value[0].isDigit()) TextOverflow.Clip else TextOverflow.Ellipsis
+            )
+        }
     }
 
     Table(
         columnCount = 11,
         cellWidth = cellWidth,
-        data = list,
-        modifier = Modifier
-            .padding(top = 4.dp),
-            //.verticalScroll(rememberScrollState()),
+        data = listTeam,
+        modifier = Modifier.padding(top = 4.dp),
         headerCellContent = headerCellTitle,
         cellContent = cellText
     )
