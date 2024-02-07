@@ -30,25 +30,26 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.mu.tote2024.domain.model.GameModel
-import com.mu.tote2024.domain.model.TeamModel
+import com.mu.tote2024.domain.model.GroupTeamResultModel
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.EMPTY
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
-import com.mu.tote2024.presentation.utils.Constants.TEAMS_COUNT_INTO_GROUP
 
 @Composable
 fun GameListScreen(
     viewModel: GameListViewModel = hiltViewModel()
 ) {
     var isLoading by remember { mutableStateOf(false) }
-    var listGame by remember { mutableStateOf<List<GameModel>>(listOf()) }
-    var listTeam by remember { mutableStateOf<List<TeamModel>>(listOf()) }
+    /*var listGame by remember { mutableStateOf<List<GameModel>>(listOf()) }
+    var listTeam by remember { mutableStateOf<List<TeamModel>>(listOf()) }*/
+
+    var result by remember { mutableStateOf<List<GroupTeamResultModel>>(listOf()) }
 
     val state by viewModel.state.collectAsState()
 
-    when (val result = state.result) {
+    //when (val result = state.result) {
+    when (state.result) {
         is UiState.Loading -> {
             isLoading = true
         }
@@ -56,13 +57,14 @@ fun GameListScreen(
         is UiState.Success -> {
             isLoading = false
 
-            listTeam = viewModel.listTeam
+            /*listTeam = viewModel.listTeam
                 .sortedWith(
                     compareBy<TeamModel> { it.group }
                         .thenBy { it.itemNo }
-                )
+                )*/
 
-            listGame = result.data
+            //listGame = result.data
+            result = viewModel.resultTeams
         }
 
         is UiState.Error -> {
@@ -72,22 +74,22 @@ fun GameListScreen(
         else -> {}
     }
 
-    if (listGame.isNotEmpty()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-        ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+        if (result.isNotEmpty()) {
+            val groups = arrayListOf("A", "B", "C", "D", "E", "F")
             (1..GROUPS_COUNT).forEach { index ->
-                val group = listTeam[(index - 1) * TEAMS_COUNT_INTO_GROUP].group
-                val list = listTeam.filter { team -> team.group == group }
+                val group = groups[index - 1]
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = "группа $group",
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleMedium
                 )
-                Games_Table(listTeam = list)
+                Games_Table(result = viewModel.resultTeams.filter { it.group == group })
             }
         }
     }
@@ -127,7 +129,7 @@ fun <T> Table(
                 Column {
                     (0..data.size).forEach { index ->
                         Surface(
-                            border = BorderStroke(Dp.Hairline, Color.LightGray),
+                            border = BorderStroke(Dp.Hairline, MaterialTheme.colorScheme.secondaryContainer),
                             contentColor = Color.Transparent,
                             modifier = Modifier.width(cellWidth(columnIndex))
                         ) {
@@ -145,7 +147,7 @@ fun <T> Table(
 }
 
 @Composable
-fun Games_Table(listTeam: List<TeamModel>) {
+fun Games_Table(result: List<GroupTeamResultModel>) {
     val cellWidth: (Int) -> Dp = { index ->
         when (index) {
             0 -> 112.dp
@@ -182,13 +184,20 @@ fun Games_Table(listTeam: List<TeamModel>) {
         )
     }
 
-    val cellText: @Composable (Int, TeamModel) -> Unit = { index, item ->
+    val cellText: @Composable (Int, GroupTeamResultModel) -> Unit = { index, item ->
         val value = when (index) {
             0 -> item.team
-            1, 2, 3, 4 -> if (index == item.itemNo) EMPTY else "${(0..9).random()}:${(0..9).random()}"
-            5, 6, 7, 10 -> "1"
-            8 -> "12:10"
-            9 -> "15"
+            //1, 2, 3, 4 -> if (index == item.itemNo) EMPTY else "${(0..9).random()}:${(0..9).random()}"
+            1 -> item.score1
+            2 -> item.score2
+            3 -> item.score3
+            4 -> item.score4
+            5 -> item.win.toString()
+            6 -> item.draw.toString()
+            7 -> item.defeat.toString()
+            8 -> "${item.balls1}:${item.balls2}"
+            9 -> item.points.toString()
+            10 -> item.place.toString()
             else -> ""
         }
 
@@ -196,7 +205,7 @@ fun Games_Table(listTeam: List<TeamModel>) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray)
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
             ) {
                 Text(
                     modifier = Modifier.padding(4.dp),
@@ -218,7 +227,7 @@ fun Games_Table(listTeam: List<TeamModel>) {
     Table(
         columnCount = 11,
         cellWidth = cellWidth,
-        data = listTeam,
+        data = result,
         modifier = Modifier.padding(top = 4.dp),
         headerCellContent = headerCellTitle,
         cellContent = cellText
