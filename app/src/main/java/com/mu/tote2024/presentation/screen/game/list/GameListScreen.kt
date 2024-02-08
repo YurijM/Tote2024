@@ -35,6 +35,7 @@ import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.EMPTY
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
+import com.mu.tote2024.presentation.utils.toLog
 
 @Composable
 fun GameListScreen(
@@ -49,7 +50,7 @@ fun GameListScreen(
     val state by viewModel.state.collectAsState()
 
     //when (val result = state.result) {
-    when (state.result) {
+    when (val data = state.result) {
         is UiState.Loading -> {
             isLoading = true
         }
@@ -64,7 +65,10 @@ fun GameListScreen(
                 )*/
 
             //listGame = result.data
-            result = viewModel.resultTeams
+            //result = viewModel.resultTeams
+            result = data.data
+            toLog("result: ${result.size}")
+
         }
 
         is UiState.Error -> {
@@ -74,12 +78,12 @@ fun GameListScreen(
         else -> {}
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        if (result.isNotEmpty()) {
+    if (result.isNotEmpty()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
             val groups = arrayListOf("A", "B", "C", "D", "E", "F")
             (1..GROUPS_COUNT).forEach { index ->
                 val group = groups[index - 1]
@@ -89,7 +93,8 @@ fun GameListScreen(
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleMedium
                 )
-                Games_Table(result = viewModel.resultTeams.filter { it.group == group })
+                //Games_Table(result = viewModel.resultTeams.filter { it.group == group })
+                Games_Table(result = result.filter { it.group == group })
             }
         }
     }
