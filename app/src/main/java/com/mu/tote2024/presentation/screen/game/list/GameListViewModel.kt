@@ -8,7 +8,6 @@ import com.mu.tote2024.domain.usecase.game_usecase.GameUseCase
 import com.mu.tote2024.domain.usecase.team_usecase.TeamUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.EMPTY
-import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,22 +22,16 @@ class GameListViewModel @Inject constructor(
     private val _state: MutableStateFlow<GameListState> = MutableStateFlow(GameListState())
     val state: StateFlow<GameListState> = _state
 
-    //var resultTeams = mutableListOf<GroupTeamResultModel>()
-
     init {
         getTableResult()
     }
 
     private fun getTableResult() {
-        toLog("1")
         viewModelScope.launch {
-            toLog("2")
             teamUseCase.getTeamList().collect { stateTeams ->
                 _state.value = GameListState(UiState.Loading)
-                toLog("3")
 
                 if (stateTeams is UiState.Success) {
-                    toLog("4")
                     val listTeam = stateTeams.data
                         .sortedWith(
                             compareBy<TeamModel> { it.group }
@@ -46,10 +39,7 @@ class GameListViewModel @Inject constructor(
                         )
 
                     gameUseCase.getGameList().collect { stateGame ->
-                        toLog("5")
                         if (stateGame is UiState.Success) {
-                            toLog("6")
-                            //resultTeams = mutableListOf()
                             val resultTeams = mutableListOf<GroupTeamResultModel>()
 
                             val listGame = stateGame.data
@@ -73,17 +63,17 @@ class GameListViewModel @Inject constructor(
                                         val goal1: String
                                         val goal2: String
                                         var score = ""
-                                        val team2: Int
+                                        val team2ItemNo: Int
                                         val teamNo = if (game.team1 == team.team) 1 else 2
 
                                         if (teamNo == 1) {
                                             goal1 = game.goal1
                                             goal2 = game.goal2
-                                            team2 = listTeam.first { it.team == game.team2 }.itemNo
+                                            team2ItemNo = listTeam.first { it.team == game.team2 }.itemNo
                                         } else {
                                             goal1 = game.goal2
                                             goal2 = game.goal1
-                                            team2 = listTeam.first { it.team == game.team1 }.itemNo
+                                            team2ItemNo = listTeam.first { it.team == game.team1 }.itemNo
                                         }
 
                                         if (goal1.isNotBlank() && goal2.isNotBlank()) {
@@ -106,7 +96,7 @@ class GameListViewModel @Inject constructor(
                                             }
                                         }
 
-                                        resultTeam = when (team2) {
+                                        resultTeam = when (team2ItemNo) {
                                             1 -> resultTeam.copy(score1 = score)
                                             2 -> resultTeam.copy(score2 = score)
                                             3 -> resultTeam.copy(score3 = score)
@@ -134,7 +124,6 @@ class GameListViewModel @Inject constructor(
 
                                 resultTeams.add(resultTeam)
                             }
-                            toLog("7")
 
                             _state.value = GameListState(UiState.Success(resultTeams))
                         }
