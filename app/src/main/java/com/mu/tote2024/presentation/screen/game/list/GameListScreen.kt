@@ -2,6 +2,7 @@ package com.mu.tote2024.presentation.screen.game.list
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,26 +32,24 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GroupTeamResultModel
+import com.mu.tote2024.presentation.components.AppFabAdd
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.EMPTY
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
-import com.mu.tote2024.presentation.utils.toLog
 
 @Composable
 fun GameListScreen(
     viewModel: GameListViewModel = hiltViewModel()
 ) {
     var isLoading by remember { mutableStateOf(false) }
-    /*var listGame by remember { mutableStateOf<List<GameModel>>(listOf()) }
-    var listTeam by remember { mutableStateOf<List<TeamModel>>(listOf()) }*/
 
     var result by remember { mutableStateOf<List<GroupTeamResultModel>>(listOf()) }
 
     val state by viewModel.state.collectAsState()
 
-    //when (val result = state.result) {
     when (val data = state.result) {
         is UiState.Loading -> {
             isLoading = true
@@ -58,17 +58,7 @@ fun GameListScreen(
         is UiState.Success -> {
             isLoading = false
 
-            /*listTeam = viewModel.listTeam
-                .sortedWith(
-                    compareBy<TeamModel> { it.group }
-                        .thenBy { it.itemNo }
-                )*/
-
-            //listGame = result.data
-            //result = viewModel.resultTeams
             result = data.data
-            toLog("result: ${result.size}")
-
         }
 
         is UiState.Error -> {
@@ -93,9 +83,17 @@ fun GameListScreen(
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleMedium
                 )
-                //Games_Table(result = viewModel.resultTeams.filter { it.group == group })
-                Games_Table(result = result.filter { it.group == group })
+                Games_Table(
+                    result = result.filter { it.group == group },
+                    onClick = { }
+                )
             }
+        }
+
+        if (GAMBLER.admin) {
+            AppFabAdd(
+                onAdd = { }
+            )
         }
     }
 
@@ -121,9 +119,14 @@ fun <T> Table(
     modifier: Modifier = Modifier,
     headerCellContent: @Composable (index: Int) -> Unit,
     cellContent: @Composable (index: Int, item: T) -> Unit,
+    onClick: () -> Unit
 ) {
     Surface(
         modifier = modifier
+            .clickable(
+                role = Role.Button,
+                onClick = { onClick() }
+            ),
     ) {
         LazyRow(
             modifier = Modifier
@@ -152,7 +155,10 @@ fun <T> Table(
 }
 
 @Composable
-fun Games_Table(result: List<GroupTeamResultModel>) {
+fun Games_Table(
+    result: List<GroupTeamResultModel>,
+    onClick: () -> Unit
+) {
     val cellWidth: (Int) -> Dp = { index ->
         when (index) {
             0 -> 112.dp
@@ -184,15 +190,13 @@ fun Games_Table(result: List<GroupTeamResultModel>) {
             modifier = Modifier.padding(4.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            fontWeight = FontWeight.Black,
-            //extDecoration = TextDecoration.Underline
+            fontWeight = FontWeight.Black
         )
     }
 
     val cellText: @Composable (Int, GroupTeamResultModel) -> Unit = { index, item ->
         val value = when (index) {
             0 -> item.team
-            //1, 2, 3, 4 -> if (index == item.itemNo) EMPTY else "${(0..9).random()}:${(0..9).random()}"
             1 -> item.score1
             2 -> item.score2
             3 -> item.score3
@@ -219,7 +223,7 @@ fun Games_Table(result: List<GroupTeamResultModel>) {
             }
         } else {
             Text(
-                text = value, //if (value == "empty") "" else value,
+                text = value,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = if (value.isEmpty() || value[0].isDigit()) TextAlign.Center else TextAlign.Start,
                 modifier = Modifier.padding(4.dp),
@@ -235,6 +239,7 @@ fun Games_Table(result: List<GroupTeamResultModel>) {
         data = result,
         modifier = Modifier.padding(top = 4.dp),
         headerCellContent = headerCellTitle,
-        cellContent = cellText
+        cellContent = cellText,
+        onClick = { onClick() }
     )
 }
