@@ -10,12 +10,12 @@ object Constants {
     const val FEMALE = "женский"
 
     const val KEY_ID = "id"
+    const val KEY_GROUP = "group"
     const val KEY_PHOTO_URL = "photoUrl"
 
     const val ID_NEW_EMAIL = "-1"
 
     const val GROUPS_COUNT = 6
-    const val TEAMS_COUNT_INTO_GROUP = 4
 
     object Routes {
         const val SPLASH_SCREEN = "splash_screen"
@@ -28,7 +28,7 @@ object Constants {
         const val STAKES_SCREEN = "stakes_screen"
         const val PROGNOSIS_SCREEN = "prognosis_screen"
         const val GAME_LIST_SCREEN = "game_list_screen"
-        const val GAME_SCREEN = "game_screen"
+        const val GROUP_GAME_LIST_SCREEN = "group_game_list_screen"
 
         const val ADMIN_MAIN_SCREEN = "admin_main_screen"
         const val ADMIN_EMAIL_LIST_SCREEN = "admin_email_list_screen"

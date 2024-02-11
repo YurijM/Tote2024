@@ -5,8 +5,12 @@ import androidx.navigation.compose.composable
 import com.mu.tote2024.presentation.screen.game.list.GameListScreen
 import com.mu.tote2024.presentation.utils.Constants
 
-fun NavGraphBuilder.gameList() {
+fun NavGraphBuilder.gameList(
+    toGroupGameList: (String) -> Unit
+) {
     composable(Constants.Routes.GAME_LIST_SCREEN) {
-        GameListScreen()
+        GameListScreen(
+            toGroupGameList = toGroupGameList
+        )
     }
 }

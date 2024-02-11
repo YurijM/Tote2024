@@ -42,7 +42,8 @@ import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
 
 @Composable
 fun GameListScreen(
-    viewModel: GameListViewModel = hiltViewModel()
+    viewModel: GameListViewModel = hiltViewModel(),
+    toGroupGameList: (String) -> Unit
 ) {
     var isLoading by remember { mutableStateOf(false) }
 
@@ -85,7 +86,7 @@ fun GameListScreen(
                 )
                 Games_Table(
                     result = result.filter { it.group == group },
-                    onClick = { }
+                    onClick = { toGroupGameList(group) }
                 )
             }
         }
