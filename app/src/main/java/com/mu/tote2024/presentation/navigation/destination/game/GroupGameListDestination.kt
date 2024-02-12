@@ -7,11 +7,15 @@ import com.mu.tote2024.presentation.screen.game.list_group.GroupGameListScreen
 import com.mu.tote2024.presentation.utils.Constants.KEY_GROUP
 import com.mu.tote2024.presentation.utils.Constants.Routes.GROUP_GAME_LIST_SCREEN
 
-fun NavGraphBuilder.groupGameList() {
+fun NavGraphBuilder.groupGameList(
+    toGame: (String) -> Unit
+) {
     composable(
         "$GROUP_GAME_LIST_SCREEN/{$KEY_GROUP}"
     ) {
-        GroupGameListScreen()
+        GroupGameListScreen(
+            toGame = toGame
+        )
     }
 }
 

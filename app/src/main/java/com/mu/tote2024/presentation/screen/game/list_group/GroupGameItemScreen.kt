@@ -1,5 +1,6 @@
 package com.mu.tote2024.presentation.screen.game.list_group
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,12 +20,14 @@ import com.mu.tote2024.presentation.utils.asTime
 @Composable
 fun GroupGameItemScreen(
     game: GameModel,
-    flagList: GameFlagsModel
+    flagList: GameFlagsModel,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp),
+            .padding(top = 8.dp)
+            .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

@@ -26,7 +26,8 @@ import com.mu.tote2024.presentation.utils.Constants.GROUP_N
 
 @Composable
 fun GroupGameListScreen(
-    viewModel: GroupGameListViewModel = hiltViewModel()
+    viewModel: GroupGameListViewModel = hiltViewModel(),
+    toGame: (String) -> Unit
 ) {
     var isLoading by remember { mutableStateOf(false) }
     var gameList by remember { mutableStateOf<List<GameModel>>(listOf()) }
@@ -82,7 +83,8 @@ fun GroupGameListScreen(
                         flagList.first { it.gameId == game.gameId }
                     } else {
                         GameFlagsModel()
-                    }
+                    },
+                    onClick = { toGame(game.gameId) }
                 )
                 Divider(
                     thickness = 1.dp,

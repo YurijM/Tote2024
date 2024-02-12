@@ -24,7 +24,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
     viewModel: GameViewModel = hiltViewModel()

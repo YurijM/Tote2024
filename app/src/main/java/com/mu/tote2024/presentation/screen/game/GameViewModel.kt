@@ -43,7 +43,7 @@ class GameViewModel @Inject constructor(
                 if (goal1.isNotBlank() && goal2.isNotBlank()) {
                     viewModelScope.launch {
                         gameUseCase.saveGame(event.game).collect { stateGame ->
-                                _state.value = GameState(stateGame)
+                            _state.value = GameState(stateGame)
                         }
                     }
                 } else {
