@@ -1,5 +1,6 @@
 package com.mu.tote2024.presentation.screen.game.list_group
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,12 +13,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.presentation.components.AppProgressBar
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
+import com.mu.tote2024.presentation.utils.Constants.GROUP_N
 
 @Composable
 fun GroupGameListScreen(
@@ -25,6 +30,7 @@ fun GroupGameListScreen(
 ) {
     var isLoading by remember { mutableStateOf(false) }
     var gameList by remember { mutableStateOf<List<GameModel>>(listOf()) }
+    var flagList by remember { mutableStateOf<List<GameFlagsModel>>(listOf()) }
     val state by viewModel.state.collectAsState()
 
     when (val result = state.result) {
@@ -35,7 +41,11 @@ fun GroupGameListScreen(
         is UiState.Success -> {
             isLoading = false
 
-            gameList = result.data.filter { game -> game.group == viewModel.group }.sortedBy { it.gameId.toInt() }
+            flagList = viewModel.listGameFlags
+
+            gameList = result.data
+                .filter { game -> game.group == viewModel.group }
+                .sortedBy { it.gameId.toInt() }
         }
 
         is UiState.Error -> {
@@ -45,23 +55,40 @@ fun GroupGameListScreen(
         else -> {}
     }
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                start = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp
-            )
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        items(gameList) { game ->
-            GroupGameItemScreen(
-                game = game,
-            )
-            Divider(
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+        Title(
+            title = GROUP_N.replace("%_%", (viewModel.group ?: ""))
+        )
+        Divider(
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    start = 8.dp,
+                    end = 8.dp,
+                    bottom = 8.dp
+                )
+        ) {
+            items(gameList) { game ->
+                GroupGameItemScreen(
+                    game = game,
+                    flagList = if (flagList.isNotEmpty()) {
+                        flagList.first { it.gameId == game.gameId }
+                    } else {
+                        GameFlagsModel()
+                    }
+                )
+                Divider(
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
         }
     }
 

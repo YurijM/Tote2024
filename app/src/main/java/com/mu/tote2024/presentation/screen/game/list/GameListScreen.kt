@@ -39,6 +39,7 @@ import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.EMPTY
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
+import com.mu.tote2024.presentation.utils.Constants.GROUP_N
 
 @Composable
 fun GameListScreen(
@@ -80,7 +81,7 @@ fun GameListScreen(
                 val group = groups[index - 1]
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "группа $group",
+                    text = GROUP_N.replace("%_%", group),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleMedium
                 )

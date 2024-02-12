@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
@@ -56,7 +57,7 @@ fun AdminTeamListScreen(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Title(R.string.admin_team_list)
+        Title(stringResource(id = R.string.admin_team_list))
         OkAndCancel(
             titleOk = R.string.load,
             enabledOk = true,

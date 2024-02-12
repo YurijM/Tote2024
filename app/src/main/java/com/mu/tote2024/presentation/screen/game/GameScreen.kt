@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -25,7 +26,9 @@ import java.util.Locale
 
 @ExperimentalMaterial3Api
 @Composable
-fun GameScreen() {
+fun GameScreen(
+    viewModel: GameViewModel = hiltViewModel()
+) {
     val calendar = Calendar.getInstance()
     calendar.set(1990, 0, 22) // add year, month (Jan), date
 

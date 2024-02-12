@@ -95,7 +95,7 @@ fun AdminGamblerScreen(
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Title(title = R.string.profile)
+            Title(title = stringResource(id = R.string.profile))
             Card(
                 modifier = Modifier
                     .fillMaxWidth(),

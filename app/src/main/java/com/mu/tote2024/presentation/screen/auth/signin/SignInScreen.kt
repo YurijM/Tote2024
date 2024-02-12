@@ -76,7 +76,7 @@ fun SignInScreen(
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Title(title = R.string.sign_in)
+            Title(title = stringResource(id = R.string.sign_in))
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(

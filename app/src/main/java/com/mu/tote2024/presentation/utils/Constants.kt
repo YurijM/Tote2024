@@ -17,6 +17,8 @@ object Constants {
 
     const val GROUPS_COUNT = 6
 
+    const val GROUP_N = "Группа %_%"
+
     object Routes {
         const val SPLASH_SCREEN = "splash_screen"
         const val MAIN_SCREEN = "main_screen"

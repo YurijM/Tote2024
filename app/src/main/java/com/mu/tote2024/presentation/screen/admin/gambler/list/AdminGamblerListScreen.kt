@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
@@ -54,7 +55,7 @@ fun AdminGamblerListScreen(
             .fillMaxSize()
             .padding(4.dp)
     ) {
-        Title(R.string.admin_gambler_list)
+        Title(stringResource(id = R.string.admin_gambler_list))
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

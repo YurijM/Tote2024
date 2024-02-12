@@ -75,7 +75,7 @@ fun AdminEmailScreen(
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Title(title = R.string.email)
+            Title(title = stringResource(id = R.string.email))
             Card(
                 modifier = Modifier
                     .fillMaxWidth(),
