@@ -3,11 +3,14 @@ package com.mu.tote2024.presentation.screen.game
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.usecase.game_usecase.GameUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.Errors.FIELD_CAN_NOT_EMPTY
+import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,9 +20,15 @@ import javax.inject.Inject
 @HiltViewModel
 class GameViewModel @Inject constructor(
     private val gameUseCase: GameUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _state: MutableStateFlow<GameState> = MutableStateFlow(GameState())
-    val state: StateFlow<GameState> = _state
+    private val _stateGame: MutableStateFlow<GameState> = MutableStateFlow(GameState())
+    val stateGame: StateFlow<GameState> = _stateGame
+
+    private val _state: MutableStateFlow<GameSaveState> = MutableStateFlow(GameSaveState())
+    val state: StateFlow<GameSaveState> = _state
+
+    val gameId = savedStateHandle.get<String>(KEY_ID)
 
     var goal1 by mutableStateOf("")
         private set
@@ -27,6 +36,14 @@ class GameViewModel @Inject constructor(
         private set
     var error by mutableStateOf("")
         private set
+
+    init {
+        viewModelScope.launch {
+            gameUseCase.getGame(gameId ?: "").collect { state ->
+                _stateGame.value = GameState(state)
+            }
+        }
+    }
 
     fun onEvent(event: GameEvent) {
         when (event) {
@@ -42,8 +59,8 @@ class GameViewModel @Inject constructor(
             is GameEvent.OnSave -> {
                 if (goal1.isNotBlank() && goal2.isNotBlank()) {
                     viewModelScope.launch {
-                        gameUseCase.saveGame(event.game).collect { stateGame ->
-                            _state.value = GameState(stateGame)
+                        gameUseCase.saveGame(event.game).collect { state ->
+                            _state.value = GameSaveState(state)
                         }
                     }
                 } else {
@@ -54,8 +71,11 @@ class GameViewModel @Inject constructor(
     }
 
     companion object {
-        data class GameState(
+        data class GameSaveState(
             val result: UiState<Boolean> = UiState.Default,
+        )
+        data class GameState(
+            val result: UiState<GameModel> = UiState.Default,
         )
     }
 }

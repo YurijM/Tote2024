@@ -34,7 +34,7 @@ class GameRepositoryImpl(
             }
         }
 
-        firebaseDatabase.reference.child(Constants.Nodes.NODE_TEAMS).child(id).addValueEventListener(valueEvent)
+        firebaseDatabase.reference.child(Constants.Nodes.NODE_GAMES).child(id).addValueEventListener(valueEvent)
 
         awaitClose {
             firebaseDatabase.reference.child(Constants.Nodes.NODE_TEAMS).child(id).removeEventListener(valueEvent)
