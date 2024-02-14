@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -44,7 +45,8 @@ fun GameScreen(
     var showDatePicker by remember { mutableStateOf(false) }
 
     val calendar = Calendar.getInstance()
-    //calendar.set(1990, 0, 22) // add year, month (Jan), date
+    //calendar.set(2000, 1, 1) // add year, month (Jan), date
+    //game = game.copy(start = calendar.timeInMillis.toString())
 
     var selectedDate by remember {
         mutableLongStateOf(calendar.timeInMillis) // or use mutableStateOf(calendar.timeInMillis)
@@ -53,27 +55,29 @@ fun GameScreen(
     val resultGame = stateGame.result
     val result = state.result
 
-    when {
-        result is UiState.Loading -> {
-            isLoading = true
+    LaunchedEffect(key1 = resultGame, key2 = result) {
+        when {
+            result is UiState.Loading -> {
+                isLoading = true
+            }
+
+            resultGame is UiState.Loading -> {
+                isLoading = true
+                game = game.copy(start = calendar.timeInMillis.toString())
+            }
+
+            resultGame is UiState.Success -> {
+                isLoading = false
+
+                game = resultGame.data
+            }
+
+            (result is UiState.Error || resultGame is UiState.Error) -> {
+                isLoading = false
+            }
+
+            else -> {}
         }
-
-        resultGame is UiState.Loading -> {
-            isLoading = true
-            game = game.copy(start = calendar.timeInMillis.toString())
-        }
-
-        resultGame is UiState.Success -> {
-            isLoading = false
-
-            game = resultGame.data
-        }
-
-        (result is UiState.Error || resultGame is UiState.Error) -> {
-            isLoading = false
-        }
-
-        else -> {}
     }
 
     Column(
@@ -111,20 +115,22 @@ fun GameScreen(
             }
         }
 
-        Title("начало ${selectedDate.toString().asTime()}")
+        if (game.gameId.isNotBlank()) {
+            Title("начало ${game.start.asTime()}")
 
-        Button(
-            onClick = {
-                showDatePicker = true
+            Button(
+                onClick = {
+                    showDatePicker = true
+                }
+            ) {
+                Text(text = "Show Date Picker")
             }
-        ) {
-            Text(text = "Show Date Picker")
-        }
 
-        val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.ROOT)
-        Text(
-            text = "Selected date: ${formatter.format(Date(selectedDate))}"
-        )
+            val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.ROOT)
+            Text(
+                text = "Selected date: ${formatter.format(Date(selectedDate))}"
+            )
+        }
     }
 
     if (isLoading) {

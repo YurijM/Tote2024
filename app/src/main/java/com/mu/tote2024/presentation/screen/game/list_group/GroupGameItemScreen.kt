@@ -2,6 +2,7 @@ package com.mu.tote2024.presentation.screen.game.list_group
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,63 +24,69 @@ fun GroupGameItemScreen(
     flagList: GameFlagsModel,
     onClick: () -> Unit
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp)
             .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            modifier = Modifier.weight(1f),
-            text = "Игра №${game.gameId}",
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        Text(
-            modifier = Modifier.weight(1f),
-            text = game.start.asTime(),
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.End
-        )
-    }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            modifier = Modifier.weight(1f),
-            horizontalArrangement = Arrangement.End,
+            modifier = Modifier
+                .fillMaxWidth(),
+            //.padding(top = 8.dp)
+            //.clickable { onClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = game.team1,
+                modifier = Modifier.weight(1f),
+                text = "Игра №${game.gameId}",
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                modifier = Modifier.weight(1f),
+                text = game.start.asTime(),
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.End
             )
-            ShowFlag(flagList.flag1)
-            Text(
-                text = game.goal1,
-                color = MaterialTheme.colorScheme.onSurface
-            )
         }
-        Text(
-            text = " : ",
-            color = MaterialTheme.colorScheme.onSurface
-        )
         Row(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = game.team1,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.End
+                )
+                ShowFlag(flagList.flag1)
+                Text(
+                    text = game.goal1,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
             Text(
-                text = game.goal2,
+                text = " : ",
                 color = MaterialTheme.colorScheme.onSurface
             )
-            ShowFlag(flagList.flag2)
-            Text(
-                text = game.team2,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            Row(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = game.goal2,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                ShowFlag(flagList.flag2)
+                Text(
+                    text = game.team2,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
     }
 }

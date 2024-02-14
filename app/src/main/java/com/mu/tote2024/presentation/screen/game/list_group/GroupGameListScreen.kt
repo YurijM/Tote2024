@@ -64,6 +64,7 @@ fun GroupGameListScreen(
             title = GROUP_N.replace("%_%", (viewModel.group ?: ""))
         )
         Divider(
+            modifier = Modifier.padding(bottom = 4.dp),
             thickness = 1.dp,
             color = MaterialTheme.colorScheme.onSurface,
         )
@@ -87,6 +88,10 @@ fun GroupGameListScreen(
                     onClick = { toGame(game.gameId) }
                 )
                 Divider(
+                    modifier = Modifier.padding(
+                        top = 8.dp,
+                        bottom = 4.dp
+                    ),
                     thickness = 1.dp,
                     color = MaterialTheme.colorScheme.onSurface,
                 )

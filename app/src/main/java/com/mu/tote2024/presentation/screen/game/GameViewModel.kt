@@ -67,6 +67,7 @@ class GameViewModel @Inject constructor(
                     error = FIELD_CAN_NOT_EMPTY
                 }
             }
+            else -> {}
         }
     }
 
