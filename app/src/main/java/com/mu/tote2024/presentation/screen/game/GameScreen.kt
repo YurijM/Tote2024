@@ -70,6 +70,7 @@ fun GameScreen(
                 isLoading = false
 
                 game = resultGame.data
+                selectedDate = game.start.toLong()
             }
 
             (result is UiState.Error || resultGame is UiState.Error) -> {
@@ -116,7 +117,7 @@ fun GameScreen(
         }
 
         if (game.gameId.isNotBlank()) {
-            Title("начало ${game.start.asTime()}")
+            Title("начало ${selectedDate.toString().asTime()}")
 
             Button(
                 onClick = {
