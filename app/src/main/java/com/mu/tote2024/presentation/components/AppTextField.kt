@@ -5,16 +5,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 /*@Preview(
@@ -40,11 +41,11 @@ fun PreviewAppFieldWithIcon() {
     }
 }*/
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTextField(
     modifier: Modifier = Modifier,
     label: String,
+    textAlign: TextAlign? = null,
     value: String?,
     onChange: (newValue: String) -> Unit,
     @DrawableRes painterId: Int? = null,
@@ -63,8 +64,11 @@ fun AppTextField(
             onValueChange = { newValue ->
                 onChange(newValue)
             },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                errorLeadingIconColor = MaterialTheme.colorScheme.error
+            textStyle = TextStyle(
+                textAlign = textAlign
+            ),
+            colors = OutlinedTextFieldDefaults.colors(
+                errorLeadingIconColor = MaterialTheme.colorScheme.error,
             ),
             //textStyle = MaterialTheme.typography.bodyLarge,
             label = {

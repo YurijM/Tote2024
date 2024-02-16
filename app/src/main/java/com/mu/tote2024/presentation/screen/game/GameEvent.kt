@@ -3,7 +3,7 @@ package com.mu.tote2024.presentation.screen.game
 import com.mu.tote2024.domain.model.GameModel
 
 sealed class GameEvent {
-    data class OnGameIdChange(val gameId: Int) : GameEvent()
+    data class OnGameIdChange(val gameId: String) : GameEvent()
     data class OnStartChange(val start: String) : GameEvent()
     data class OnGroupChange(val group: String) : GameEvent()
     data class OnTeamChange(val teamNo: Int, val team: String) : GameEvent()
