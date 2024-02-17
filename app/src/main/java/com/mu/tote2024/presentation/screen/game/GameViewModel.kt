@@ -10,7 +10,9 @@ import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.usecase.game_usecase.GameUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
+import com.mu.tote2024.presentation.utils.asTime
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
+import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,6 +50,7 @@ class GameViewModel @Inject constructor(
                 if (result is UiState.Success) {
                     game = result.data
                     disabled = checkValues()
+                    toLog("start init: ${game.start.asTime()}")
                 }
 
                 _stateGame.value = GameState(state)
@@ -58,8 +61,15 @@ class GameViewModel @Inject constructor(
     fun onEvent(event: GameEvent) {
         when (event) {
             is GameEvent.OnGameIdChange -> {
-                gameId = event.gameId
-                errorGameId = checkIsFieldEmpty(gameId)
+                if (event.gameId.isNotBlank())
+                    game = game.copy(gameId = event.gameId)
+                //errorGameId = checkIsFieldEmpty(event.gameId)
+            }
+
+            is GameEvent.OnStartChange -> {
+                game = game.copy(start = event.start)
+                //errorStart = checkIsFieldEmpty(gameId)
+                toLog("start viewModel: ${game.start.asTime()}")
             }
 
             is GameEvent.OnSave -> {

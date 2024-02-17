@@ -23,6 +23,7 @@ import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.GROUP_N
+import com.mu.tote2024.presentation.utils.withParam
 
 @Composable
 fun GroupGameListScreen(
@@ -61,7 +62,7 @@ fun GroupGameListScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Title(
-            title = GROUP_N.replace("%_%", (viewModel.group ?: ""))
+            title = GROUP_N.withParam(viewModel.group ?: "")
         )
         Divider(
             modifier = Modifier.padding(bottom = 4.dp),

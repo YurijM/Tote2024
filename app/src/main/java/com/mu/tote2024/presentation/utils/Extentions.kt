@@ -40,7 +40,7 @@ fun checkPassword(password: String?, passwordConfirm: String?): String {
             (password.isBlank()) -> FIELD_CAN_NOT_EMPTY
 
             password.length < MIN_PASSWORD_LENGTH -> {
-                FIELD_MUST_CONTAIN_LEAST_N_CHARS.replace("%_%", MIN_PASSWORD_LENGTH.toString())
+                FIELD_MUST_CONTAIN_LEAST_N_CHARS.withParam(MIN_PASSWORD_LENGTH.toString())
             }
 
             !passwordConfirm.isNullOrBlank() &&
@@ -70,7 +70,14 @@ fun String.asTime(withSeconds: Boolean = false, toLocale: Boolean = false): Stri
 
     if (toLocale) formatter.timeZone = TimeZone.getTimeZone("Europe/Moscow")
 
-    return formatter.format(Date(this.toLong()))
+    return try {
+        formatter.format(Date(this.toLong()))
+    } catch (e: Exception) {
+        toLog("Ошибка asTime ${e.message}")
+        ""
+    }
 }
+
+fun String.withParam(param: String) = this.replace("%_%", param)
 
 
