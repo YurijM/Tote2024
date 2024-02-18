@@ -153,10 +153,10 @@ fun SignUpScreen(
                         errorMessage = viewModel.signUpFields.errorPasswordConfirm
                     )
                     OkAndCancel(
-                        titleOk = R.string.to_register,
+                        titleOk = stringResource(id = R.string.to_register),
                         enabledOk = viewModel.enabledButton,
                         showCancel = false,
-                        onSave = {
+                        onOK = {
                             viewModel.onEvent( SignUpEvent.OnSignUp )
                         },
                         onCancel = {}

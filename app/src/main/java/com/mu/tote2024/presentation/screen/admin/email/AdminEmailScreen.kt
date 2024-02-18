@@ -104,7 +104,7 @@ fun AdminEmailScreen(
                 )
                 OkAndCancel(
                     enabledOk = viewModel.errorEmail.isBlank(),
-                    onSave = { viewModel.onEvent(AdminEmailEvent.OnSave) },
+                    onOK = { viewModel.onEvent(AdminEmailEvent.OnSave) },
                     onCancel = { viewModel.onEvent(AdminEmailEvent.OnCancel) }
                 )
             }

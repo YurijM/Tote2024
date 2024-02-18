@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,15 +18,12 @@ import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -41,19 +39,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.PlatformTextStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
+import com.mu.tote2024.presentation.components.AppDropDownList
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
+import com.mu.tote2024.presentation.components.OkAndCancel
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.Constants.GROUP_N
+import com.mu.tote2024.presentation.utils.Constants.GROUPS
+import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
 import com.mu.tote2024.presentation.utils.asTime
-import com.mu.tote2024.presentation.utils.withParam
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,13 +62,6 @@ fun GameScreen(
     var isLoading by remember { mutableStateOf(false) }
     val stateGame by viewModel.stateGame.collectAsState()
     val state by viewModel.state.collectAsState()
-    var showDatePicker by remember { mutableStateOf(false) }
-
-    val calendar = Calendar.getInstance()
-
-    var selectedDate by remember {
-        mutableLongStateOf(calendar.timeInMillis) // or use mutableStateOf(calendar.timeInMillis)
-    }
 
     val resultGame = stateGame.result
     val result = state.result
@@ -97,147 +88,167 @@ fun GameScreen(
         }
     }
 
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    val calendar = Calendar.getInstance()
+    var selectedDate by remember {
+        mutableLongStateOf(calendar.timeInMillis) // or use mutableStateOf(calendar.timeInMillis)
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        if (showDatePicker) {
-            val datePickerState = rememberDatePickerState(initialSelectedDateMillis = viewModel.game.start.toLong())
-
-            DatePickerDialog(
-                onDismissRequest = {
-                    showDatePicker = false
-                },
-                confirmButton = {
-                    TextButton(onClick = {
-                        selectedDate = datePickerState.selectedDateMillis!!
-                        viewModel.onEvent(GameEvent.OnStartChange(selectedDate.toString()))
-                        showDatePicker = false
-                    }) {
-                        Text(text = stringResource(id = R.string.ok))
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = {
-                        showDatePicker = false
-                    }) {
-                        Text(text = stringResource(id = R.string.cancel))
-                    }
-                }
-            ) {
-                DatePicker(
-                    state = datePickerState
-                )
-            }
-        }
-
         Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {
-                Column(
+            Column(
+                verticalArrangement = Arrangement.Center
+            ) {
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    verticalArrangement = Arrangement.Center
+                        .padding(horizontal = 24.dp, vertical = 12.dp),
+                    border = BorderStroke(
+                        width = 2.dp,
+                        color = MaterialTheme.colorScheme.outline
+                    ),
                 ) {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        border = BorderStroke(
-                            width = 2.dp,
-                            color = MaterialTheme.colorScheme.outline
-                        ),
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(8.dp),
+                        StartGame(
+                            date = viewModel.game.start.asTime(),
+                            onClick = { showDatePicker = true }
+                        )
+                        Divider(
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            thickness = 1.dp,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center  //.spacedBy(8.dp)
                         ) {
-                            StartGame(
-                                date = viewModel.game.start.asTime(),
-                                onClick = { showDatePicker = true }
-                            )
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                AppTextField(
-                                    modifier = Modifier.fillMaxWidth(.3f),
-                                    label = "№ игры",
-                                    textAlign = TextAlign.Center,
-                                    value = viewModel.game.gameId,
-                                    onChange = { newValue ->
-                                        viewModel.onEvent(GameEvent.OnGameIdChange(newValue))
-                                    },
-                                    errorMessage = viewModel.errorGameId,
-                                    keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.NumberPassword,
-                                    )
+                            AppTextField(
+                                modifier = Modifier
+                                    .width(88.dp)
+                                    .padding(end = 8.dp),
+                                label = "№ игры",
+                                textAlign = TextAlign.Center,
+                                value = viewModel.game.gameId,
+                                onChange = { newValue ->
+                                    viewModel.onEvent(GameEvent.OnGameIdChange(newValue))
+                                },
+                                errorMessage = viewModel.errorGameId,
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.NumberPassword,
                                 )
-                                val options = listOf("A", "B", "C", "D", "E", "F")
-                                var expanded by remember { mutableStateOf(false) }
-                                var selectedOptionText by remember { mutableStateOf(options[0]) }
-
-                                ExposedDropdownMenuBox(
-                                    expanded = expanded,
-                                    onExpandedChange = {
-                                        expanded = !expanded
-                                    }
-                                ) {
-                                    OutlinedTextField(
-                                        modifier = Modifier
-                                            .fillMaxWidth(1f)
-                                            .menuAnchor(),
-                                        readOnly = true,
-                                        value = GROUP_N.withParam(selectedOptionText),
-                                        onValueChange = { },
-                                        label = { Text("Группа") },
-                                        trailingIcon = {
-                                            ExposedDropdownMenuDefaults.TrailingIcon(
-                                                expanded = expanded
-                                            )
-                                        },
-                                        shape = ShapeDefaults.Medium,
-                                        colors = ExposedDropdownMenuDefaults.textFieldColors()
-                                    )
-                                    ExposedDropdownMenu(
-                                        expanded = expanded,
-                                        onDismissRequest = {
-                                            expanded = false
-                                        }
-                                    ) {
-                                        options.forEach { selectionOption ->
-                                            DropdownMenuItem(
-                                                onClick = {
-                                                    selectedOptionText = selectionOption
-                                                    expanded = false
-                                                },
-                                                text = {
-                                                    Text(
-                                                        text = GROUP_N.withParam(selectionOption),
-                                                        style = TextStyle(
-                                                            platformStyle = PlatformTextStyle(
-                                                                includeFontPadding = false,
-                                                            ),
-                                                        )
-                                                    )
-                                                }
-                                            )
-                                        }
-                                    }
-                                }
-                            }
+                            )
+                            AppDropDownList(
+                                list = GROUPS,
+                                label = "Группа",
+                                selectedItem = viewModel.game.group,
+                                onClick = { selectedItem -> viewModel.onEvent(GameEvent.OnGroupChange(selectedItem)) }
+                            )
                         }
+                        TeamData(
+                            teams = viewModel.teams,
+                            team = viewModel.game.team1,
+                            goal = viewModel.game.goal1,
+                            onTeamSelect = { team -> viewModel.onEvent(GameEvent.OnTeamChange(1, team)) },
+                            onGoalSet = { goal -> viewModel.onEvent(GameEvent.OnGoalChange(false, 1, goal)) }
+                        )
+                        TeamData(
+                            teams = viewModel.teams,
+                            team = viewModel.game.team2,
+                            goal = viewModel.game.goal2,
+                            onTeamSelect = { team -> viewModel.onEvent(GameEvent.OnTeamChange(2, team)) },
+                            onGoalSet = { goal -> viewModel.onEvent(GameEvent.OnGoalChange(false, 2, goal)) }
+                        )
+                        Divider(
+                            modifier = Modifier.padding(top = 8.dp),
+                            thickness = 1.dp,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+
+                        if (
+                            GROUPS.indexOf(viewModel.game.group) >= GROUPS_COUNT
+                            && viewModel.game.goal1 == viewModel.game.goal2
+                        ) {
+                            ExtraTime(
+                                goal1 = viewModel.game.addGoal1,
+                                goal2 = viewModel.game.addGoal2,
+                                onGoal1Change = { goal -> viewModel.onEvent(GameEvent.OnGoalChange(true, 1, goal)) },
+                                onGoal2Change = { goal -> viewModel.onEvent(GameEvent.OnGoalChange(true, 2, goal)) }
+                            )
+                        }
+                        OkAndCancel(
+                            titleOk = stringResource(id = R.string.save),
+                            enabledOk = false,
+                            onOK = { },
+                            onCancel = { }
+                        )
                     }
                 }
+            }
+        }
+
+        if (showDatePicker) {
+            val datePickerState = rememberDatePickerState(initialSelectedDateMillis = viewModel.game.start.toLong())
+
+            DateSelect(
+                datePickerState = datePickerState,
+                onDismissRequest = { showDatePicker = false },
+                onClickConfirm = {
+                    selectedDate = datePickerState.selectedDateMillis!!
+                    viewModel.onEvent(GameEvent.OnStartChange(selectedDate.toString()))
+                    showDatePicker = false
+                },
+                onClickCancel = { showDatePicker = false }
+            )
+        }
+
+        if (isLoading) {
+            AppProgressBar()
         }
     }
+}
 
-    if (isLoading) {
-        AppProgressBar()
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DateSelect(
+    datePickerState: DatePickerState,
+    onDismissRequest: () -> Unit,
+    onClickConfirm: () -> Unit,
+    onClickCancel: () -> Unit,
+) {
+    DatePickerDialog(
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            TextButton(
+                onClick = onClickConfirm
+            ) {
+                Text(text = stringResource(id = R.string.ok))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onClickCancel
+            ) {
+                Text(text = stringResource(id = R.string.cancel))
+            }
+        }
+    ) {
+        DatePicker(
+            state = datePickerState
+        )
     }
 }
 
@@ -250,17 +261,6 @@ private fun StartGame(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "начало матча"
-            )
-            Text(
-                text = date
-            )
-        }
         IconButton(
             onClick = onClick
         ) {
@@ -276,5 +276,97 @@ private fun StartGame(
                 contentDescription = null
             )
         }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "начало матча"
+            )
+            Text(
+                text = date
+            )
+        }
     }
+}
+
+@Composable
+private fun TeamData(
+    teams: List<String>,
+    team: String,
+    goal: String,
+    onTeamSelect: (String) -> Unit,
+    onGoalSet: (String) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        AppDropDownList(
+            list = teams,
+            label = "Команда",
+            selectedItem = team,
+            onClick = { item -> onTeamSelect(item) }
+        )
+        AppTextField(
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .width(52.dp),
+            label = "",
+            textAlign = TextAlign.Center,
+            value = goal,
+            onChange = { newValue -> onGoalSet(newValue) },
+            errorMessage = null,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.NumberPassword,
+            )
+        )
+    }
+}
+
+@Composable
+private fun ExtraTime(
+    goal1: String,
+    goal2: String,
+    onGoal1Change: (String) -> Unit,
+    onGoal2Change: (String) -> Unit
+) {
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = "Счёт в дополнительное время",
+        textAlign = TextAlign.Center
+    )
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        AppTextField(
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .width(52.dp),
+            label = "",
+            textAlign = TextAlign.Center,
+            value = goal1,
+            onChange = { newValue -> onGoal1Change(newValue) },
+            errorMessage = null,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.NumberPassword,
+            )
+        )
+        AppTextField(
+            modifier = Modifier.width(52.dp),
+            label = "",
+            textAlign = TextAlign.Center,
+            value = goal2,
+            onChange = { newValue -> onGoal2Change(newValue) },
+            errorMessage = null,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.NumberPassword,
+            )
+        )
+    }
+    Divider(
+        modifier = Modifier.padding(top = 8.dp),
+        thickness = 1.dp,
+        color = MaterialTheme.colorScheme.onSurface,
+    )
 }

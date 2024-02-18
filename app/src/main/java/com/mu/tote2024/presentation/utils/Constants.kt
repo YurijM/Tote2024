@@ -15,6 +15,7 @@ object Constants {
 
     const val ID_NEW_EMAIL = "-1"
 
+    val GROUPS = listOf("A", "B", "C", "D", "E", "F", "1/4 финала", "1/2 финала", "финал")
     const val GROUPS_COUNT = 6
 
     const val GROUP_N = "Группа %_%"

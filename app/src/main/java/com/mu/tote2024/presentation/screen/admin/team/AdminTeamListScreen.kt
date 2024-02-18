@@ -59,10 +59,10 @@ fun AdminTeamListScreen(
     ) {
         Title(stringResource(id = R.string.admin_team_list))
         OkAndCancel(
-            titleOk = R.string.load,
+            titleOk = stringResource(id = R.string.load),
             enabledOk = true,
             showCancel = false,
-            onSave = { viewModel.onEvent(AdminTeamListEvent.OnLoad) },
+            onOK = { viewModel.onEvent(AdminTeamListEvent.OnLoad) },
             onCancel = {}
         )
         LazyColumn(
