@@ -37,7 +37,19 @@ class GameViewModel @Inject constructor(
         private set
     val teams = mutableListOf<String>()
 
-    var errorGameId by mutableStateOf("")
+    var errorGameId = ""
+        private set
+    var errorStart = ""
+        private set
+    var errorGoal1 = ""
+        private set
+    var errorGoal2 = ""
+        private set
+    private var errorAddGoal1 = ""
+    private var errorAddGoal2 = ""
+    var errorExtraTime = ""
+        private set
+    var errorPenalty = ""
         private set
 
     var disabled by mutableStateOf(false)
@@ -69,19 +81,17 @@ class GameViewModel @Inject constructor(
     fun onEvent(event: GameEvent) {
         when (event) {
             is GameEvent.OnGameIdChange -> {
-                if (event.gameId.isNotBlank())
-                    game = game.copy(gameId = event.gameId)
-                //errorGameId = checkIsFieldEmpty(event.gameId)
+                game = game.copy(gameId = event.gameId)
+                errorGameId = checkIsFieldEmpty(event.gameId)
             }
 
             is GameEvent.OnStartChange -> {
                 game = game.copy(start = event.start)
-                //errorStart = checkIsFieldEmpty(gameId)
+                errorStart = checkIsFieldEmpty(event.start)
             }
 
             is GameEvent.OnGroupChange -> {
                 game = game.copy(group = event.group)
-                //errorStart = checkIsFieldEmpty(gameId)
             }
 
             is GameEvent.OnTeamChange -> {
@@ -89,22 +99,32 @@ class GameViewModel @Inject constructor(
                     game.copy(team1 = event.team)
                 else
                     game.copy(team2 = event.team)
-                //errorStart = checkIsFieldEmpty(gameId)
             }
 
             is GameEvent.OnGoalChange -> {
-                game = if (!event.extraTime) {
-                    if (event.teamNo == 1)
-                        game.copy(goal1 = event.goal)
-                    else
-                        game.copy(goal2 = event.goal)
+                if (!event.extraTime) {
+                    if (event.teamNo == 1) {
+                        game = game.copy(goal1 = event.goal)
+                        errorGoal1 = checkIsFieldEmpty(event.goal)
+                    } else {
+                        game = game.copy(goal2 = event.goal)
+                        errorGoal2 = checkIsFieldEmpty(event.goal)
+                    }
                 } else {
-                    if (event.teamNo == 1)
-                        game.copy(addGoal1 = event.goal)
-                    else
-                        game.copy(addGoal2 = event.goal)
+                    if (event.teamNo == 1) {
+                        game = game.copy(addGoal1 = event.goal)
+                        errorAddGoal1 = checkIsFieldEmpty(event.goal)
+                    } else {
+                        game = game.copy(addGoal2 = event.goal)
+                        errorAddGoal2 = checkIsFieldEmpty(event.goal)
+                    }
+                    errorExtraTime = errorAddGoal1.ifBlank { errorAddGoal2 }
                 }
-                //errorStart = checkIsFieldEmpty(gameId)
+            }
+
+            is GameEvent.OnPenaltyChange -> {
+                game = game.copy(penalty = event.team)
+                errorPenalty = checkIsFieldEmpty(event.team)
             }
 
             is GameEvent.OnSave -> {
@@ -115,13 +135,12 @@ class GameViewModel @Inject constructor(
                         }
                     }
                 } else {
-                    error = FIELD_CAN_NOT_EMPTY
+                    error = FIELD_CAN_NOT_""
                 }*/
             }
-
-            else -> {}
         }
     }
+
     private fun checkValues(): Boolean {
         errorGameId = checkIsFieldEmpty(game.gameId)
 

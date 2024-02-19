@@ -2,7 +2,6 @@ package com.mu.tote2024.presentation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -23,6 +22,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppDropDownList(
+    modifier: Modifier = Modifier,
     list: List<String>,
     label: String,
     selectedItem: String,
@@ -37,9 +37,7 @@ fun AppDropDownList(
         }
     ) {
         OutlinedTextField(
-            modifier = Modifier
-                .width(160.dp)
-                .menuAnchor(),
+            modifier = modifier.menuAnchor(),
             readOnly = true,
             value = selectedItem,
             onValueChange = { },
