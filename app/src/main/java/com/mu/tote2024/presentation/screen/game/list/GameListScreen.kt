@@ -39,6 +39,7 @@ import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.EMPTY
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
+import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.Constants.GROUP_N
 import com.mu.tote2024.presentation.utils.withParam
 
@@ -77,9 +78,9 @@ fun GameListScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            val groups = arrayListOf("A", "B", "C", "D", "E", "F")
+            //val groups = arrayListOf("A", "B", "C", "D", "E", "F")
             (1..GROUPS_COUNT).forEach { index ->
-                val group = groups[index - 1]
+                val group = GROUPS[index - 1]
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = GROUP_N.withParam(group),

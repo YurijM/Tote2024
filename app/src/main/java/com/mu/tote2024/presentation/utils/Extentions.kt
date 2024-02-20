@@ -79,5 +79,3 @@ fun String.asTime(withSeconds: Boolean = false, toLocale: Boolean = false): Stri
 }
 
 fun String.withParam(param: String) = this.replace("%_%", param)
-
-

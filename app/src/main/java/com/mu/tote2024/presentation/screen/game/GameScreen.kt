@@ -51,7 +51,6 @@ import com.mu.tote2024.presentation.components.OkAndCancel
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.GROUPS
-import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
 import com.mu.tote2024.presentation.utils.asTime
 import java.util.Calendar
 
@@ -133,34 +132,17 @@ fun GameScreen(
                             thickness = 1.dp,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center  //.spacedBy(8.dp)
-                        ) {
-                            AppTextField(
-                                modifier = Modifier
-                                    .width(88.dp)
-                                    .padding(end = 8.dp),
-                                label = "№ игры",
-                                textAlign = TextAlign.Center,
-                                value = viewModel.game.gameId,
-                                onChange = { newValue ->
-                                    viewModel.onEvent(GameEvent.OnGameIdChange(newValue))
-                                },
-                                errorMessage = viewModel.errorGameId,
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.NumberPassword,
-                                )
-                            )
-                            AppDropDownList(
-                                modifier = Modifier.width(160.dp),
-                                list = GROUPS,
-                                label = "Группа",
-                                selectedItem = viewModel.game.group,
-                                onClick = { selectedItem -> viewModel.onEvent(GameEvent.OnGroupChange(selectedItem)) }
-                            )
-                        }
+                        GameIdAndGroup(
+                            gameId = viewModel.game.gameId,
+                            errorMessage = viewModel.errorGameId,
+                            group = viewModel.game.group,
+                            onChange = { newValue ->
+                                viewModel.onEvent(GameEvent.OnGameIdChange(newValue))
+                            },
+                            onClick = { selectedItem ->
+                                viewModel.onEvent(GameEvent.OnGroupChange(selectedItem))
+                            }
+                        )
                         TeamData(
                             teams = viewModel.teams,
                             team = viewModel.game.team1,
@@ -183,10 +165,7 @@ fun GameScreen(
                             color = MaterialTheme.colorScheme.onSurface,
                         )
 
-                        if (
-                            GROUPS.indexOf(viewModel.game.group) >= GROUPS_COUNT
-                            && viewModel.game.goal1 == viewModel.game.goal2
-                        ) {
+                        if (viewModel.isExtraTime) {
                             ExtraTime(
                                 goal1 = viewModel.game.addGoal1,
                                 goal2 = viewModel.game.addGoal2,
@@ -198,10 +177,7 @@ fun GameScreen(
                                     viewModel.onEvent(GameEvent.OnGoalChange(true, 2, goal))
                                 }
                             )
-                            if (viewModel.game.addGoal1.isNotBlank()
-                                && viewModel.game.addGoal2.isNotBlank()
-                                && viewModel.game.addGoal1 == viewModel.game.addGoal2
-                            ) {
+                            if (viewModel.isByPenalty) {
                                 ByPenalty(
                                     teams = listOf(
                                         "",
@@ -209,17 +185,15 @@ fun GameScreen(
                                         viewModel.game.team2
                                     ),
                                     selectedTeam = viewModel.game.penalty,
-                                    errorMessage = viewModel.errorPenalty,
                                     onClick = { selectedItem ->
                                         viewModel.onEvent(GameEvent.OnPenaltyChange(selectedItem))
                                     }
                                 )
                             }
                         }
-
                         OkAndCancel(
                             titleOk = stringResource(id = R.string.save),
-                            enabledOk = false,
+                            enabledOk = viewModel.enabled,
                             onOK = { },
                             onCancel = { }
                         )
@@ -325,6 +299,53 @@ private fun StartGame(
 }
 
 @Composable
+private fun GameIdAndGroup(
+    gameId: String,
+    errorMessage: String,
+    group: String,
+    onChange: (String) -> Unit,
+    onClick: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center  //.spacedBy(8.dp)
+        ) {
+            AppTextField(
+                modifier = Modifier
+                    .width(88.dp)
+                    .padding(end = 8.dp),
+                label = "№ игры",
+                textAlign = TextAlign.Center,
+                value = gameId,
+                onChange = { newValue -> onChange(newValue) },
+                errorMessage = null,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.NumberPassword,
+                )
+            )
+            AppDropDownList(
+                modifier = Modifier.width(160.dp),
+                list = GROUPS,
+                label = "Группа",
+                selectedItem = group,
+                onClick = { selectedItem -> onClick(selectedItem) }
+            )
+        }
+        if (errorMessage.isNotBlank()) {
+            TextError(
+                errorMessage = errorMessage,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
 private fun TeamData(
     teams: List<String>,
     team: String,
@@ -388,11 +409,11 @@ private fun ExtraTime(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             AppTextField(
                 modifier = Modifier
-                    .padding(end = 8.dp)
                     .width(52.dp),
                 label = "",
                 textAlign = TextAlign.Center,
@@ -402,6 +423,11 @@ private fun ExtraTime(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.NumberPassword,
                 )
+            )
+            //Spacer(modifier = Modifier.size(8.dp))
+            Text(
+                text = " : ",
+                style = MaterialTheme.typography.displaySmall
             )
             AppTextField(
                 modifier = Modifier.width(52.dp),
@@ -433,7 +459,6 @@ private fun ExtraTime(
 fun ByPenalty(
     teams: List<String>,
     selectedTeam: String,
-    errorMessage: String,
     onClick: (String) -> Unit
 ) {
     Column(
@@ -447,12 +472,6 @@ fun ByPenalty(
             selectedItem = selectedTeam,
             onClick = { selectedItem -> onClick(selectedItem) }
         )
-        if (errorMessage.isNotBlank()) {
-            TextError(
-                errorMessage = errorMessage,
-                textAlign = TextAlign.Center
-            )
-        }
         Divider(
             modifier = Modifier.padding(top = 8.dp),
             thickness = 1.dp,
