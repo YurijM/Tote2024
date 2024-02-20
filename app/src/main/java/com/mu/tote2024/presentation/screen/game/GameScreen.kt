@@ -203,7 +203,13 @@ fun GameScreen(
         }
 
         if (showDatePicker) {
-            val datePickerState = rememberDatePickerState(initialSelectedDateMillis = viewModel.game.start.toLong())
+            val datePickerState = rememberDatePickerState(
+                initialSelectedDateMillis = if (viewModel.game.start.isNotBlank()) {
+                    viewModel.game.start.toLong()
+                } else {
+                    calendar.timeInMillis
+                }
+            )
 
             DateSelect(
                 datePickerState = datePickerState,
@@ -317,7 +323,7 @@ private fun GameIdAndGroup(
         ) {
             AppTextField(
                 modifier = Modifier
-                    .width(88.dp)
+                    .width(108.dp)
                     .padding(end = 8.dp),
                 label = "№ игры",
                 textAlign = TextAlign.Center,

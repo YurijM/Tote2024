@@ -45,6 +45,9 @@ fun NavGraphMain(
         gameList(
             toGroupGameList = { group ->
                 navMainController.navigateToGroupGameList(group)
+            },
+            toGame = { id ->
+                navMainController.navigateToGame(id)
             }
         )
 

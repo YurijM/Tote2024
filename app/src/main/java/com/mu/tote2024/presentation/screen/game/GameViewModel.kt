@@ -62,6 +62,13 @@ class GameViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            teamUseCase.getTeamList().collect { stateTeam ->
+                if (stateTeam is UiState.Success) {
+                    stateTeam.data.sortedBy { it.team }.forEach { team ->
+                        teams.add(team.team)
+                    }
+                }
+            }
             gameUseCase.getGame(gameId ?: "").collect { state ->
                 val result = GameState(state).result
 
@@ -69,13 +76,13 @@ class GameViewModel @Inject constructor(
                     game = result.data
                     enabled = checkValues()
 
-                    teamUseCase.getTeamList().collect { stateTeam ->
+                    /*teamUseCase.getTeamList().collect { stateTeam ->
                         if (stateTeam is UiState.Success) {
                             stateTeam.data.sortedBy { it.team }.forEach { team ->
                                 teams.add(team.team)
                             }
                         }
-                    }
+                    }*/
                 }
 
                 _stateGame.value = GameState(state)
@@ -153,7 +160,11 @@ class GameViewModel @Inject constructor(
             isExtraTime = (GROUPS.indexOf(game.group) >= GROUPS_COUNT
                     && game.goal1 == game.goal2)
 
-            (game.gameId.isNotBlank() && game.goal2.isNotBlank())
+            (game.gameId.isNotBlank()
+                    && game.start.isNotBlank()
+                    && game.group.isNotBlank()
+                    && game.team1.isNotBlank()
+                    && game.team2.isNotBlank())
         } else {
             false
         }

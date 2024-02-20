@@ -46,7 +46,8 @@ import com.mu.tote2024.presentation.utils.withParam
 @Composable
 fun GameListScreen(
     viewModel: GameListViewModel = hiltViewModel(),
-    toGroupGameList: (String) -> Unit
+    toGroupGameList: (String) -> Unit,
+    toGame: (String) -> Unit
 ) {
     var isLoading by remember { mutableStateOf(false) }
 
@@ -96,7 +97,7 @@ fun GameListScreen(
 
         if (GAMBLER.admin) {
             AppFabAdd(
-                onAdd = { }
+                onAdd = { toGame("new") }
             )
         }
     }
