@@ -57,7 +57,11 @@ fun NavGraphMain(
             }
         )
 
-        game()
+        game(
+            toGameList = {
+                navMainController.popBackStack()
+            },
+        )
 
         adminMain(
             toItem = { route ->

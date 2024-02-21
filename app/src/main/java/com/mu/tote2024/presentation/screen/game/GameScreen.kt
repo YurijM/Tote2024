@@ -57,30 +57,26 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
-    viewModel: GameViewModel = hiltViewModel()
+    viewModel: GameViewModel = hiltViewModel(),
+    toGameList: () -> Unit
 ) {
     var isLoading by remember { mutableStateOf(false) }
-    val stateGame by viewModel.stateGame.collectAsState()
     val state by viewModel.state.collectAsState()
 
-    val resultGame = stateGame.result
     val result = state.result
 
-    LaunchedEffect(key1 = resultGame, key2 = result) {
-        when {
-            result is UiState.Loading -> {
+    LaunchedEffect(key1 = result) {
+        when (result) {
+            is UiState.Loading -> {
                 isLoading = true
             }
 
-            resultGame is UiState.Loading -> {
-                isLoading = true
-            }
-
-            resultGame is UiState.Success -> {
+            is UiState.Success -> {
                 isLoading = false
+                toGameList()
             }
 
-            (result is UiState.Error || resultGame is UiState.Error) -> {
+            is UiState.Error -> {
                 isLoading = false
             }
 
@@ -194,8 +190,8 @@ fun GameScreen(
                         OkAndCancel(
                             titleOk = stringResource(id = R.string.save),
                             enabledOk = viewModel.enabled,
-                            onOK = { },
-                            onCancel = { }
+                            onOK = { viewModel.onEvent(GameEvent.OnSave) },
+                            onCancel = { viewModel.onEvent(GameEvent.OnCancel) }
                         )
                     }
                 }
