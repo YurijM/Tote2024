@@ -62,21 +62,29 @@ fun GameScreen(
 ) {
     var isLoading by remember { mutableStateOf(false) }
     val state by viewModel.state.collectAsState()
+    val stateExit by viewModel.stateExit.collectAsState()
 
     val result = state.result
+    val resultExit = stateExit.result
 
-    LaunchedEffect(key1 = result) {
-        when (result) {
-            is UiState.Loading -> {
+    LaunchedEffect(key1 = result, key2 = resultExit) {
+        when {
+            result is UiState.Loading -> {
                 isLoading = true
             }
 
-            is UiState.Success -> {
+            /*result is UiState.Success -> {
                 isLoading = false
-                toGameList()
+            }*/
+
+            result is UiState.Success || resultExit is UiState.Success -> {
+                isLoading = false
+                if (resultExit is UiState.Success) {
+                    toGameList()
+                }
             }
 
-            is UiState.Error -> {
+            result is UiState.Error -> {
                 isLoading = false
             }
 
