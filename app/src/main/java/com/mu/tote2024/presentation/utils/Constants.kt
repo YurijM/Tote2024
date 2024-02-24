@@ -14,8 +14,9 @@ object Constants {
     const val KEY_PHOTO_URL = "photoUrl"
 
     const val ID_NEW_EMAIL = "-1"
+    const val ID_NEW_GAME = "-1"
 
-    val GROUPS = listOf("A", "B", "C", "D", "E", "F", "1/4 финала", "1/2 финала", "финал")
+    val GROUPS = listOf("A", "B", "C", "D", "E", "F", "1/8 финала", "1/4 финала", "1/2 финала", "финал")
     const val GROUPS_COUNT = 6
 
     const val GROUP_N = "Группа %_%"

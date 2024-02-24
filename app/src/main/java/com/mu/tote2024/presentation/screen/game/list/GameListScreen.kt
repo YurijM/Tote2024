@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,14 +33,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.data.utils.Constants.GAMBLER
+import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.GroupTeamResultModel
 import com.mu.tote2024.presentation.components.AppFabAdd
 import com.mu.tote2024.presentation.components.AppProgressBar
+import com.mu.tote2024.presentation.screen.game.list_group.GroupGameItemScreen
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.EMPTY
-import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
 import com.mu.tote2024.presentation.utils.Constants.GROUPS
+import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
 import com.mu.tote2024.presentation.utils.Constants.GROUP_N
+import com.mu.tote2024.presentation.utils.Constants.ID_NEW_GAME
 import com.mu.tote2024.presentation.utils.withParam
 
 @Composable
@@ -79,25 +82,65 @@ fun GameListScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            //val groups = arrayListOf("A", "B", "C", "D", "E", "F")
-            (1..GROUPS_COUNT).forEach { index ->
-                val group = GROUPS[index - 1]
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = GROUP_N.withParam(group),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Games_Table(
-                    result = result.filter { it.group == group },
-                    onClick = { toGroupGameList(group) }
-                )
+            (GROUPS.size - 1 downTo GROUPS_COUNT).forEach { index ->
+                val list = viewModel.games.filter { it.group == GROUPS[index] && it.start.toLong() <= System.currentTimeMillis() }
+
+                if (list.isNotEmpty()) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = GROUPS[index],
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    list.forEach { game ->
+                        Box(
+                            modifier = Modifier.padding(
+                                start = 8.dp,
+                                end = 8.dp,
+                                bottom = 8.dp
+                            )
+                        ) {
+                            GroupGameItemScreen(
+                                game = game,
+                                flagList = if (viewModel.flags.isNotEmpty()) {
+                                    viewModel.flags.first { flag -> flag.gameId == game.gameId }
+                                } else {
+                                    GameFlagsModel()
+                                },
+                                onClick = { toGame(game.gameId) }
+                            )
+                        }
+                    }
+                    Divider(
+                        modifier = Modifier.padding(bottom = 4.dp),
+                        thickness = 1.dp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                (1..GROUPS_COUNT).forEach { index ->
+                    val group = GROUPS[index - 1]
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = GROUP_N.withParam(group),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Games_Table(
+                        result = result.filter { it.group == group },
+                        onClick = { if (GAMBLER.admin) toGroupGameList(group) }
+                    )
+                }
             }
         }
 
         if (GAMBLER.admin) {
             AppFabAdd(
-                onAdd = { toGame("new") }
+                onAdd = { toGame(ID_NEW_GAME) }
             )
         }
     }
@@ -129,7 +172,7 @@ fun <T> Table(
     Surface(
         modifier = modifier
             .clickable(
-                role = Role.Button,
+                //role = Role.Button,
                 onClick = { onClick() }
             ),
     ) {

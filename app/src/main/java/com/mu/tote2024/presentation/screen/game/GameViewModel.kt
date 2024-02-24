@@ -13,6 +13,7 @@ import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.Errors.ADD_GOAL_INCORRECT
 import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
+import com.mu.tote2024.presentation.utils.Constants.ID_NEW_GAME
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,6 +38,8 @@ class GameViewModel @Inject constructor(
 
     var gameId by mutableStateOf(savedStateHandle.get<String>(KEY_ID))
         private set
+
+    private val isNewGame = gameId == ID_NEW_GAME
 
     var game by mutableStateOf(GameModel())
         private set
@@ -66,7 +69,7 @@ class GameViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            gameUseCase.getGame(gameId ?: "").collect { state ->
+            gameUseCase.getGame(gameId ?: ID_NEW_GAME).collect { state ->
                 val result = GameState(state).result
                 if (result is UiState.Success) {
                     game = result.data
@@ -136,7 +139,7 @@ class GameViewModel @Inject constructor(
                 viewModelScope.launch {
                     gameUseCase.saveGame(game).collect { _ ->
                         _stateExit.value = ExitState(UiState.Success(true))
-                        _state.value = GameState(UiState.Loading)
+                        //_state.value = GameState(UiState.Loading)
                     }
                 }
             }
@@ -158,17 +161,24 @@ class GameViewModel @Inject constructor(
     }
 
     private fun checkMainTime(): Boolean =
-        if (game.goal1.isNotBlank()
-            && game.goal2.isNotBlank()
-        ) {
-            isExtraTime = (GROUPS.indexOf(game.group) >= GROUPS_COUNT
-                    && game.goal1 == game.goal2)
-
-            (game.gameId.isNotBlank()
+        if (game.gameId.isNotBlank()
                     && game.start.isNotBlank()
                     && game.group.isNotBlank()
                     && game.team1.isNotBlank()
-                    && game.team2.isNotBlank())
+                    && game.team2.isNotBlank()) {
+            if (isNewGame) {
+                true
+            } else {
+                if (game.goal1.isNotBlank()
+                    && game.goal2.isNotBlank()
+                ) {
+                    isExtraTime = (GROUPS.indexOf(game.group) >= GROUPS_COUNT
+                            && game.goal1 == game.goal2)
+                    true
+                } else {
+                    false
+                }
+            }
         } else {
             false
         }
@@ -187,10 +197,10 @@ class GameViewModel @Inject constructor(
         if (!extraTime) {
             if (teamNo == 1) {
                 game = game.copy(goal1 = goal)
-                errorGoal1 = checkIsFieldEmpty(goal)
+                errorGoal1 = if (isNewGame) "" else checkIsFieldEmpty(goal)
             } else {
                 game = game.copy(goal2 = goal)
-                errorGoal2 = checkIsFieldEmpty(goal)
+                errorGoal2 = if (isNewGame) "" else checkIsFieldEmpty(goal)
             }
         } else {
             if (teamNo == 1) {
