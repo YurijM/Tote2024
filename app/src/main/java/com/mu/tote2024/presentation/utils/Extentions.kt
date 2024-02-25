@@ -59,8 +59,23 @@ fun convertDateTimeToTimestamp(datetime: String, toLocale: Boolean = false): Str
 
     return date?.time.toString()
 }
+fun convertDateToTimestamp(datetime: String, toLocale: Boolean = false): String {
+    val simpleDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+    if (toLocale) simpleDateFormat.timeZone = TimeZone.getTimeZone("Europe/Moscow")
+    val date = simpleDateFormat.parse(datetime)
 
-fun String.asTime(withSeconds: Boolean = false, toLocale: Boolean = false): String {
+    return date?.time.toString()
+}
+
+fun convertTimeToTimestamp(datetime: String, toLocale: Boolean = false): String {
+    val simpleDateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+    if (toLocale) simpleDateFormat.timeZone = TimeZone.getTimeZone("Europe/Moscow")
+    val date = simpleDateFormat.parse(datetime)
+
+    return date?.time.toString()
+}
+
+fun String.asDateTime(withSeconds: Boolean = false, toLocale: Boolean = false): String {
     val format = if (withSeconds) {
         "dd.MM.y HH:mm:ss"
     } else {
@@ -69,6 +84,33 @@ fun String.asTime(withSeconds: Boolean = false, toLocale: Boolean = false): Stri
     val formatter = SimpleDateFormat(format, Locale.getDefault())
 
     if (toLocale) formatter.timeZone = TimeZone.getTimeZone("Europe/Moscow")
+
+    return try {
+        formatter.format(Date(this.toLong()))
+    } catch (e: Exception) {
+        toLog("Ошибка asDateTime ${e.message}")
+        ""
+    }
+}
+
+fun String.asDate(toLocale: Boolean = false): String {
+    val format = "dd.MM.y"
+    val formatter = SimpleDateFormat(format, Locale.getDefault())
+
+    if (toLocale) formatter.timeZone = TimeZone.getTimeZone("Europe/Moscow")
+
+    return try {
+        formatter.format(Date(this.toLong()))
+    } catch (e: Exception) {
+        toLog("Ошибка asDate ${e.message}")
+        ""
+    }
+}
+
+fun String.asTime(): String {
+    val format = "HH:mm"
+
+    val formatter = SimpleDateFormat(format, Locale.getDefault())
 
     return try {
         formatter.format(Date(this.toLong()))

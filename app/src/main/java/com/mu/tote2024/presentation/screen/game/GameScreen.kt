@@ -51,7 +51,9 @@ import com.mu.tote2024.presentation.components.OkAndCancel
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.GROUPS
-import com.mu.tote2024.presentation.utils.asTime
+import com.mu.tote2024.presentation.utils.asDate
+import com.mu.tote2024.presentation.utils.asDateTime
+import com.mu.tote2024.presentation.utils.convertDateTimeToTimestamp
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -99,6 +101,35 @@ fun GameScreen(
         mutableLongStateOf(calendar.timeInMillis) // or use mutableStateOf(calendar.timeInMillis)
     }
 
+    /*if (viewModel.game.start.isNotBlank()) {
+        toLog("start: ${viewModel.game.start}")
+        toLog("startDate: ${viewModel.startDate}")
+        toLog("startTime: ${viewModel.startTime}")
+        toLog(
+            "start (long): ${
+                convertDateToTimestamp(viewModel.startDate).toLong()
+                        + convertTimeToTimestamp(viewModel.startTime).toLong()
+                        - convertDateToTimestamp("01.01.1970").toLong()
+            }"
+        )
+
+        toLog("start: ${viewModel.game.start}")
+        toLog("date: ${viewModel.game.start.asDate()}")
+        toLog("date (long): ${convertDateToTimestamp(viewModel.game.start.asDate())}")
+        toLog("date with 00:00 (long): ${convertDateTimeToTimestamp(viewModel.game.start.asDate() + " 00:00")}")
+        toLog("time: ${viewModel.game.start.asTime()}")
+        toLog("time (long): ${convertTimeToTimestamp(viewModel.game.start.asTime())}")
+        toLog(
+            "start (long): ${
+                convertDateToTimestamp(viewModel.game.start.asDate()).toLong()
+                        + convertTimeToTimestamp(viewModel.game.start.asTime()).toLong()
+                        - convertDateToTimestamp("01.01.1970").toLong()
+            }"
+        )
+        toLog("10 800 000: ${"10800000".asDate()}")
+        toLog("01.01.1970 00:00: ${convertDateTimeToTimestamp("01.01.1970 00:00")}")
+    }*/
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -127,7 +158,7 @@ fun GameScreen(
                             .padding(vertical = 8.dp),
                     ) {
                         StartGame(
-                            date = viewModel.game.start.asTime(),
+                            date = viewModel.game.start.asDateTime(),
                             errorMessage = viewModel.errorStart,
                             onClick = { showDatePicker = true }
                         )
@@ -219,7 +250,8 @@ fun GameScreen(
                 datePickerState = datePickerState,
                 onDismissRequest = { showDatePicker = false },
                 onClickConfirm = {
-                    selectedDate = datePickerState.selectedDateMillis!!
+                    val date = "${(datePickerState.selectedDateMillis!!).toString().asDate()} ${viewModel.startTime}"
+                    selectedDate = convertDateTimeToTimestamp(date).toLong()
                     viewModel.onEvent(GameEvent.OnStartChange(selectedDate.toString()))
                     showDatePicker = false
                 },

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.presentation.components.ShowFlag
-import com.mu.tote2024.presentation.utils.asTime
+import com.mu.tote2024.presentation.utils.asDateTime
 
 @Composable
 fun GroupGameItemScreen(
@@ -43,7 +43,7 @@ fun GroupGameItemScreen(
             )
             Text(
                 modifier = Modifier.weight(1f),
-                text = game.start.asTime(),
+                text = game.start.asDateTime(),
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.End
             )

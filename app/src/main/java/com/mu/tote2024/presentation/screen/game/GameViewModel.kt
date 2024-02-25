@@ -15,6 +15,8 @@ import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
 import com.mu.tote2024.presentation.utils.Constants.ID_NEW_GAME
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
+import com.mu.tote2024.presentation.utils.asDate
+import com.mu.tote2024.presentation.utils.asTime
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +45,9 @@ class GameViewModel @Inject constructor(
 
     var game by mutableStateOf(GameModel())
         private set
+
+    var startDate = ""
+    var startTime = ""
 
     val teams = mutableListOf<String>()
 
@@ -73,6 +78,10 @@ class GameViewModel @Inject constructor(
                 val result = GameState(state).result
                 if (result is UiState.Success) {
                     game = result.data
+
+                    startDate = game.start.asDate()
+                    startTime = game.start.asTime()
+
                     enabled = checkValues()
 
                     /*teamUseCase.getTeamList().collect { stateTeam ->
@@ -105,6 +114,10 @@ class GameViewModel @Inject constructor(
 
             is GameEvent.OnStartChange -> {
                 game = game.copy(start = event.start)
+
+                startDate = game.start.asDate()
+                startTime = game.start.asTime()
+
                 errorStart = checkIsFieldEmpty(event.start)
             }
 
