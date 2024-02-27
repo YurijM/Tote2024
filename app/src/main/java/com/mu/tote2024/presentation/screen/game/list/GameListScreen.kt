@@ -13,7 +13,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -112,7 +112,7 @@ fun GameListScreen(
                             )
                         }
                     }
-                    Divider(
+                    HorizontalDivider(
                         modifier = Modifier.padding(bottom = 4.dp),
                         thickness = 1.dp,
                         color = MaterialTheme.colorScheme.onSurface,

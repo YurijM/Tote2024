@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -64,7 +64,7 @@ fun GroupGameListScreen(
         Title(
             title = GROUP_N.withParam(viewModel.group ?: "")
         )
-        Divider(
+        HorizontalDivider(
             modifier = Modifier.padding(bottom = 4.dp),
             thickness = 1.dp,
             color = MaterialTheme.colorScheme.onSurface,
@@ -88,7 +88,7 @@ fun GroupGameListScreen(
                     },
                     onClick = { toGame(game.gameId) }
                 )
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier.padding(
                         top = 8.dp,
                         bottom = 4.dp

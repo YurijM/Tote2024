@@ -45,7 +45,7 @@ fun PreviewAppFieldWithIcon() {
 fun AppTextField(
     modifier: Modifier = Modifier,
     label: String,
-    textAlign: TextAlign? = null,
+    textAlign: TextAlign = TextAlign.Unspecified,
     value: String?,
     onChange: (newValue: String) -> Unit,
     @DrawableRes painterId: Int? = null,

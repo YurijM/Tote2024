@@ -20,7 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -146,7 +146,7 @@ fun AdminGamblerScreen(
                                 .padding(start = 4.dp)
                         ) {
                             ShowProfile(gambler)
-                            Divider(
+                            HorizontalDivider(
                                 thickness = 1.dp,
                                 modifier = Modifier.padding(vertical = 4.dp),
                                 color = MaterialTheme.colorScheme.onSurface,
@@ -158,7 +158,7 @@ fun AdminGamblerScreen(
                         }
                     }
                 }
-                Divider(
+                HorizontalDivider(
                     thickness = 1.dp,
                     color = MaterialTheme.colorScheme.onSurface,
                 )

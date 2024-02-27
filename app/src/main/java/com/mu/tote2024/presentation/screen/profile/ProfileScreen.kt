@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -141,7 +141,7 @@ fun ProfileScreen(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         ShowProfile()
-                        Divider(
+                        HorizontalDivider(
                             thickness = 1.dp,
                             modifier = Modifier.padding(vertical = 4.dp),
                             color = MaterialTheme.colorScheme.onSurface,
@@ -149,7 +149,7 @@ fun ProfileScreen(
                         EditProfile(viewModel = viewModel)
                     }
                 }
-                Divider(
+                HorizontalDivider(
                     thickness = 1.dp,
                     color = MaterialTheme.colorScheme.onSurface,
                 )

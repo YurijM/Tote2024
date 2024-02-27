@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -67,7 +67,7 @@ fun ApplicationBar(
         modifier = Modifier.fillMaxWidth()
     ) {
         TopAppBar(
-            colors = TopAppBarDefaults.smallTopAppBarColors(
+            colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 actionIconContentColor = MaterialTheme.colorScheme.onSurface
             ),
@@ -124,7 +124,7 @@ fun ApplicationBar(
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ExitToApp,
+                        imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                         contentDescription = "exit"
                     )
                 }

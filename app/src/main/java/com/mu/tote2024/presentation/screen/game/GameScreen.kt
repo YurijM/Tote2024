@@ -19,8 +19,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,7 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -97,9 +96,9 @@ fun GameScreen(
     var showDatePicker by remember { mutableStateOf(false) }
 
     val calendar = Calendar.getInstance()
-    var selectedDate by remember {
+    /*var selectedDate by remember {
         mutableLongStateOf(calendar.timeInMillis) // or use mutableStateOf(calendar.timeInMillis)
-    }
+    }*/
 
     /*if (viewModel.game.start.isNotBlank()) {
         toLog("start: ${viewModel.game.start}")
@@ -162,7 +161,7 @@ fun GameScreen(
                             errorMessage = viewModel.errorStart,
                             onClick = { showDatePicker = true }
                         )
-                        Divider(
+                        HorizontalDivider(
                             modifier = Modifier.padding(vertical = 4.dp),
                             thickness = 1.dp,
                             color = MaterialTheme.colorScheme.onSurface,
@@ -194,7 +193,7 @@ fun GameScreen(
                             onTeamSelect = { team -> viewModel.onEvent(GameEvent.OnTeamChange(2, team)) },
                             onGoalSet = { goal -> viewModel.onEvent(GameEvent.OnGoalChange(false, 2, goal)) }
                         )
-                        Divider(
+                        HorizontalDivider(
                             modifier = Modifier.padding(top = 8.dp),
                             thickness = 1.dp,
                             color = MaterialTheme.colorScheme.onSurface,
@@ -251,7 +250,7 @@ fun GameScreen(
                 onDismissRequest = { showDatePicker = false },
                 onClickConfirm = {
                     val date = "${(datePickerState.selectedDateMillis!!).toString().asDate()} ${viewModel.startTime}"
-                    selectedDate = convertDateTimeToTimestamp(date).toLong()
+                    val selectedDate = convertDateTimeToTimestamp(date).toLong()
                     viewModel.onEvent(GameEvent.OnStartChange(selectedDate.toString()))
                     showDatePicker = false
                 },
@@ -490,7 +489,7 @@ private fun ExtraTime(
             )
         }
     }
-    Divider(
+    HorizontalDivider(
         modifier = Modifier.padding(top = 8.dp),
         thickness = 1.dp,
         color = MaterialTheme.colorScheme.onSurface,
@@ -514,7 +513,7 @@ fun ByPenalty(
             selectedItem = selectedTeam,
             onClick = { selectedItem -> onClick(selectedItem) }
         )
-        Divider(
+        HorizontalDivider(
             modifier = Modifier.padding(top = 8.dp),
             thickness = 1.dp,
             color = MaterialTheme.colorScheme.onSurface,

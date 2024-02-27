@@ -6,13 +6,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +48,6 @@ fun PreviewPasswordField() {
     }
 }*/
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordTextField(
     modifier: Modifier = Modifier,
@@ -77,7 +75,7 @@ fun PasswordTextField(
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
             ),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = OutlinedTextFieldDefaults.colors(
                 errorLeadingIconColor = MaterialTheme.colorScheme.error
             ),
             //textStyle = MaterialTheme.typography.bodyLarge,
