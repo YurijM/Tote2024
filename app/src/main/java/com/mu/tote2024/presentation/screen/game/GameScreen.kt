@@ -74,10 +74,6 @@ fun GameScreen(
                 isLoading = true
             }
 
-            /*result is UiState.Success -> {
-                isLoading = false
-            }*/
-
             result is UiState.Success || resultExit is UiState.Success -> {
                 isLoading = false
                 if (resultExit is UiState.Success) {
@@ -96,38 +92,6 @@ fun GameScreen(
     var showDatePicker by remember { mutableStateOf(false) }
 
     val calendar = Calendar.getInstance()
-    /*var selectedDate by remember {
-        mutableLongStateOf(calendar.timeInMillis) // or use mutableStateOf(calendar.timeInMillis)
-    }*/
-
-    /*if (viewModel.game.start.isNotBlank()) {
-        toLog("start: ${viewModel.game.start}")
-        toLog("startDate: ${viewModel.startDate}")
-        toLog("startTime: ${viewModel.startTime}")
-        toLog(
-            "start (long): ${
-                convertDateToTimestamp(viewModel.startDate).toLong()
-                        + convertTimeToTimestamp(viewModel.startTime).toLong()
-                        - convertDateToTimestamp("01.01.1970").toLong()
-            }"
-        )
-
-        toLog("start: ${viewModel.game.start}")
-        toLog("date: ${viewModel.game.start.asDate()}")
-        toLog("date (long): ${convertDateToTimestamp(viewModel.game.start.asDate())}")
-        toLog("date with 00:00 (long): ${convertDateTimeToTimestamp(viewModel.game.start.asDate() + " 00:00")}")
-        toLog("time: ${viewModel.game.start.asTime()}")
-        toLog("time (long): ${convertTimeToTimestamp(viewModel.game.start.asTime())}")
-        toLog(
-            "start (long): ${
-                convertDateToTimestamp(viewModel.game.start.asDate()).toLong()
-                        + convertTimeToTimestamp(viewModel.game.start.asTime()).toLong()
-                        - convertDateToTimestamp("01.01.1970").toLong()
-            }"
-        )
-        toLog("10 800 000: ${"10800000".asDate()}")
-        toLog("01.01.1970 00:00: ${convertDateTimeToTimestamp("01.01.1970 00:00")}")
-    }*/
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -324,7 +288,7 @@ private fun StartGame(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "начало матча"
+                text = stringResource(R.string.game_start)
             )
             Text(
                 text = date
@@ -360,7 +324,7 @@ private fun GameIdAndGroup(
                 modifier = Modifier
                     .width(108.dp)
                     .padding(end = 8.dp),
-                label = "№ игры",
+                label = stringResource(R.string.game_number),
                 textAlign = TextAlign.Center,
                 value = gameId,
                 onChange = { newValue -> onChange(newValue) },
@@ -372,7 +336,7 @@ private fun GameIdAndGroup(
             AppDropDownList(
                 modifier = Modifier.width(160.dp),
                 list = GROUPS,
-                label = "Группа",
+                label = stringResource(R.string.group),
                 selectedItem = group,
                 onClick = { selectedItem -> onClick(selectedItem) }
             )
@@ -405,7 +369,7 @@ private fun TeamData(
             AppDropDownList(
                 modifier = Modifier.width(160.dp),
                 list = teams,
-                label = "Команда",
+                label = stringResource(R.string.team),
                 selectedItem = team,
                 onClick = { item -> onTeamSelect(item) }
             )
@@ -442,7 +406,7 @@ private fun ExtraTime(
 ) {
     Text(
         modifier = Modifier.fillMaxWidth(),
-        text = "Счёт в дополнительное время",
+        text = stringResource(R.string.add_time_score),
         textAlign = TextAlign.Center
     )
     Column(
@@ -465,7 +429,6 @@ private fun ExtraTime(
                     keyboardType = KeyboardType.NumberPassword,
                 )
             )
-            //Spacer(modifier = Modifier.size(8.dp))
             Text(
                 text = " : ",
                 style = MaterialTheme.typography.displaySmall
@@ -509,7 +472,7 @@ fun ByPenalty(
         AppDropDownList(
             modifier = Modifier.width(180.dp),
             list = teams,
-            label = "По пенальти",
+            label = stringResource(R.string.by_penalty),
             selectedItem = selectedTeam,
             onClick = { selectedItem -> onClick(selectedItem) }
         )

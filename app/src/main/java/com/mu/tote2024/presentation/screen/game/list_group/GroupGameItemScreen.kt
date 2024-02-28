@@ -32,8 +32,6 @@ fun GroupGameItemScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
-            //.padding(top = 8.dp)
-            //.clickable { onClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -86,6 +84,26 @@ fun GroupGameItemScreen(
                     text = game.team2,
                     color = MaterialTheme.colorScheme.onSurface
                 )
+            }
+        }
+        if (game.addGoal1.isNotBlank() && game.addGoal1.isNotBlank()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "дополнительное время ${game.addGoal1} : ${game.addGoal2}"
+                )
+            }
+            if (game.penalty.isNotBlank()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "по пенальти победила ${game.penalty}"
+                    )
+                }
             }
         }
     }

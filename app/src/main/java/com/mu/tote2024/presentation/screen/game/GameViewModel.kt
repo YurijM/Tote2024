@@ -15,7 +15,6 @@ import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
 import com.mu.tote2024.presentation.utils.Constants.ID_NEW_GAME
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
-import com.mu.tote2024.presentation.utils.asDate
 import com.mu.tote2024.presentation.utils.asTime
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,7 +45,6 @@ class GameViewModel @Inject constructor(
     var game by mutableStateOf(GameModel())
         private set
 
-    var startDate = ""
     var startTime = ""
 
     val teams = mutableListOf<String>()
@@ -79,7 +77,6 @@ class GameViewModel @Inject constructor(
                 if (result is UiState.Success) {
                     game = result.data
 
-                    startDate = game.start.asDate()
                     startTime = game.start.asTime()
 
                     enabled = checkValues()
@@ -115,7 +112,6 @@ class GameViewModel @Inject constructor(
             is GameEvent.OnStartChange -> {
                 game = game.copy(start = event.start)
 
-                startDate = game.start.asDate()
                 startTime = game.start.asTime()
 
                 errorStart = checkIsFieldEmpty(event.start)
@@ -175,10 +171,11 @@ class GameViewModel @Inject constructor(
 
     private fun checkMainTime(): Boolean =
         if (game.gameId.isNotBlank()
-                    && game.start.isNotBlank()
-                    && game.group.isNotBlank()
-                    && game.team1.isNotBlank()
-                    && game.team2.isNotBlank()) {
+            && game.start.isNotBlank()
+            && game.group.isNotBlank()
+            && game.team1.isNotBlank()
+            && game.team2.isNotBlank()
+        ) {
             if (isNewGame) {
                 true
             } else {
@@ -197,11 +194,25 @@ class GameViewModel @Inject constructor(
         }
 
     private fun checkExtraTime(): Boolean {
-        val result = (game.addGoal1.isNotBlank()
+        /*val result = (game.addGoal1.isNotBlank()
                 && game.addGoal2.isNotBlank()
                 && game.addGoal1 >= game.goal1
                 && game.addGoal2 >= game.goal2)
-        isByPenalty = result && (game.addGoal1 == game.addGoal2)
+        isByPenalty = result && (game.addGoal1 == game.addGoal2)*/
+
+        var result = if (game.addGoal1.isNotBlank())
+            game.addGoal1 >= game.goal1
+        else
+            true
+
+        result = result && if (game.addGoal2.isNotBlank())
+            game.addGoal2 >= game.goal2
+        else
+            true
+
+        isByPenalty = (game.addGoal1.isNotBlank() && game.addGoal1 >= game.goal1
+                && game.addGoal2.isNotBlank() && game.addGoal2 >= game.goal2
+                && game.addGoal1 == game.addGoal2)
 
         return result
     }
@@ -239,6 +250,7 @@ class GameViewModel @Inject constructor(
         data class GameState(
             val result: UiState<GameModel> = UiState.Default,
         )
+
         data class ExitState(
             val result: UiState<Boolean> = UiState.Default,
         )

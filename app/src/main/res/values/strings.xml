@@ -40,6 +40,13 @@
 
     <string name="email">Email</string>
 
+    <string name="game_number">№ игры</string>
+    <string name="game_start">начало матча</string>
+    <string name="group">Группа</string>
+    <string name="team">Команда</string>
+    <string name="add_time_score">Счёт в дополнительное время</string>
+    <string name="by_penalty">По пенальти</string>
+
     <string name="error_min_length">Поле должно содержать не меньше %1$s символов</string>
     <string name="error_field_empty">Поле не может быть пустым</string>
 </resources>
