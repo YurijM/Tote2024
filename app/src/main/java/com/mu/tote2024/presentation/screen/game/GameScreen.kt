@@ -53,6 +53,7 @@ import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.asDate
 import com.mu.tote2024.presentation.utils.asDateTime
 import com.mu.tote2024.presentation.utils.convertDateTimeToTimestamp
+import com.mu.tote2024.presentation.utils.toLog
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,23 +64,38 @@ fun GameScreen(
 ) {
     var isLoading by remember { mutableStateOf(false) }
     val state by viewModel.state.collectAsState()
-    val stateExit by viewModel.stateExit.collectAsState()
+    //val stateExit by viewModel.stateExit.collectAsState()
 
     val result = state.result
-    val resultExit = stateExit.result
+    //val resultExit = stateExit.result
 
-    LaunchedEffect(key1 = result, key2 = resultExit) {
+    //LaunchedEffect(key1 = result, key2 = resultExit) {
+    LaunchedEffect(key1 = result) {
         when {
             result is UiState.Loading -> {
                 isLoading = true
             }
 
-            result is UiState.Success || resultExit is UiState.Success -> {
+            result is UiState.Success -> {
+                toLog("success")
                 isLoading = false
-                if (resultExit is UiState.Success) {
+
+                /*if (resultExit is UiState.Success) {
+                    toLog("result: $result")
+                    toLog("resultExit: $resultExit")
+                    toGameList()
+                }*/
+                if (viewModel.isExit) {
                     toGameList()
                 }
             }
+
+            /*resultExit is UiState.Success -> {
+                isLoading = false
+                toLog("result: $result")
+                toLog("resultExit: $resultExit")
+                toGameList()
+            }*/
 
             result is UiState.Error -> {
                 isLoading = false

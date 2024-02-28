@@ -17,6 +17,7 @@ import com.mu.tote2024.presentation.utils.Constants.ID_NEW_GAME
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import com.mu.tote2024.presentation.utils.asTime
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
+import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,8 +35,10 @@ class GameViewModel @Inject constructor(
     private val _state: MutableStateFlow<GameState> = MutableStateFlow(GameState())
     val state: StateFlow<GameState> = _state
 
-    private val _stateExit: MutableStateFlow<ExitState> = MutableStateFlow(ExitState())
-    val stateExit: StateFlow<ExitState> = _stateExit
+    /*private val _stateExit: MutableStateFlow<ExitState> = MutableStateFlow(ExitState())
+    val stateExit: StateFlow<ExitState> = _stateExit*/
+
+    var isExit = false
 
     var gameId by mutableStateOf(savedStateHandle.get<String>(KEY_ID))
         private set
@@ -141,14 +144,21 @@ class GameViewModel @Inject constructor(
             }
 
             is GameEvent.OnCancel -> {
-                _stateExit.value = ExitState(UiState.Success(true))
+                toLog("OnCancel")
+                _state.value = GameState(UiState.Loading)
+                isExit = true
+                _state.value = GameState(UiState.Success(game))
             }
 
             is GameEvent.OnSave -> {
+                toLog("OnSave")
                 viewModelScope.launch {
-                    gameUseCase.saveGame(game).collect { _ ->
-                        _stateExit.value = ExitState(UiState.Success(true))
-                        //_state.value = GameState(UiState.Loading)
+                    gameUseCase.saveGame(game).collect { stateSave ->
+                        _state.value = GameState(UiState.Loading)
+                        if (stateSave is UiState.Success) {
+                            isExit = true
+                            _state.value = GameState(UiState.Success(game))
+                        }
                     }
                 }
             }
