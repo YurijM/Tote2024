@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mu.tote2024.R
 import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.GroupTeamResultModel
@@ -108,7 +110,7 @@ fun GameListScreen(
                                 } else {
                                     GameFlagsModel()
                                 },
-                                onClick = { toGame(game.gameId) }
+                                onClick = { if (GAMBLER.admin) toGame(game.gameId) }
                             )
                         }
                     }
@@ -219,12 +221,12 @@ fun Games_Table(
     }
     val headerCellTitle: @Composable (Int) -> Unit = { index ->
         val value = when (index) {
-            0 -> "Команда"
+            0 -> stringResource(id = R.string.team)
             1, 2, 3, 4 -> index.toString()
             5 -> "В"
             6 -> "Н"
             7 -> "П"
-            8 -> "Мячи"
+            8 -> stringResource(R.string.balls)
             9 -> "О"
             10 -> "М"
             else -> ""

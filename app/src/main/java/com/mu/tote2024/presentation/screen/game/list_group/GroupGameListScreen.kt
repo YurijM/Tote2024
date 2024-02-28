@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mu.tote2024.data.utils.Constants
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.presentation.components.AppProgressBar
@@ -86,7 +87,7 @@ fun GroupGameListScreen(
                     } else {
                         GameFlagsModel()
                     },
-                    onClick = { toGame(game.gameId) }
+                    onClick = { if (Constants.GAMBLER.admin) toGame(game.gameId) }
                 )
                 HorizontalDivider(
                     modifier = Modifier.padding(
