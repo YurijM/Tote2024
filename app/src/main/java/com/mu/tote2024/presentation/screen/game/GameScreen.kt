@@ -64,44 +64,61 @@ fun GameScreen(
 ) {
     var isLoading by remember { mutableStateOf(false) }
     val state by viewModel.state.collectAsState()
-    //val stateExit by viewModel.stateExit.collectAsState()
+    val stateExit by viewModel.stateExit.collectAsState()
 
     val result = state.result
-    //val resultExit = stateExit.result
+    val resultExit = stateExit.result
 
     //LaunchedEffect(key1 = result, key2 = resultExit) {
-    LaunchedEffect(key1 = result) {
-        when {
-            result is UiState.Loading -> {
+    LaunchedEffect(key1 = true) {
+        when (result) {
+            is UiState.Loading -> {
+                toLog("success")
                 isLoading = true
             }
 
-            result is UiState.Success -> {
+            is UiState.Success -> {
                 toLog("success")
                 isLoading = false
 
-                /*if (resultExit is UiState.Success) {
-                    toLog("result: $result")
-                    toLog("resultExit: $resultExit")
+                /*if (viewModel.isExit) {
                     toGameList()
                 }*/
-                if (viewModel.isExit) {
-                    toGameList()
-                }
             }
 
-            /*resultExit is UiState.Success -> {
+            is UiState.Error -> {
+                toLog("error")
                 isLoading = false
-                toLog("result: $result")
-                toLog("resultExit: $resultExit")
+            }
+
+            else -> {
+                toLog("else")
+            }
+        }
+    }
+    LaunchedEffect(key1 = resultExit) {
+        toLog("resultExit: $resultExit")
+        when (resultExit) {
+            is UiState.Loading -> {
+                toLog("loading Exit")
+                isLoading = true
+            }
+
+            is UiState.Success -> {
+                toLog("success Exit")
+                isLoading = false
                 toGameList()
-            }*/
+            }
 
-            result is UiState.Error -> {
+            is UiState.Error -> {
+                toLog("error Exit")
                 isLoading = false
             }
 
-            else -> {}
+            is UiState.Default -> {
+                toLog("default Exit")
+                isLoading = false
+            }
         }
     }
 

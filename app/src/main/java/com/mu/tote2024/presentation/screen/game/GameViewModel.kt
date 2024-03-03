@@ -35,10 +35,10 @@ class GameViewModel @Inject constructor(
     private val _state: MutableStateFlow<GameState> = MutableStateFlow(GameState())
     val state: StateFlow<GameState> = _state
 
-    /*private val _stateExit: MutableStateFlow<ExitState> = MutableStateFlow(ExitState())
-    val stateExit: StateFlow<ExitState> = _stateExit*/
+    private val _stateExit: MutableStateFlow<ExitState> = MutableStateFlow(ExitState())
+    val stateExit: StateFlow<ExitState> = _stateExit
 
-    var isExit = false
+    //var isExit = false
 
     var gameId by mutableStateOf(savedStateHandle.get<String>(KEY_ID))
         private set
@@ -145,20 +145,24 @@ class GameViewModel @Inject constructor(
 
             is GameEvent.OnCancel -> {
                 toLog("OnCancel")
-                _state.value = GameState(UiState.Loading)
-                isExit = true
-                _state.value = GameState(UiState.Success(game))
+                _stateExit.value = ExitState(UiState.Loading)
+                //isExit = true
+                _stateExit.value = ExitState(UiState.Success(true))
             }
 
             is GameEvent.OnSave -> {
                 toLog("OnSave")
                 viewModelScope.launch {
                     gameUseCase.saveGame(game).collect { stateSave ->
-                        _state.value = GameState(UiState.Loading)
-                        if (stateSave is UiState.Success) {
-                            isExit = true
+                        toLog("stateExit1: ${stateExit.value}")
+                        _stateExit.value = ExitState(UiState.Error("Error"))
+                        toLog("stateExit2: ${stateExit.value}")
+                        _stateExit.value = ExitState(stateSave)
+                        toLog("stateExit3: ${stateExit.value}")
+                        /*if (stateSave is UiState.Success) {
+                            //isExit = true
                             _state.value = GameState(UiState.Success(game))
-                        }
+                        }*/
                     }
                 }
             }
