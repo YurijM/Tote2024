@@ -17,7 +17,6 @@ import com.mu.tote2024.presentation.utils.Constants.ID_NEW_GAME
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import com.mu.tote2024.presentation.utils.asTime
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
-import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -144,25 +143,13 @@ class GameViewModel @Inject constructor(
             }
 
             is GameEvent.OnCancel -> {
-                toLog("OnCancel")
-                _stateExit.value = ExitState(UiState.Loading)
-                //isExit = true
                 _stateExit.value = ExitState(UiState.Success(true))
             }
 
             is GameEvent.OnSave -> {
-                toLog("OnSave")
                 viewModelScope.launch {
                     gameUseCase.saveGame(game).collect { stateSave ->
-                        toLog("stateExit1: ${stateExit.value}")
-                        _stateExit.value = ExitState(UiState.Error("Error"))
-                        toLog("stateExit2: ${stateExit.value}")
                         _stateExit.value = ExitState(stateSave)
-                        toLog("stateExit3: ${stateExit.value}")
-                        /*if (stateSave is UiState.Success) {
-                            //isExit = true
-                            _state.value = GameState(UiState.Success(game))
-                        }*/
                     }
                 }
             }
@@ -208,12 +195,6 @@ class GameViewModel @Inject constructor(
         }
 
     private fun checkExtraTime(): Boolean {
-        /*val result = (game.addGoal1.isNotBlank()
-                && game.addGoal2.isNotBlank()
-                && game.addGoal1 >= game.goal1
-                && game.addGoal2 >= game.goal2)
-        isByPenalty = result && (game.addGoal1 == game.addGoal2)*/
-
         var result = if (game.addGoal1.isNotBlank())
             game.addGoal1 >= game.goal1
         else

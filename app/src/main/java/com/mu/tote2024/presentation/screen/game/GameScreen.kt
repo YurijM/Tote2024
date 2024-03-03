@@ -53,7 +53,6 @@ import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.asDate
 import com.mu.tote2024.presentation.utils.asDateTime
 import com.mu.tote2024.presentation.utils.convertDateTimeToTimestamp
-import com.mu.tote2024.presentation.utils.toLog
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,54 +68,39 @@ fun GameScreen(
     val result = state.result
     val resultExit = stateExit.result
 
-    //LaunchedEffect(key1 = result, key2 = resultExit) {
     LaunchedEffect(key1 = true) {
         when (result) {
             is UiState.Loading -> {
-                toLog("success")
                 isLoading = true
             }
 
             is UiState.Success -> {
-                toLog("success")
                 isLoading = false
-
-                /*if (viewModel.isExit) {
-                    toGameList()
-                }*/
             }
 
             is UiState.Error -> {
-                toLog("error")
                 isLoading = false
             }
 
-            else -> {
-                toLog("else")
-            }
+            else -> {}
         }
     }
     LaunchedEffect(key1 = resultExit) {
-        toLog("resultExit: $resultExit")
         when (resultExit) {
             is UiState.Loading -> {
-                toLog("loading Exit")
                 isLoading = true
             }
 
             is UiState.Success -> {
-                toLog("success Exit")
                 isLoading = false
                 toGameList()
             }
 
             is UiState.Error -> {
-                toLog("error Exit")
                 isLoading = false
             }
 
             is UiState.Default -> {
-                toLog("default Exit")
                 isLoading = false
             }
         }
