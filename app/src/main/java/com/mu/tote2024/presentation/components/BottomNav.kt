@@ -67,7 +67,7 @@ fun BottomNav(
                             text = title
                         )
                     },
-                    alwaysShowLabel = false
+                    alwaysShowLabel = true
                 )
             }
         }

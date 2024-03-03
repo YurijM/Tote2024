@@ -16,12 +16,12 @@ sealed class BottomNavItem(
     object StakeItem: BottomNavItem(
         titleId = R.string.stake,
         iconId = R.drawable.ic_ruble,
-        route = Constants.Routes.STAKES_SCREEN
+        route = Constants.Routes.STAKE_LIST_SCREEN
     )
     object PrognosisItem: BottomNavItem(
         titleId = R.string.prognosis,
         iconId = R.drawable.ic_prognosis,
-        route = Constants.Routes.PROGNOSIS_SCREEN
+        route = Constants.Routes.PROGNOSIS_LIST_SCREEN
     )
     object GamesItem: BottomNavItem(
         titleId = R.string.games,

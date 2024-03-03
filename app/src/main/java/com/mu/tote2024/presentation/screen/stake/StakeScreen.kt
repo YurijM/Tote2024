@@ -9,7 +9,9 @@ import androidx.compose.ui.res.stringResource
 import com.mu.tote2024.R
 
 @Composable
-fun StakeScreen() {
+fun StakeScreen(
+    toStakeList: () -> Unit
+) {
     Box(
         contentAlignment = Alignment.Center
     ) {
