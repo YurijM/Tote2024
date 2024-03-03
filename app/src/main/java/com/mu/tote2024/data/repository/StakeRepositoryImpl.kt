@@ -5,22 +5,25 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.mu.tote2024.data.utils.Constants
-import com.mu.tote2024.domain.model.GameModel
-import com.mu.tote2024.domain.repository.GameRepository
+import com.mu.tote2024.data.utils.Constants.Nodes.NODE_STAKES
+import com.mu.tote2024.domain.model.StakeModel
+import com.mu.tote2024.domain.repository.StakeRepository
 import com.mu.tote2024.presentation.ui.common.UiState
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-class GameRepositoryImpl(
+class StakeRepositoryImpl(
     private val firebaseDatabase: FirebaseDatabase
-) : GameRepository {
-    override fun getGame(id: String): Flow<UiState<GameModel>> = callbackFlow {
+) : StakeRepository {
+    override fun getStake(idGame: String, idGambler: String): Flow<UiState<StakeModel>> = callbackFlow {
         trySend(UiState.Loading)
+
+        val id = "$idGame-$idGambler"
 
         val valueEvent = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val result = snapshot.getValue(GameModel::class.java) ?: GameModel()
+                val result = snapshot.getValue(StakeModel::class.java) ?: StakeModel()
                 val isSuccess = result.gameId.isNotBlank()
 
                 if (isSuccess)
@@ -34,21 +37,21 @@ class GameRepositoryImpl(
             }
         }
 
-        firebaseDatabase.reference.child(Constants.Nodes.NODE_GAMES).child(id).addValueEventListener(valueEvent)
+        firebaseDatabase.reference.child(NODE_STAKES).child(id).addValueEventListener(valueEvent)
 
         awaitClose {
-            firebaseDatabase.reference.child(Constants.Nodes.NODE_GAMES).child(id).removeEventListener(valueEvent)
+            firebaseDatabase.reference.child(NODE_STAKES).child(id).removeEventListener(valueEvent)
             close()
         }
     }
 
-    override fun getGameList(): Flow<UiState<List<GameModel>>> = callbackFlow {
+    override fun getStakeList(): Flow<UiState<List<StakeModel>>> = callbackFlow {
         trySend(UiState.Loading)
 
         val valueEvent = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val list = snapshot.children.map {
-                    it.getValue(GameModel::class.java) ?: GameModel()
+                    it.getValue(StakeModel::class.java) ?: StakeModel()
                 }
 
                 trySend(UiState.Success(list))
@@ -59,21 +62,21 @@ class GameRepositoryImpl(
             }
         }
 
-        firebaseDatabase.reference.child(Constants.Nodes.NODE_GAMES).addValueEventListener(valueEvent)
+        firebaseDatabase.reference.child(NODE_STAKES).addValueEventListener(valueEvent)
 
         awaitClose {
-            firebaseDatabase.reference.child(Constants.Nodes.NODE_GAMES).removeEventListener(valueEvent)
+            firebaseDatabase.reference.child(NODE_STAKES).removeEventListener(valueEvent)
             close()
         }
     }
 
-    override fun saveGame(game: GameModel): Flow<UiState<Boolean>> = callbackFlow {
+    override fun saveStake(stake: StakeModel): Flow<UiState<Boolean>> = callbackFlow {
         trySend(UiState.Loading)
 
         firebaseDatabase.reference
-            .child(Constants.Nodes.NODE_GAMES)
-            .child(game.gameId)
-            .setValue(game)
+            .child(NODE_STAKES)
+            .child("${stake.gameId}-${stake.gamblerId}")
+            .setValue(stake)
 
         trySend(UiState.Success(true))
 
