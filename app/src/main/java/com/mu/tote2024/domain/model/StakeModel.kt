@@ -1,10 +1,8 @@
 package com.mu.tote2024.domain.model
 
-import com.mu.tote2024.data.utils.Constants.CURRENT_ID
-
 data class StakeModel(
-    var gamblerId: String = CURRENT_ID,
     val gameId: String = "",
+    var gamblerId: String = "",
     val start: String = "",
     val group: String = "",
     val team1: String = "",

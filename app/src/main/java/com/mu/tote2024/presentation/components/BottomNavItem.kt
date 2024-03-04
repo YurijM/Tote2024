@@ -21,7 +21,7 @@ sealed class BottomNavItem(
     object PrognosisItem: BottomNavItem(
         titleId = R.string.prognosis,
         iconId = R.drawable.ic_prognosis,
-        route = Constants.Routes.PROGNOSIS_LIST_SCREEN
+        route = Constants.Routes.PROGNOSIS_SCREEN
     )
     object GamesItem: BottomNavItem(
         titleId = R.string.games,
