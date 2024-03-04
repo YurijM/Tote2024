@@ -24,9 +24,9 @@ object GameRepositoryModule {
 
     @Provides
     @Singleton
-    fun provideTeaUseCase(teamRepository: GameRepository) = GameUseCase(
-        getGame = GetGame(teamRepository),
-        getGameList = GetGameList(teamRepository),
-        saveGame = SaveGame(teamRepository)
+    fun provideGameUseCase(gameRepository: GameRepository) = GameUseCase(
+        getGame = GetGame(gameRepository),
+        getGameList = GetGameList(gameRepository),
+        saveGame = SaveGame(gameRepository)
     )
 }

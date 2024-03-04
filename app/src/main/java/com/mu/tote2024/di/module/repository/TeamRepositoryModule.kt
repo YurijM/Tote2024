@@ -24,7 +24,7 @@ object TeamRepositoryModule {
 
     @Provides
     @Singleton
-    fun provideTeaUseCase(teamRepository: TeamRepository) = TeamUseCase(
+    fun provideTeamUseCase(teamRepository: TeamRepository) = TeamUseCase(
         getTeam = GetTeam(teamRepository),
         getTeamList = GetTeamList(teamRepository),
         saveTeam = SaveTeam(teamRepository)
