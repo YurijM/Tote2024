@@ -16,10 +16,10 @@ import kotlinx.coroutines.flow.callbackFlow
 class StakeRepositoryImpl(
     private val firebaseDatabase: FirebaseDatabase
 ) : StakeRepository {
-    override fun getStake(idGame: String, idGambler: String): Flow<UiState<StakeModel>> = callbackFlow {
+    override fun getStake(gameId: String, gamblerId: String): Flow<UiState<StakeModel>> = callbackFlow {
         trySend(UiState.Loading)
 
-        val id = "$idGame-$idGambler"
+        val id = "$gameId-$gamblerId"
 
         val valueEvent = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

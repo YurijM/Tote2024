@@ -38,8 +38,10 @@ class StakeListViewModel @Inject constructor(
                     val teams = stateTeams.data
 
                     stakeUseCase.getStakeList().collect { stateStake ->
-                        if (stateStake is UiState.Success) {
-                            stakes = stateStake.data.filter { it.gamblerId == CURRENT_ID }.toMutableList()
+                        toLog("stateStake: $stateStake")
+                        /*if (stateStake is UiState.Success) {
+                            //stakes = stateStake.data.filter { it.gamblerId == CURRENT_ID }.toMutableList()
+                            toLog("stakes ViewModel: ${stateStake.data}")
 
                             gameUseCase.getGameList().collect { stateGame ->
                                 if (stateGame is UiState.Success) {
@@ -47,6 +49,16 @@ class StakeListViewModel @Inject constructor(
                                     stateGame.data
                                         .filter { it.start.toLong() > System.currentTimeMillis() }
                                         .forEach { game ->
+                                            val flag1 = teams.first { it.team == game.team1 }.flag
+                                            val flag2 = teams.first { it.team == game.team2 }.flag
+                                            flags.add(
+                                                GameFlagsModel(
+                                                    gameId = game.gameId,
+                                                    flag1 = flag1,
+                                                    flag2 = flag2
+                                                )
+                                            )
+
                                             if (stakes.find { it.gameId == game.gameId } == null) {
                                                 val stake = StakeModel(
                                                     gameId = game.gameId,
@@ -60,11 +72,12 @@ class StakeListViewModel @Inject constructor(
                                             }
                                         }
 
+                                    stakes.sortedBy { it.gameId.toInt() }
                                     _state.value = StakeListState(UiState.Success(true))
                                     toLog("state after stakes loading: ${state.value.result}")
                                 }
                             }
-                        }
+                        }*/
                     }
                 }
                 toLog("state ViewModel: ${state.value.result}")

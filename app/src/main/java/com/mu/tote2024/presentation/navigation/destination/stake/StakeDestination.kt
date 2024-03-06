@@ -18,7 +18,8 @@ fun NavGraphBuilder.stake(
 }
 
 fun NavController.navigateToStake(
-    id: String
+    gameId: String,
+    gamblerId: String,
 ) {
-    navigate("$STAKE_SCREEN/$id")
+    navigate("$STAKE_SCREEN/$gameId")
 }

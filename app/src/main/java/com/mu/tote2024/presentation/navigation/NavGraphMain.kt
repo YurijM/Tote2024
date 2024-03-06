@@ -42,8 +42,8 @@ fun NavGraphMain(
         )
 
         stakeList(
-            toStake = { id ->
-                navMainController.navigateToStake(id)
+            toStake = { gameId, gamblerId ->
+                navMainController.navigateToStake(gameId, gamblerId)
             }
         )
 

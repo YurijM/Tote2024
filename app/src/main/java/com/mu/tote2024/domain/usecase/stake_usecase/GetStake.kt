@@ -5,6 +5,6 @@ import com.mu.tote2024.domain.repository.StakeRepository
 class GetStake(
     private val stakeRepository: StakeRepository
 ) {
-    operator fun invoke(idGame: String, idGambler: String) =
-        stakeRepository.getStake(idGame, idGambler)
+    operator fun invoke(gameId: String, gamblerId: String) =
+        stakeRepository.getStake(gameId, gamblerId)
 }

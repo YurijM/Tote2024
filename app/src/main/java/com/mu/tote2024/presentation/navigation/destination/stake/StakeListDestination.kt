@@ -6,7 +6,7 @@ import com.mu.tote2024.presentation.screen.stake.list.StakeListScreen
 import com.mu.tote2024.presentation.utils.Constants.Routes.STAKE_LIST_SCREEN
 
 fun NavGraphBuilder.stakeList(
-    toStake: (String) -> Unit
+    toStake: (String, String) -> Unit
 ) {
     composable(
         STAKE_LIST_SCREEN

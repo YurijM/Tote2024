@@ -5,6 +5,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.mu.tote2024.data.utils.Constants
+import com.mu.tote2024.data.utils.Constants.Nodes.NODE_GAMES
 import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.repository.GameRepository
 import com.mu.tote2024.presentation.ui.common.UiState
@@ -34,10 +35,10 @@ class GameRepositoryImpl(
             }
         }
 
-        firebaseDatabase.reference.child(Constants.Nodes.NODE_GAMES).child(id).addValueEventListener(valueEvent)
+        firebaseDatabase.reference.child(NODE_GAMES).child(id).addValueEventListener(valueEvent)
 
         awaitClose {
-            firebaseDatabase.reference.child(Constants.Nodes.NODE_GAMES).child(id).removeEventListener(valueEvent)
+            firebaseDatabase.reference.child(NODE_GAMES).child(id).removeEventListener(valueEvent)
             close()
         }
     }
@@ -59,10 +60,10 @@ class GameRepositoryImpl(
             }
         }
 
-        firebaseDatabase.reference.child(Constants.Nodes.NODE_GAMES).addValueEventListener(valueEvent)
+        firebaseDatabase.reference.child(NODE_GAMES).addValueEventListener(valueEvent)
 
         awaitClose {
-            firebaseDatabase.reference.child(Constants.Nodes.NODE_GAMES).removeEventListener(valueEvent)
+            firebaseDatabase.reference.child(NODE_GAMES).removeEventListener(valueEvent)
             close()
         }
     }
@@ -71,7 +72,7 @@ class GameRepositoryImpl(
         trySend(UiState.Loading)
 
         firebaseDatabase.reference
-            .child(Constants.Nodes.NODE_GAMES)
+            .child(NODE_GAMES)
             .child(game.gameId)
             .setValue(game)
 
