@@ -39,7 +39,7 @@ class StakeListViewModel @Inject constructor(
 
                     stakeUseCase.getStakeList().collect { stateStake ->
                         toLog("stateStake: $stateStake")
-                        /*if (stateStake is UiState.Success) {
+                        if (stateStake is UiState.Success) {
                             //stakes = stateStake.data.filter { it.gamblerId == CURRENT_ID }.toMutableList()
                             toLog("stakes ViewModel: ${stateStake.data}")
 
@@ -77,7 +77,7 @@ class StakeListViewModel @Inject constructor(
                                     toLog("state after stakes loading: ${state.value.result}")
                                 }
                             }
-                        }*/
+                        }
                     }
                 }
                 toLog("state ViewModel: ${state.value.result}")

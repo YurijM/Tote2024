@@ -9,8 +9,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.presentation.components.ShowFlag
@@ -29,7 +31,7 @@ fun AdminGameItemScreen(
     ) {
         Text(
             modifier = Modifier.weight(.5f),
-            text = "Игра №${game.gameId}",
+            text = stringResource(R.string.game_no, game.gameId),
             color = MaterialTheme.colorScheme.onSurface,
         )
         Text(

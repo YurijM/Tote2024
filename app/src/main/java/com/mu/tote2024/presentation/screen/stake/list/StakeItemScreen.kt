@@ -11,8 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.StakeModel
 import com.mu.tote2024.presentation.components.ShowFlag
@@ -36,7 +38,7 @@ fun StakeItemScreen(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = "Игра №${stake.gameId}",
+                text = stringResource(R.string.game_no, stake.gameId),
                 color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
@@ -73,7 +75,8 @@ fun StakeItemScreen(
                 color = MaterialTheme.colorScheme.onSurface
             )
             Row(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = stake.goal2,
