@@ -23,6 +23,7 @@ import com.mu.tote2024.presentation.navigation.destination.game.navigateToGroupG
 import com.mu.tote2024.presentation.navigation.destination.prognosis.prognosis
 import com.mu.tote2024.presentation.navigation.destination.rating.rating
 import com.mu.tote2024.presentation.navigation.destination.stake.navigateToStake
+import com.mu.tote2024.presentation.navigation.destination.stake.navigateToStakeList
 import com.mu.tote2024.presentation.navigation.destination.stake.stake
 import com.mu.tote2024.presentation.navigation.destination.stake.stakeList
 import com.mu.tote2024.presentation.utils.Constants.Routes.RATING_SCREEN
@@ -49,8 +50,10 @@ fun NavGraphMain(
 
         stake(
             toStakeList = {
-                navMainController.popBackStack()
-            }        )
+                //navMainController.popBackStack()
+                navMainController.navigateToStakeList()
+            }
+        )
 
         prognosis(
             toPrognosisList = {

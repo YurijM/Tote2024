@@ -72,10 +72,12 @@ fun AppTextField(
             ),
             //textStyle = MaterialTheme.typography.bodyLarge,
             label = {
-                Text(
-                    text = label,
-                    //style = MaterialTheme.typography.labelLarge
-                )
+                if (label.isNotBlank()) {
+                    Text(
+                        text = label,
+                        //style = MaterialTheme.typography.labelLarge
+                    )
+                }
             },
             leadingIcon = if (painterId != null) {
                 {

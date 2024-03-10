@@ -52,5 +52,5 @@
     <string name="balls">Мячи</string>
 
     <string name="game_no">Игра №%1$s</string>
-    <string name="group_no">Группа №%1$s</string>
+    <string name="group_no">Группа %1$s</string>
 </resources>

@@ -40,8 +40,11 @@ class StakeListViewModel @Inject constructor(
                     stakeUseCase.getStakeList().collect { stateStake ->
                         toLog("stateStake: $stateStake")
                         if (stateStake is UiState.Success) {
-                            //stakes = stateStake.data.filter { it.gamblerId == CURRENT_ID }.toMutableList()
-                            toLog("stakes ViewModel: ${stateStake.data}")
+                            stakes = stateStake.data.filter {
+                                it.gamblerId == CURRENT_ID
+                                        && it.start.toLong() > System.currentTimeMillis()
+                            }.toMutableList()
+                            //toLog("stakes ViewModel: ${stateStake.data}")
 
                             gameUseCase.getGameList().collect { stateGame ->
                                 if (stateGame is UiState.Success) {
