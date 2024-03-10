@@ -250,9 +250,8 @@ private fun MainTime(
             )
         }
         Text(
-            modifier = Modifier.width(32.dp),
-            text = ":",
-            textAlign = TextAlign.Center
+            text = " : ",
+            style = MaterialTheme.typography.displaySmall
         )
         Box(
             modifier = Modifier.weight(1f),
@@ -318,9 +317,8 @@ private fun ExtraTime(
             )
         }
         Text(
-            modifier = Modifier.width(32.dp),
-            text = ":",
-            textAlign = TextAlign.Center
+            text = " : ",
+            style = MaterialTheme.typography.displaySmall
         )
         Box(
             modifier = Modifier.weight(1f),
