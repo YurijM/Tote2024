@@ -55,5 +55,6 @@ object Constants {
         const val EMAIL_INCORRECT = "Некорректное значение email"
         const val UNAUTHORIZED_EMAIL = "Неразрешённый email"
         const val ADD_GOAL_INCORRECT = "Количество мячей не может быть меньше, чем в основное время"
+        const val THE_GAME_IS_STARTED_YET = "Ставку изменить нельзя: игра уже началась"
     }
 }

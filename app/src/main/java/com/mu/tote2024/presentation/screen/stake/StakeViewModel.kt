@@ -13,6 +13,7 @@ import com.mu.tote2024.domain.usecase.game_usecase.GameUseCase
 import com.mu.tote2024.domain.usecase.stake_usecase.StakeUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.Errors.ADD_GOAL_INCORRECT
+import com.mu.tote2024.presentation.utils.Constants.Errors.THE_GAME_IS_STARTED_YET
 import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
@@ -115,9 +116,13 @@ class StakeViewModel @Inject constructor(
             }
 
             is StakeEvent.OnSave -> {
-                viewModelScope.launch {
-                    stakeUseCase.saveStake(stake).collect { stateSave ->
-                        _stateExit.value = ExitState(stateSave)
+                if (stake.start.toLong() < System.currentTimeMillis()) {
+                    _state.value = StakeState(UiState.Error(THE_GAME_IS_STARTED_YET))
+                } else {
+                    viewModelScope.launch {
+                        stakeUseCase.saveStake(stake).collect { stateSave ->
+                            _stateExit.value = ExitState(stateSave)
+                        }
                     }
                 }
             }

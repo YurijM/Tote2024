@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -50,6 +51,7 @@ fun StakeScreen(
     toStakeList: () -> Unit
 ) {
     var isLoading by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf("") }
     val state by viewModel.state.collectAsState()
     val stateExit by viewModel.stateExit.collectAsState()
 
@@ -72,6 +74,7 @@ fun StakeScreen(
                 toLog("Error")
                 isLoading = false
                 toLog("error: ${result.message}")
+                errorMessage = result.message
             }
 
             else -> {
@@ -100,7 +103,7 @@ fun StakeScreen(
         }
     }
 
-    if (result is UiState.Success) {
+    if (viewModel.stake.gameId.isNotBlank()) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -164,6 +167,13 @@ fun StakeScreen(
                             onOK = { viewModel.onEvent(StakeEvent.OnSave) },
                             onCancel = { viewModel.onEvent(StakeEvent.OnCancel) }
                         )
+                        if (errorMessage.isNotBlank()) {
+                            TextError(
+                                errorMessage = errorMessage,
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                        }
                     }
                 }
             }
