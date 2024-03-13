@@ -16,7 +16,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.DatePicker
@@ -31,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
@@ -44,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -257,44 +258,29 @@ fun GameScreen(
             )
         }
 
-        var selectedHour by remember { mutableIntStateOf(0) }
-        var selectedMinute by remember { mutableIntStateOf(0) }
-        val timeState = rememberTimePickerState(
-            initialHour = selectedHour,
-            initialMinute = selectedMinute
-        )
-
         if (showTimePicker) {
-            BasicAlertDialog(
-                onDismissRequest = { showTimePicker = false },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier
-                        .background(color = Color.LightGray.copy(alpha = .3f))
-                        .padding(top = 28.dp, start = 20.dp, end = 20.dp, bottom = 12.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    TimePicker(state = timeState)
-                    Row(
-                        modifier = Modifier
-                            .padding(top = 12.dp)
-                            .fillMaxWidth(), horizontalArrangement = Arrangement.End
-                    ) {
-                        TextButton(onClick = { showTimePicker = false }) {
-                            Text(text = stringResource(id = R.string.cancel))
-                        }
-                        TextButton(onClick = {
-                            showTimePicker = false
-                            selectedHour = timeState.hour
-                            selectedMinute = timeState.minute
-                        }) {
-                            Text(text = stringResource(id = R.string.ok))
-                        }
-                    }
-                }
-            }
+            val time = viewModel.startTime.split(":")
+
+            var selectedHour by remember { mutableIntStateOf(time[0].toInt()) }
+            var selectedMinute by remember { mutableIntStateOf(time[1].toInt()) }
+            val timePickerState = rememberTimePickerState(
+                initialHour = selectedHour,
+                initialMinute = selectedMinute
+            )
+
+            SetTime(
+                timePickerState,
+                onDismissRequest = { },
+                onClickConfirm = {
+                    selectedHour = timePickerState.hour
+                    selectedMinute = timePickerState.minute
+                    val date = "${viewModel.game.start.asDate()} $selectedHour:$selectedMinute"
+                    val selectedDate = convertDateTimeToTimestamp(date).toLong()
+                    viewModel.onEvent(GameEvent.OnStartChange(selectedDate.toString()))
+                    showTimePicker = false
+                },
+                onClickCancel = { showTimePicker = false }
+            )
         }
 
 
@@ -304,11 +290,51 @@ fun GameScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SetTime(
-
+    timePickerState: TimePickerState,
+    onDismissRequest: () -> Unit,
+    onClickConfirm: () -> Unit,
+    onClickCancel: () -> Unit,
 ) {
-
+    BasicAlertDialog(
+        onDismissRequest = onDismissRequest,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Red)
+            .border(BorderStroke(3.dp, Color.White), shape = RoundedCornerShape(10.dp))
+            .padding(top = 12.dp),
+    ) {
+        /*Column(
+            modifier = Modifier
+                .background(color = Color.LightGray.copy(alpha = .3f))
+                .padding(top = 28.dp, start = 20.dp, end = 20.dp, bottom = 12.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {*/
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            TimePicker(state = timePickerState)
+            Row(
+                modifier = Modifier
+                    //.padding(top = 12.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                TextButton(onClick = onClickCancel) {
+                    Text(text = stringResource(id = R.string.cancel))
+                }
+                TextButton(onClick = onClickConfirm) {
+                    Text(text = stringResource(id = R.string.ok))
+                }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
