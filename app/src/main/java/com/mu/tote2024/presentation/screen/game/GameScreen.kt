@@ -1,7 +1,6 @@
 package com.mu.tote2024.presentation.screen.game
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
@@ -43,8 +43,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -140,97 +138,81 @@ fun GameScreen(
                         color = MaterialTheme.colorScheme.outline
                     ),
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                    ) {
-                        StartGame(
-                            date = viewModel.game.start.asDateTime(),
-                            errorMessage = viewModel.errorStart,
-                            onClick = { showDatePicker = true }
-                        )
-                        HorizontalDivider(
-                            modifier = Modifier.padding(vertical = 4.dp),
-                            thickness = 1.dp,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        GameIdAndGroup(
-                            gameId = viewModel.game.gameId,
-                            errorMessage = viewModel.errorGameId,
-                            group = viewModel.game.group,
-                            onChange = { newValue ->
-                                viewModel.onEvent(GameEvent.OnGameIdChange(newValue))
+                    StartGame(
+                        date = viewModel.game.start.asDateTime(),
+                        errorMessage = viewModel.errorStart,
+                        onClick = { showDatePicker = true }
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 4.dp),
+                        thickness = 1.dp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    GameIdAndGroup(
+                        gameId = viewModel.game.gameId,
+                        errorMessage = viewModel.errorGameId,
+                        group = viewModel.game.group,
+                        onChange = { newValue ->
+                            viewModel.onEvent(GameEvent.OnGameIdChange(newValue))
+                        },
+                        onClick = { selectedItem ->
+                            viewModel.onEvent(GameEvent.OnGroupChange(selectedItem))
+                        }
+                    )
+                    TeamData(
+                        teams = viewModel.teams,
+                        team = viewModel.game.team1,
+                        goal = viewModel.game.goal1,
+                        errorMessage = viewModel.errorGoal1,
+                        onTeamSelect = { team -> viewModel.onEvent(GameEvent.OnTeamChange(1, team)) },
+                        onGoalSet = { goal -> viewModel.onEvent(GameEvent.OnGoalChange(false, 1, goal)) }
+                    )
+                    TeamData(
+                        teams = viewModel.teams,
+                        team = viewModel.game.team2,
+                        goal = viewModel.game.goal2,
+                        errorMessage = viewModel.errorGoal2,
+                        onTeamSelect = { team -> viewModel.onEvent(GameEvent.OnTeamChange(2, team)) },
+                        onGoalSet = { goal -> viewModel.onEvent(GameEvent.OnGoalChange(false, 2, goal)) }
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.padding(top = 8.dp),
+                        thickness = 1.dp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+
+                    if (viewModel.isExtraTime) {
+                        ExtraTime(
+                            goal1 = viewModel.game.addGoal1,
+                            goal2 = viewModel.game.addGoal2,
+                            errorMessage = viewModel.errorExtraTime,
+                            onGoal1Change = { goal ->
+                                viewModel.onEvent(GameEvent.OnGoalChange(true, 1, goal))
                             },
-                            onClick = { selectedItem ->
-                                viewModel.onEvent(GameEvent.OnGroupChange(selectedItem))
+                            onGoal2Change = { goal ->
+                                viewModel.onEvent(GameEvent.OnGoalChange(true, 2, goal))
                             }
                         )
-                        TeamData(
-                            teams = viewModel.teams,
-                            team = viewModel.game.team1,
-                            goal = viewModel.game.goal1,
-                            errorMessage = viewModel.errorGoal1,
-                            onTeamSelect = { team -> viewModel.onEvent(GameEvent.OnTeamChange(1, team)) },
-                            onGoalSet = { goal -> viewModel.onEvent(GameEvent.OnGoalChange(false, 1, goal)) }
-                        )
-                        TeamData(
-                            teams = viewModel.teams,
-                            team = viewModel.game.team2,
-                            goal = viewModel.game.goal2,
-                            errorMessage = viewModel.errorGoal2,
-                            onTeamSelect = { team -> viewModel.onEvent(GameEvent.OnTeamChange(2, team)) },
-                            onGoalSet = { goal -> viewModel.onEvent(GameEvent.OnGoalChange(false, 2, goal)) }
-                        )
-                        HorizontalDivider(
-                            modifier = Modifier.padding(top = 8.dp),
-                            thickness = 1.dp,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-
-                        if (viewModel.isExtraTime) {
-                            ExtraTime(
-                                goal1 = viewModel.game.addGoal1,
-                                goal2 = viewModel.game.addGoal2,
-                                errorMessage = viewModel.errorExtraTime,
-                                onGoal1Change = { goal ->
-                                    viewModel.onEvent(GameEvent.OnGoalChange(true, 1, goal))
-                                },
-                                onGoal2Change = { goal ->
-                                    viewModel.onEvent(GameEvent.OnGoalChange(true, 2, goal))
+                        if (viewModel.isByPenalty) {
+                            ByPenalty(
+                                teams = listOf(
+                                    "",
+                                    viewModel.game.team1,
+                                    viewModel.game.team2
+                                ),
+                                selectedTeam = viewModel.game.penalty,
+                                onClick = { selectedItem ->
+                                    viewModel.onEvent(GameEvent.OnPenaltyChange(selectedItem))
                                 }
                             )
-                            if (viewModel.isByPenalty) {
-                                ByPenalty(
-                                    teams = listOf(
-                                        "",
-                                        viewModel.game.team1,
-                                        viewModel.game.team2
-                                    ),
-                                    selectedTeam = viewModel.game.penalty,
-                                    onClick = { selectedItem ->
-                                        viewModel.onEvent(GameEvent.OnPenaltyChange(selectedItem))
-                                    }
-                                )
-                            }
                         }
-                        OkAndCancel(
-                            titleOk = stringResource(id = R.string.save),
-                            enabledOk = viewModel.enabled,
-                            onOK = { viewModel.onEvent(GameEvent.OnSave) },
-                            onCancel = { viewModel.onEvent(GameEvent.OnCancel) }
-                        )
-                        /*if (showTimePicker) {
-                            val timeState = rememberTimePickerState(11, 30, false)
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                TimePicker(state = timeState)
-                                Text(text = "Time is ${timeState.hour} : ${timeState.minute}")
-                            }
-                        }*/
                     }
+                    OkAndCancel(
+                        titleOk = stringResource(id = R.string.save),
+                        enabledOk = viewModel.enabled,
+                        onOK = { viewModel.onEvent(GameEvent.OnSave) },
+                        onCancel = { viewModel.onEvent(GameEvent.OnCancel) }
+                    )
                 }
             }
         }
@@ -244,7 +226,7 @@ fun GameScreen(
                 }
             )
 
-            DateSelect(
+            SetDate(
                 datePickerState = datePickerState,
                 onDismissRequest = { showDatePicker = false },
                 onClickConfirm = {
@@ -283,7 +265,6 @@ fun GameScreen(
             )
         }
 
-
         if (isLoading) {
             AppProgressBar()
         }
@@ -292,54 +273,7 @@ fun GameScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SetTime(
-    timePickerState: TimePickerState,
-    onDismissRequest: () -> Unit,
-    onClickConfirm: () -> Unit,
-    onClickCancel: () -> Unit,
-) {
-    BasicAlertDialog(
-        onDismissRequest = onDismissRequest,
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.Red)
-            .border(BorderStroke(3.dp, Color.White), shape = RoundedCornerShape(10.dp))
-            .padding(top = 12.dp),
-    ) {
-        /*Column(
-            modifier = Modifier
-                .background(color = Color.LightGray.copy(alpha = .3f))
-                .padding(top = 28.dp, start = 20.dp, end = 20.dp, bottom = 12.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {*/
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            TimePicker(state = timePickerState)
-            Row(
-                modifier = Modifier
-                    //.padding(top = 12.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                TextButton(onClick = onClickCancel) {
-                    Text(text = stringResource(id = R.string.cancel))
-                }
-                TextButton(onClick = onClickConfirm) {
-                    Text(text = stringResource(id = R.string.ok))
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun DateSelect(
+private fun SetDate(
     datePickerState: DatePickerState,
     onDismissRequest: () -> Unit,
     onClickConfirm: () -> Unit,
@@ -365,6 +299,59 @@ private fun DateSelect(
         DatePicker(
             state = datePickerState
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SetTime(
+    timePickerState: TimePickerState,
+    onDismissRequest: () -> Unit,
+    onClickConfirm: () -> Unit,
+    onClickCancel: () -> Unit,
+) {
+    BasicAlertDialog(
+        modifier = Modifier.fillMaxWidth(),
+        onDismissRequest = onDismissRequest,
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(20.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = 20.dp,
+                        bottom = 8.dp
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TimePicker(state = timePickerState)
+                Row(
+                    modifier = Modifier
+                        //.padding(top = 12.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = onClickCancel) {
+                        Text(
+                            text = stringResource(id = R.string.cancel),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    TextButton(onClick = onClickConfirm) {
+                        Text(
+                            text = stringResource(id = R.string.ok),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
