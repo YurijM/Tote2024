@@ -15,3 +15,7 @@ val Color9 = Color(0xFF03045E)
 val ColorError = Color(0xFFFF0000)
 val ColorErrorDark = Color(0xFFFF7777)
 
+var ColorWin = Color(0xFFFF0000)
+var ColorDraw = Color(0xFF00AA00)
+var ColorDefeat = Color(0xFF00AAFF)
+var ColorFine = Color(0xFF000000)

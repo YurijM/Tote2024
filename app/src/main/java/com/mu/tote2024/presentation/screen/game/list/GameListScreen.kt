@@ -40,6 +40,9 @@ import com.mu.tote2024.domain.model.GroupTeamResultModel
 import com.mu.tote2024.presentation.components.AppFabAdd
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.screen.game.list_group.GroupGameItemScreen
+import com.mu.tote2024.presentation.ui.ColorDefeat
+import com.mu.tote2024.presentation.ui.ColorDraw
+import com.mu.tote2024.presentation.ui.ColorWin
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.EMPTY
 import com.mu.tote2024.presentation.utils.Constants.GROUPS
@@ -85,7 +88,8 @@ fun GameListScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             (GROUPS.size - 1 downTo GROUPS_COUNT).forEach { index ->
-                val list = viewModel.games.filter { it.group == GROUPS[index] && it.start.toLong() <= System.currentTimeMillis() }
+                val list =
+                    viewModel.games.filter { it.group == GROUPS[index] && it.start.toLong() <= System.currentTimeMillis() }
 
                 if (list.isNotEmpty()) {
                     Text(
@@ -274,7 +278,12 @@ fun Games_Table(
         } else {
             Text(
                 text = value,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = when (index) {
+                    5 -> ColorWin
+                    6 -> ColorDraw
+                    7 -> ColorDefeat
+                    else -> MaterialTheme.colorScheme.onSurface
+                },
                 textAlign = if (value.isEmpty() || value[0].isDigit()) TextAlign.Center else TextAlign.Start,
                 modifier = Modifier.padding(4.dp),
                 maxLines = 1,

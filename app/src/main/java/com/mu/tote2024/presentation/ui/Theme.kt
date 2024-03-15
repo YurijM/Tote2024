@@ -7,6 +7,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
@@ -56,7 +57,13 @@ fun Tote2024Theme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }*/
 
-        darkTheme -> DarkColorScheme
+        darkTheme -> {
+            ColorWin = Color(0xFFFF7777)
+            ColorDraw = Color(0xFF00FF00)
+            ColorDefeat = Color(0xFF0077B6)
+            ColorFine = Color(0xFF777777)
+            DarkColorScheme
+        }
         else -> LightColorScheme
     }
     val view = LocalView.current
