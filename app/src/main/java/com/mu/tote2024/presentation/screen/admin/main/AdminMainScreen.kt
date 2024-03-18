@@ -17,7 +17,8 @@ fun AdminMainScreen(
         AdminNavItem.AdminEmailItem,
         AdminNavItem.AdminGamblerItem,
         AdminNavItem.AdminTeamItem,
-        AdminNavItem.AdminGameItem
+        AdminNavItem.AdminGameItem,
+        AdminNavItem.AdminStakeItem,
     )
     Box(
         modifier = Modifier

@@ -3,6 +3,7 @@ package com.mu.tote2024.domain.model
 data class StakeModel(
     val gameId: String = "",
     var gamblerId: String = "",
+    var gamblerNick: String = "",
     val start: String = "",
     val group: String = "",
     val team1: String = "",

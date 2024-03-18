@@ -10,6 +10,7 @@ import com.mu.tote2024.presentation.navigation.destination.admin.adminGamblerLis
 import com.mu.tote2024.presentation.navigation.destination.admin.adminGamblerPhoto
 import com.mu.tote2024.presentation.navigation.destination.admin.adminGameList
 import com.mu.tote2024.presentation.navigation.destination.admin.adminMain
+import com.mu.tote2024.presentation.navigation.destination.admin.adminStakeList
 import com.mu.tote2024.presentation.navigation.destination.admin.adminTeamList
 import com.mu.tote2024.presentation.navigation.destination.admin.navigateToAdminEmail
 import com.mu.tote2024.presentation.navigation.destination.admin.navigateToAdminEmailList
@@ -120,5 +121,7 @@ fun NavGraphMain(
         adminTeamList()
 
         adminGameList()
+
+        adminStakeList()
     }
 }

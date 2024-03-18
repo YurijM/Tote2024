@@ -24,4 +24,8 @@ sealed class AdminNavItem(
         itemId = R.string.admin_game_list,
         route = Constants.Routes.ADMIN_GAME_LIST_SCREEN
     )
+    object AdminStakeItem: AdminNavItem(
+        itemId = R.string.admin_stake_list,
+        route = Constants.Routes.ADMIN_STAKE_LIST_SCREEN
+    )
 }
