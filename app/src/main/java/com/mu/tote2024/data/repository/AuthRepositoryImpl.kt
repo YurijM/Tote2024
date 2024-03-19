@@ -8,6 +8,7 @@ import com.mu.tote2024.data.utils.Constants.Errors.ERROR_FUN_CREATE_USER_WITH_EM
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_NEW_GAMBLER_IS_NOT_CREATED
 import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.data.utils.Constants.Nodes.NODE_GAMBLERS
+import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.repository.AuthRepository
 import com.mu.tote2024.presentation.ui.common.UiState
 import kotlinx.coroutines.channels.awaitClose
@@ -33,7 +34,8 @@ class AuthRepositoryImpl @Inject constructor(
                 val user = firebaseAuth.currentUser
 
                 if (user != null) {
-                    GAMBLER = GAMBLER.copy(
+                    //GAMBLER = GAMBLER.copy(
+                    GAMBLER = GamblerModel(
                         gamblerId = user.uid,
                         email = email
                     )

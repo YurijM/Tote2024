@@ -33,12 +33,8 @@ class MainViewModel @Inject constructor(
             gamblerUseCase.getGambler(CURRENT_ID).collect {
                 _state.value = GamblerState(it)
 
-                val currentValue = state.value.result
+                val currentValue = _state.value.result
                 if (currentValue is UiState.Success) {
-                    /*if (GAMBLER.profile.nickname.isBlank()
-                        || GAMBLER.profile.photoUrl.isBlank()
-                        || GAMBLER.profile.gender.isBlank()
-                    ) {*/
                     GAMBLER = currentValue.data
                     if (GAMBLER.profile.nickname.isBlank()
                         || GAMBLER.profile.photoUrl.isBlank()

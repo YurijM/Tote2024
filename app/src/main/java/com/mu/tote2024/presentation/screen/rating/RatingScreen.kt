@@ -10,6 +10,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -33,34 +34,40 @@ fun RatingScreen(
     var isLoading by remember { mutableStateOf(false) }
     var gamblers by remember { mutableStateOf<List<GamblerModel>>(listOf()) }
     var rate by remember { mutableIntStateOf(1) }
+    var profileIsValid by remember { mutableStateOf(false) }
 
     val state by viewModel.state.collectAsState()
+    val result = state.result
 
-    when (val result = state.result) {
-        is UiState.Loading -> {
-            isLoading = true
+    LaunchedEffect(key1 = result) {
+        when (result) {
+            is UiState.Loading -> {
+                isLoading = true
+            }
+
+            is UiState.Success -> {
+                isLoading = false
+                gamblers = result.data
+                    .filter { it.rate > 0 }
+                    //.sortedWith(compareBy { it.result?.points ?: 0.00 })
+                    .sortedWith(
+                        compareByDescending<GamblerModel> { it.result.points }
+                            .thenBy { it.profile.nickname }
+                    )
+                rate = GAMBLER.rate
+                profileIsValid = viewModel.checkProfile()
+            }
+
+            is UiState.Error -> {
+                isLoading = false
+            }
+
+            else -> {}
         }
-
-        is UiState.Success -> {
-            isLoading = false
-            gamblers = result.data
-                .filter { it.rate > 0 }
-                //.sortedWith(compareBy { it.result?.points ?: 0.00 })
-                .sortedWith(
-                    compareByDescending<GamblerModel> { it.result.points }
-                        .thenBy { it.profile.nickname }
-                )
-            rate = GAMBLER.rate
-        }
-
-        is UiState.Error -> {
-            isLoading = false
-        }
-
-        else -> {}
     }
+
     Column {
-        if (rate == 0) {
+        if (profileIsValid && rate == 0) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -74,9 +81,12 @@ fun RatingScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
-                    text = "Так как Вы ещё не перечислили свою ставку, то Вам пока доступен только просмотр уже зарегистрированных участников",
+                    text = "Так как Вы ещё не перечислили свою ставку, " +
+                            "то Вам пока доступен только просмотр списка " +
+                            "уже зарегистрированных участников",
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }

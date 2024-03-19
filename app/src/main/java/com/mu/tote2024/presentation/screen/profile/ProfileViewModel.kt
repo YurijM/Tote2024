@@ -42,7 +42,7 @@ class ProfileViewModel @Inject constructor(
     )
         private set
 
-    var disabled by mutableStateOf(false)
+    var enabled by mutableStateOf(false)
         private set
 
     private var photoUri by mutableStateOf<Uri?>(null)
@@ -68,7 +68,7 @@ class ProfileViewModel @Inject constructor(
                         photoUrl = GAMBLER.profile.photoUrl
                     )
 
-                    disabled = checkValues()
+                    enabled = checkValues()
                 }
             }
         }
@@ -80,10 +80,7 @@ class ProfileViewModel @Inject constructor(
                 profile = profile.copy(
                     nickname = event.nickname
                 )
-                /*profileErrors = profileErrors.copy(
-                    errorNickname = checkIsFieldEmpty(event.nickname)
-                )*/
-                disabled = checkValues()
+                enabled = checkValues()
             }
 
             is ProfileEvent.OnPhotoChange -> {
@@ -91,21 +88,14 @@ class ProfileViewModel @Inject constructor(
                     photoUrl = event.photoUri.toString()
                 )
                 photoUri = event.photoUri
-
-                /*profileErrors = profileErrors.copy(
-                    errorPhotoUrl = checkIsFieldEmpty(event.photoUri.toString())
-                )*/
-                disabled = checkValues()
+                enabled = checkValues()
             }
 
             is ProfileEvent.OnGenderChange -> {
                 profile = profile.copy(
                     gender = event.gender
                 )
-                /*profileErrors = profileErrors.copy(
-                    errorGender = checkIsFieldEmpty(event.gender)
-                )*/
-                disabled = checkValues()
+                enabled = checkValues()
             }
 
             is ProfileEvent.OnCancel -> {
@@ -124,7 +114,7 @@ class ProfileViewModel @Inject constructor(
                         }
                     }
 
-                    val currentValue = state.value.result
+                    val currentValue = _state.value.result
                     if (currentValue is UiState.Success) {
                         viewModelScope.launch {
                             photoUri?.let { uri ->
@@ -157,9 +147,9 @@ class ProfileViewModel @Inject constructor(
             errorGender = checkIsFieldEmpty(profile.gender)
         )
 
-        return (profileErrors.errorNickname != null && profileErrors.errorNickname!!.isBlank()) &&
-                (profileErrors.errorPhotoUrl != null && profileErrors.errorPhotoUrl!!.isBlank()) &&
-                (profileErrors.errorGender != null && profileErrors.errorGender!!.isBlank())
+        return profileErrors.errorNickname.isNullOrBlank() &&
+                profileErrors.errorPhotoUrl.isNullOrBlank() &&
+                profileErrors.errorGender.isNullOrBlank()
     }
 
     companion object {

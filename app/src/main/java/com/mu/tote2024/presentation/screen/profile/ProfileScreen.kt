@@ -116,10 +116,7 @@ fun ProfileScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(
-                            vertical = 4.dp,
-                            horizontal = 8.dp
-                        ),
+                        .padding(8.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Box(
@@ -155,7 +152,7 @@ fun ProfileScreen(
                 )
                 OkAndCancel(
                     titleOk = stringResource(id = R.string.save),
-                    enabledOk = viewModel.disabled,
+                    enabledOk = viewModel.enabled,
                     onOK = { viewModel.onEvent(ProfileEvent.OnSave) },
                     onCancel = { viewModel.onEvent(ProfileEvent.OnCancel) }
                 )

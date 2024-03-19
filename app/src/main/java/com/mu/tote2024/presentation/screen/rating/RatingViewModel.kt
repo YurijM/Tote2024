@@ -2,6 +2,7 @@ package com.mu.tote2024.presentation.screen.rating
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
@@ -25,6 +26,12 @@ class RatingViewModel @Inject constructor(
                 _state.value = RatingState(it)
             }
         }
+    }
+
+    fun checkProfile() : Boolean {
+        return GAMBLER.profile.nickname.isNotBlank()
+                && GAMBLER.profile.gender.isNotBlank()
+                && GAMBLER.profile.photoUrl.isNotBlank()
     }
 
     companion object {
