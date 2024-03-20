@@ -44,8 +44,8 @@ fun AppRadioGroup(
                             selected = (item == currentValue),
                             onClick = { onClick(item) },
                             role = Role.RadioButton
-                        ),
-                        //.padding(vertical = 4.dp),
+                        )
+                        .padding(vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(

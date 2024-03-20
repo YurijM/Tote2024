@@ -17,10 +17,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -29,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY
-import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppRadioGroup
 import com.mu.tote2024.presentation.components.AppTextField
@@ -38,6 +39,7 @@ import com.mu.tote2024.presentation.components.OkAndCancel
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
+import com.mu.tote2024.presentation.utils.Constants
 
 /*@Preview(
     name = "Light",
@@ -63,36 +65,90 @@ fun ProfileScreen(
     toMain: () -> Unit,
     toAuth: () -> Unit
 ) {
-    val isLoading = remember { mutableStateOf(false) }
-    val error = remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf("") }
 
     val state by viewModel.state.collectAsState()
+    val stateExit by viewModel.stateExit.collectAsState()
 
-    when (val result = state.result) {
-        is UiState.Loading -> {
-            isLoading.value = true
-            error.value = ""
+    val result = state.result
+    val resultExit = stateExit.result
+
+    LaunchedEffect(key1 = true) {
+        when (result) {
+            is UiState.Loading -> {
+                isLoading = true
+                error = ""
+            }
+
+            is UiState.Success -> {
+                isLoading = false
+                error = ""
+            }
+
+            is UiState.Error -> {
+                isLoading = false
+                error = result.message
+            }
+
+            else -> {}
         }
+    }
 
-        is UiState.Success -> {
-            isLoading.value = false
-            error.value = ""
+    LaunchedEffect(key1 = resultExit) {
+        when (resultExit) {
+            is UiState.Loading -> {
+                isLoading = true
+            }
 
-            if (result.data) {
-                toMain()
+            is UiState.Success -> {
+                isLoading = false
+                if (resultExit.data) {
+                    toMain()
+                }
+            }
+
+            is UiState.Error -> {
+                isLoading = false
+                error = resultExit.message
+
+                if (resultExit.message == ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY)
+                    toAuth()
+            }
+
+            is UiState.Default -> {
+                isLoading = false
             }
         }
-
-        is UiState.Error -> {
-            isLoading.value = false
-
-            if (result.message == ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY) toAuth()
-
-            error.value = result.message
-        }
-
-        else -> {}
     }
+
+    /*LaunchedEffect(key1 = result) {
+        when (result) {
+            is UiState.Loading -> {
+                isLoading = true
+                error = ""
+            }
+
+            is UiState.Success -> {
+                isLoading = false
+                error = ""
+
+                if (result.data) {
+                    toMain()
+                }
+            }
+
+            is UiState.Error -> {
+                isLoading = false
+                error.value = result.message
+
+                if (result.message == ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY)
+                    toAuth()
+            }
+
+            else -> {}
+        }
+    }*/
 
     Surface(
         modifier = Modifier
@@ -125,7 +181,7 @@ fun ProfileScreen(
                             .fillMaxHeight()
                     ) {
                         LoadPhoto(
-                            viewModel.profile.photoUrl,
+                            viewModel.gambler.profile.photoUrl,
                             onSelect = { uri ->
                                 if (uri != null) {
                                     viewModel.onEvent(ProfileEvent.OnPhotoChange(uri))
@@ -137,13 +193,23 @@ fun ProfileScreen(
                     Column(
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        ShowProfile()
+                        ShowProfile(
+                            email = viewModel.gambler.email,
+                            rate = viewModel.gambler.rate
+                        )
                         HorizontalDivider(
                             thickness = 1.dp,
                             modifier = Modifier.padding(vertical = 4.dp),
                             color = MaterialTheme.colorScheme.onSurface,
                         )
-                        EditProfile(viewModel = viewModel)
+                        EditProfile(
+                            gender = viewModel.gambler.profile.gender,
+                            onGenderChange = { gender -> viewModel.onEvent(ProfileEvent.OnGenderChange(gender)) },
+                            errorGender = viewModel.profileErrors.errorGender ?: "",
+                            nickname = viewModel.gambler.profile.nickname,
+                            onNicknameChange = { nickname -> viewModel.onEvent(ProfileEvent.OnNicknameChange(nickname)) },
+                            errorNickname = viewModel.profileErrors.errorNickname ?: "",
+                        )
                     }
                 }
                 HorizontalDivider(
@@ -158,21 +224,24 @@ fun ProfileScreen(
                 )
             }
         }
-        if (isLoading.value) {
+        if (isLoading) {
             AppProgressBar()
         }
     }
 }
 
 @Composable
-private fun ShowProfile() {
+private fun ShowProfile(
+    email: String,
+    rate: Int,
+) {
     Text(
-        text = GAMBLER.email,
+        text = email,
         color = MaterialTheme.colorScheme.onSurface,
     )
-    if (GAMBLER.rate > 0) {
+    if (rate > 0) {
         Text(
-            text = LocalContext.current.getString(R.string.gambler_rate, GAMBLER.rate),
+            text = LocalContext.current.getString(R.string.gambler_rate, rate),
             color = MaterialTheme.colorScheme.onSurface,
         )
     } else {
@@ -183,7 +252,14 @@ private fun ShowProfile() {
 }
 
 @Composable
-private fun EditProfile(viewModel: ProfileViewModel) {
+private fun EditProfile(
+    gender: String,
+    onGenderChange: (String) -> Unit,
+    errorGender: String,
+    nickname: String,
+    onNicknameChange: (String) -> Unit,
+    errorNickname: String,
+) {
     Text(
         text = "Пол",
         color = MaterialTheme.colorScheme.onSurface,
@@ -193,22 +269,18 @@ private fun EditProfile(viewModel: ProfileViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        items = viewModel.sex,
-        currentValue = viewModel.profile.gender,
-        onClick = { newValue ->
-            viewModel.onEvent(ProfileEvent.OnGenderChange(newValue))
-        },
-        errorMessage = viewModel.profileErrors.errorGender
+        items = listOf(Constants.MALE, Constants.FEMALE),
+        currentValue = gender,
+        onClick = { newValue -> onGenderChange(newValue) },
+        errorMessage = errorGender
     )
     AppTextField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         label = stringResource(id = R.string.enter_nick),
-        value = viewModel.profile.nickname,
-        onChange = { newValue ->
-            viewModel.onEvent(ProfileEvent.OnNicknameChange(newValue))
-        },
-        errorMessage = viewModel.profileErrors.errorNickname
+        value = nickname,
+        onChange = { newValue -> onNicknameChange(newValue) },
+        errorMessage = errorNickname
     )
 }

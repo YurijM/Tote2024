@@ -9,14 +9,10 @@ import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_PROFILE_IS_EMPTY
-import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GamblerModel
-import com.mu.tote2024.domain.model.GamblerProfileModel
 import com.mu.tote2024.domain.usecase.auth_usecase.AuthUseCase
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.Constants.FEMALE
-import com.mu.tote2024.presentation.utils.Constants.MALE
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,8 +26,11 @@ class ProfileViewModel @Inject constructor(
     authUseCase: AuthUseCase,
     private val gamblerUseCase: GamblerUseCase
 ) : ViewModel() {
-    private val _state: MutableStateFlow<ProfileState> = MutableStateFlow(ProfileState())
-    val state: StateFlow<ProfileState> = _state.asStateFlow()
+    private val _state: MutableStateFlow<GamblerState> = MutableStateFlow(GamblerState())
+    val state: StateFlow<GamblerState> = _state.asStateFlow()
+
+    private val _stateExit: MutableStateFlow<ExitState> = MutableStateFlow(ExitState())
+    val stateExit: StateFlow<ExitState> = _stateExit
 
     var profileErrors by mutableStateOf(
         ProfileErrors(
@@ -47,29 +46,22 @@ class ProfileViewModel @Inject constructor(
 
     private var photoUri by mutableStateOf<Uri?>(null)
 
-    val sex = listOf(MALE, FEMALE)
-
-    var profile by mutableStateOf(GamblerProfileModel())
+    var gambler by mutableStateOf(GamblerModel())
         private set
 
     init {
         CURRENT_ID = authUseCase.getCurrentUserId()
 
         viewModelScope.launch {
-            gamblerUseCase.getGambler(CURRENT_ID).collect {
-                val result = GamblerState(it).result
+            gamblerUseCase.getGambler(CURRENT_ID).collect { stateGambler ->
+                val result = GamblerState(stateGambler).result
 
                 if (result is UiState.Success) {
-                    GAMBLER = result.data
-
-                    profile = GamblerProfileModel(
-                        nickname = GAMBLER.profile.nickname,
-                        gender = GAMBLER.profile.gender,
-                        photoUrl = GAMBLER.profile.photoUrl
-                    )
-
+                    gambler = result.data
                     enabled = checkValues()
                 }
+
+                _state.value = GamblerState(stateGambler)
             }
         }
     }
@@ -77,40 +69,40 @@ class ProfileViewModel @Inject constructor(
     fun onEvent(event: ProfileEvent) {
         when (event) {
             is ProfileEvent.OnNicknameChange -> {
-                profile = profile.copy(
-                    nickname = event.nickname
+                gambler = gambler.copy(
+                    profile = gambler.profile.copy(nickname = event.nickname)
                 )
                 enabled = checkValues()
             }
 
             is ProfileEvent.OnPhotoChange -> {
-                profile = profile.copy(
-                    photoUrl = event.photoUri.toString()
+                gambler = gambler.copy(
+                    profile = gambler.profile.copy(photoUrl = event.photoUri.toString())
                 )
                 photoUri = event.photoUri
                 enabled = checkValues()
             }
 
             is ProfileEvent.OnGenderChange -> {
-                profile = profile.copy(
-                    gender = event.gender
+                gambler = gambler.copy(
+                    profile = gambler.profile.copy(gender = event.gender)
                 )
                 enabled = checkValues()
             }
 
             is ProfileEvent.OnCancel -> {
                 if (checkValues()) {
-                    _state.value = ProfileState(UiState.Success(true))
+                    _stateExit.value = ExitState(UiState.Success(true))
                 } else {
-                    _state.value = ProfileState(UiState.Error(ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY))
+                    _stateExit.value = ExitState(UiState.Error(ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY))
                 }
             }
 
             is ProfileEvent.OnSave -> {
                 if (checkValues()) {
                     viewModelScope.launch {
-                        gamblerUseCase.saveProfile(profile).collect {
-                            _state.value = ProfileState(it)
+                        gamblerUseCase.saveGambler(gambler).collect {
+                            _state.value = GamblerState(it)
                         }
                     }
 
@@ -119,7 +111,7 @@ class ProfileViewModel @Inject constructor(
                         viewModelScope.launch {
                             photoUri?.let { uri ->
                                 gamblerUseCase.saveGamblerPhoto(CURRENT_ID, uri).collect { state ->
-                                    _state.value = ProfileState(state)
+                                    _stateExit.value = ExitState(state)
                                 }
                             }
                         }
@@ -128,7 +120,7 @@ class ProfileViewModel @Inject constructor(
                     //val (nickname, photoUrl, gender) = profile
                     //GAMBLER = GAMBLER.copy(profile = GamblerProfileModel(nickname, photoUrl, gender))
                 } else {
-                    _state.value = ProfileState(UiState.Error(ERROR_PROFILE_IS_EMPTY))
+                    _stateExit.value = ExitState(UiState.Error(ERROR_PROFILE_IS_EMPTY))
                 }
             }
         }
@@ -136,15 +128,15 @@ class ProfileViewModel @Inject constructor(
 
     private fun checkValues(): Boolean {
         profileErrors = profileErrors.copy(
-            errorNickname = checkIsFieldEmpty(profile.nickname)
+            errorNickname = checkIsFieldEmpty(gambler.profile.nickname)
         )
 
         profileErrors = profileErrors.copy(
-            errorPhotoUrl = checkIsFieldEmpty(profile.photoUrl)
+            errorPhotoUrl = checkIsFieldEmpty(gambler.profile.photoUrl)
         )
 
         profileErrors = profileErrors.copy(
-            errorGender = checkIsFieldEmpty(profile.gender)
+            errorGender = checkIsFieldEmpty(gambler.profile.gender)
         )
 
         return profileErrors.errorNickname.isNullOrBlank() &&
@@ -157,7 +149,7 @@ class ProfileViewModel @Inject constructor(
             val result: UiState<GamblerModel> = UiState.Default,
         )
 
-        data class ProfileState(
+        data class ExitState(
             val result: UiState<Boolean> = UiState.Default,
         )
 

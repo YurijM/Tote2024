@@ -89,10 +89,14 @@ class GamblerRepositoryImpl @Inject constructor(
             .child(GAMBLER_PHOTO_URL)
             .setValue(uri.toString())
 
-        val profile = GAMBLER.profile
+        /*val profile = GAMBLER.profile
         profile.photoUrl = uri.toString()
 
-        GAMBLER = GAMBLER.copy(profile = profile)
+        GAMBLER = GAMBLER.copy(profile = profile)*/
+
+        GAMBLER = GAMBLER.copy(
+            profile = GAMBLER.profile.copy(photoUrl = uri.toString())
+        )
 
         trySend(UiState.Success(true))
 
