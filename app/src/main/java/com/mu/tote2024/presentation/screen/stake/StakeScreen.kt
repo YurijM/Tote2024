@@ -124,6 +124,7 @@ fun StakeScreen(
                 items(viewModel.games) { game ->
                     GamePlayed(
                         game = game,
+                        flags = viewModel.flags.first { it.gameId == game.gameId },
                         team1 = viewModel.team1,
                         team2 = viewModel.team2
                     )
@@ -162,7 +163,7 @@ private fun EditCard(
             team2 = viewModel.stake.team2,
             goal1 = viewModel.stake.goal1,
             goal2 = viewModel.stake.goal2,
-            flags = viewModel.flags,
+            flags = viewModel.flags.first { it.gameId == viewModel.stake.gameId },
             errorMessage = viewModel.errorMainTime,
             onGoal1Change = { goal -> viewModel.onEvent(StakeEvent.OnGoalChange(false, 1, goal)) },
             onGoal2Change = { goal -> viewModel.onEvent(StakeEvent.OnGoalChange(false, 2, goal)) }
@@ -418,6 +419,7 @@ fun ByPenalty(
 @Composable
 private fun GamePlayed(
     game: GameModel,
+    flags: GameFlagsModel,
     team1: String,
     team2: String
 ) {
@@ -428,18 +430,26 @@ private fun GamePlayed(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.End,
                     text = game.team1,
                     fontWeight = if (game.team1 in listOf(team1, team2))
                         FontWeight.Bold
                     else
                         FontWeight.Normal
                 )
+                ShowFlag(flags.flag1)
                 Text(
                     text = " - "
                 )
+                ShowFlag(flags.flag2)
                 Text(
+                    modifier = Modifier.weight(1f),
                     text = game.team2,
                     fontWeight = if (game.team2 in listOf(team1, team2))
                         FontWeight.Bold

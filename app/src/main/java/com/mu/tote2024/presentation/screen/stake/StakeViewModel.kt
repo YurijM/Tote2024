@@ -43,29 +43,38 @@ class StakeViewModel @Inject constructor(
     val stateExit: StateFlow<ExitState> = _stateExit
 
     val gameId by mutableStateOf(savedStateHandle.get<String>(KEY_ID))
+
     var stake by mutableStateOf(StakeModel())
         private set
     var games by mutableStateOf(listOf<GameModel>())
         private set
-    var flags = GameFlagsModel()
+    var teams by mutableStateOf(listOf<TeamModel>())
         private set
+
+    var flags = mutableListOf<GameFlagsModel>()
+        private set
+
     var team1 = ""
+        private set
     var team2 = ""
+        private set
     var isExtraTime = false
         private set
     var isByPenalty = false
         private set
+
     private var errorGoal1 = ""
     private var errorGoal2 = ""
-    var errorMainTime = ""
-        private set
-
     private var errorAddGoal1 = ""
     private var errorAddGoal2 = ""
+
+    var errorMainTime = ""
+        private set
     var errorExtraTime = ""
         private set
     var errorByPenalty = ""
         private set
+
     var enabled = false
         private set
 
@@ -73,7 +82,7 @@ class StakeViewModel @Inject constructor(
         viewModelScope.launch {
             teamUseCase.getTeamList().collect { stateTeams ->
                 if (stateTeams is UiState.Success) {
-                    val teams = stateTeams.data
+                    teams = stateTeams.data
 
                     stakeUseCase.getStake(gameId ?: "", CURRENT_ID).collect { stateStake ->
                         when (val result = StakeState(stateStake).result) {
@@ -84,8 +93,7 @@ class StakeViewModel @Inject constructor(
                                 team1 = stake.team1
                                 team2 = stake.team2
 
-                                flags = setFlags(
-                                    teams = teams,
+                                addFlags(
                                     gameId = stake.gameId,
                                     team1 = team1,
                                     team2 = team2
@@ -110,8 +118,7 @@ class StakeViewModel @Inject constructor(
                                             team1 = game.team1
                                             team2 = game.team2
 
-                                            flags = setFlags(
-                                                teams = teams,
+                                            addFlags(
                                                 gameId = game.gameId,
                                                 team1 = team1,
                                                 team2 = team2
@@ -138,8 +145,13 @@ class StakeViewModel @Inject constructor(
                                                     && it.gameId != gameId
                                         }
                                         .sortedBy { it.gameId }
-                                    toLog("teams: $team1, $team2")
-                                    toLog("games: ${games.size}")
+                                    games.forEach {
+                                        addFlags(
+                                            gameId = it.gameId,
+                                            team1 = it.team1,
+                                            team2 = it.team2
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -182,18 +194,19 @@ class StakeViewModel @Inject constructor(
         enabled = checkValues()
     }
 
-    private fun setFlags(
-        teams: List<TeamModel>,
+    private fun addFlags(
         gameId: String,
         team1: String,
         team2: String
-    ): GameFlagsModel {
+    ) {
         val flag1 = teams.first { it.team == team1 }.flag
         val flag2 = teams.first { it.team == team2 }.flag
-        return GameFlagsModel(
-            gameId = gameId,
-            flag1 = flag1,
-            flag2 = flag2
+        flags.add(
+            GameFlagsModel(
+                gameId = gameId,
+                flag1 = flag1,
+                flag2 = flag2
+            )
         )
     }
 
