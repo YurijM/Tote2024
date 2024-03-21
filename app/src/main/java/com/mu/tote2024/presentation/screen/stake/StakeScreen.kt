@@ -11,13 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,12 +28,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.GameFlagsModel
+import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.presentation.components.AppDropDownList
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
@@ -74,7 +75,7 @@ fun StakeScreen(
                 errorMessage = result.message
             }
 
-            else -> { }
+            else -> {}
         }
     }
     LaunchedEffect(key1 = resultExit) {
@@ -99,78 +100,33 @@ fun StakeScreen(
     }
 
     if (viewModel.stake.gameId.isNotBlank()) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 12.dp),
-                        border = BorderStroke(
-                            width = 2.dp,
-                            color = MaterialTheme.colorScheme.outline
-                        ),
-                    ) {
-                        GameInfo(
-                            id = viewModel.stake.gameId,
-                            start = viewModel.stake.start,
-                            group = viewModel.stake.group
-                        )
-                        MainTime(
-                            team1 = viewModel.stake.team1,
-                            team2 = viewModel.stake.team2,
-                            goal1 = viewModel.stake.goal1,
-                            goal2 = viewModel.stake.goal2,
-                            flags = viewModel.flags,
-                            errorMessage = viewModel.errorMainTime,
-                            onGoal1Change = { goal -> viewModel.onEvent(StakeEvent.OnGoalChange(false, 1, goal)) },
-                            onGoal2Change = { goal -> viewModel.onEvent(StakeEvent.OnGoalChange(false, 2, goal)) }
-                        )
-                        if (viewModel.isExtraTime) {
-                            ExtraTime(
-                                addGoal1 = viewModel.stake.addGoal1,
-                                addGoal2 = viewModel.stake.addGoal2,
-                                errorMessage = viewModel.errorExtraTime,
-                                onAddGoal1Change = { goal -> viewModel.onEvent(StakeEvent.OnGoalChange(true, 1, goal)) },
-                                onAddGoal2Change = { goal -> viewModel.onEvent(StakeEvent.OnGoalChange(true, 2, goal)) }
-                            )
-                            if (viewModel.isByPenalty) {
-                                ByPenalty(
-                                    teams = listOf(
-                                        "",
-                                        viewModel.stake.team1,
-                                        viewModel.stake.team2
-                                    ),
-                                    selectedTeam = viewModel.stake.penalty,
-                                    errorMessage = viewModel.errorByPenalty,
-                                    onClick = { selectedItem -> viewModel.onEvent(StakeEvent.OnPenaltyChange(selectedItem)) }
-                                )
-                            }
-                        }
-                        OkAndCancel(
-                            titleOk = stringResource(id = R.string.save),
-                            enabledOk = viewModel.enabled,
-                            onOK = { viewModel.onEvent(StakeEvent.OnSave) },
-                            onCancel = { viewModel.onEvent(StakeEvent.OnCancel) }
-                        )
-                        if (errorMessage.isNotBlank()) {
-                            TextError(
-                                errorMessage = errorMessage,
-                                textAlign = TextAlign.Center
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                        }
-                    }
+            item {
+                EditCard(
+                    viewModel = viewModel,
+                    errorMessage = errorMessage
+                )
+            }
+
+            if (viewModel.games.isNotEmpty()) {
+                item {
+                    Text(
+                        text = stringResource(R.string.games_played_yet),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                items(viewModel.games) { game ->
+                    GamePlayed(
+                        game = game,
+                        team1 = viewModel.team1,
+                        team2 = viewModel.team2
+                    )
                 }
             }
         }
@@ -178,6 +134,73 @@ fun StakeScreen(
 
     if (isLoading) {
         AppProgressBar()
+    }
+}
+
+@Composable
+private fun EditCard(
+    viewModel: StakeViewModel,
+    errorMessage: String
+) {
+    Card(
+        modifier = Modifier
+            //.fillMaxWidth()
+            .width(400.dp)
+            .padding(horizontal = 24.dp, vertical = 12.dp),
+        border = BorderStroke(
+            width = 2.dp,
+            color = MaterialTheme.colorScheme.outline
+        ),
+    ) {
+        GameInfo(
+            id = viewModel.stake.gameId,
+            start = viewModel.stake.start,
+            group = viewModel.stake.group
+        )
+        MainTime(
+            team1 = viewModel.stake.team1,
+            team2 = viewModel.stake.team2,
+            goal1 = viewModel.stake.goal1,
+            goal2 = viewModel.stake.goal2,
+            flags = viewModel.flags,
+            errorMessage = viewModel.errorMainTime,
+            onGoal1Change = { goal -> viewModel.onEvent(StakeEvent.OnGoalChange(false, 1, goal)) },
+            onGoal2Change = { goal -> viewModel.onEvent(StakeEvent.OnGoalChange(false, 2, goal)) }
+        )
+        if (viewModel.isExtraTime) {
+            ExtraTime(
+                addGoal1 = viewModel.stake.addGoal1,
+                addGoal2 = viewModel.stake.addGoal2,
+                errorMessage = viewModel.errorExtraTime,
+                onAddGoal1Change = { goal -> viewModel.onEvent(StakeEvent.OnGoalChange(true, 1, goal)) },
+                onAddGoal2Change = { goal -> viewModel.onEvent(StakeEvent.OnGoalChange(true, 2, goal)) }
+            )
+            if (viewModel.isByPenalty) {
+                ByPenalty(
+                    teams = listOf(
+                        "",
+                        viewModel.stake.team1,
+                        viewModel.stake.team2
+                    ),
+                    selectedTeam = viewModel.stake.penalty,
+                    errorMessage = viewModel.errorByPenalty,
+                    onClick = { selectedItem -> viewModel.onEvent(StakeEvent.OnPenaltyChange(selectedItem)) }
+                )
+            }
+        }
+        OkAndCancel(
+            titleOk = stringResource(id = R.string.save),
+            enabledOk = viewModel.enabled,
+            onOK = { viewModel.onEvent(StakeEvent.OnSave) },
+            onCancel = { viewModel.onEvent(StakeEvent.OnCancel) }
+        )
+        if (errorMessage.isNotBlank()) {
+            TextError(
+                errorMessage = errorMessage,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+        }
     }
 }
 
@@ -390,4 +413,49 @@ fun ByPenalty(
         thickness = 1.dp,
         color = MaterialTheme.colorScheme.onSurface,
     )
+}
+
+@Composable
+private fun GamePlayed(
+    game: GameModel,
+    team1: String,
+    team2: String
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row {
+                Text(
+                    text = game.team1,
+                    fontWeight = if (game.team1 in listOf(team1, team2))
+                        FontWeight.Bold
+                    else
+                        FontWeight.Normal
+                )
+                Text(
+                    text = " - "
+                )
+                Text(
+                    text = game.team2,
+                    fontWeight = if (game.team2 in listOf(team1, team2))
+                        FontWeight.Bold
+                    else
+                        FontWeight.Normal
+                )
+            }
+            Text(
+                text = "${game.goal1}:${game.goal2}" +
+                        if (game.addGoal1.isNotBlank())
+                            ", ${stringResource(id = R.string.add_time)} ${game.addGoal1}:${game.addGoal2}" +
+                                    if (game.penalty.isNotBlank())
+                                        ", ${stringResource(id = R.string.by_penalty)} ${game.penalty}"
+                                    else ""
+                        else ""
+            )
+        }
+    }
 }

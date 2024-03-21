@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_GAME_IS_NOT_FOUND
 import com.mu.tote2024.domain.model.GameFlagsModel
+import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.model.StakeModel
 import com.mu.tote2024.domain.model.TeamModel
 import com.mu.tote2024.domain.usecase.game_usecase.GameUseCase
@@ -44,8 +45,12 @@ class StakeViewModel @Inject constructor(
     val gameId by mutableStateOf(savedStateHandle.get<String>(KEY_ID))
     var stake by mutableStateOf(StakeModel())
         private set
+    var games by mutableStateOf(listOf<GameModel>())
+        private set
     var flags = GameFlagsModel()
         private set
+    var team1 = ""
+    var team2 = ""
     var isExtraTime = false
         private set
     var isByPenalty = false
@@ -76,11 +81,14 @@ class StakeViewModel @Inject constructor(
                                 stake = result.data
                                 _state.value = StakeState(stateStake)
 
+                                team1 = stake.team1
+                                team2 = stake.team2
+
                                 flags = setFlags(
                                     teams = teams,
                                     gameId = stake.gameId,
-                                    stake.team1,
-                                    stake.team2
+                                    team1 = team1,
+                                    team2 = team2
                                 )
                                 enabled = checkValues()
                             }
@@ -98,11 +106,15 @@ class StakeViewModel @Inject constructor(
                                                 team1 = game.team1,
                                                 team2 = game.team2,
                                             )
+
+                                            team1 = game.team1
+                                            team2 = game.team2
+
                                             flags = setFlags(
                                                 teams = teams,
                                                 gameId = game.gameId,
-                                                game.team1,
-                                                game.team2
+                                                team1 = team1,
+                                                team2 = team2
                                             )
                                             enabled = checkValues()
                                             _state.value = StakeState(UiState.Success(stake))
@@ -114,6 +126,22 @@ class StakeViewModel @Inject constructor(
                             }
 
                             else -> {}
+                        }
+
+                        if (team1.isNotBlank() && team2.isNotBlank()) {
+                            gameUseCase.getGameList().collect { stateGame ->
+                                if (stateGame is UiState.Success) {
+                                    games = stateGame.data
+                                        .filter {
+                                            (it.team1 in listOf(team1, team2) || it.team2 in listOf(team1, team2))
+                                                    && it.start.toLong() < System.currentTimeMillis()
+                                                    && it.gameId != gameId
+                                        }
+                                        .sortedBy { it.gameId }
+                                    toLog("teams: $team1, $team2")
+                                    toLog("games: ${games.size}")
+                                }
+                            }
                         }
                     }
                 }

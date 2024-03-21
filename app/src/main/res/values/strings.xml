@@ -47,7 +47,8 @@
     <string name="group">Группа</string>
     <string name="team">Команда</string>
     <string name="add_time_score">Счёт в дополнительное время</string>
-    <string name="by_penalty">По пенальти</string>
+    <string name="add_time">доп.время</string>
+    <string name="by_penalty">по пенальти</string>
 
     <string name="error_min_length">Поле должно содержать не меньше %1$s символов</string>
     <string name="error_field_empty">Поле не может быть пустым</string>
@@ -55,4 +56,5 @@
 
     <string name="game_no">Игра №%1$s</string>
     <string name="group_no">Группа %1$s</string>
+    <string name="games_played_yet">Прошедшие игры с участием данных команд:</string>
 </resources>
