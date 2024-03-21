@@ -9,7 +9,6 @@ import com.mu.tote2024.domain.usecase.game_usecase.GameUseCase
 import com.mu.tote2024.domain.usecase.stake_usecase.StakeUseCase
 import com.mu.tote2024.domain.usecase.team_usecase.TeamUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,17 +37,14 @@ class StakeListViewModel @Inject constructor(
                     val teams = stateTeams.data
 
                     stakeUseCase.getStakeList().collect { stateStake ->
-                        toLog("stateStake: $stateStake")
                         if (stateStake is UiState.Success) {
                             stakes = stateStake.data.filter {
                                 it.gamblerId == CURRENT_ID
                                         && it.start.toLong() > System.currentTimeMillis()
                             }.toMutableList()
-                            //toLog("stakes ViewModel: ${stateStake.data}")
 
                             gameUseCase.getGameList().collect { stateGame ->
                                 if (stateGame is UiState.Success) {
-                                    toLog("stateGame is Success")
                                     stateGame.data
                                         .filter { it.start.toLong() > System.currentTimeMillis() }
                                         .forEach { game ->
@@ -75,15 +71,13 @@ class StakeListViewModel @Inject constructor(
                                             }
                                         }
 
-                                    stakes.sortedBy { it.gameId.toInt() }
+                                    stakes = stakes.sortedBy { it.gameId.toInt() }.toMutableList()
                                     _state.value = StakeListState(UiState.Success(true))
-                                    toLog("state after stakes loading: ${state.value.result}")
                                 }
                             }
                         }
                     }
                 }
-                toLog("state ViewModel: ${state.value.result}")
             }
         }
     }

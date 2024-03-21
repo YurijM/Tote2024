@@ -43,7 +43,6 @@ import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
 import com.mu.tote2024.presentation.utils.asDateTime
-import com.mu.tote2024.presentation.utils.toLog
 
 @Composable
 fun StakeScreen(
@@ -61,25 +60,19 @@ fun StakeScreen(
     LaunchedEffect(key1 = result) {
         when (result) {
             is UiState.Loading -> {
-                toLog("Loading")
                 isLoading = true
             }
 
             is UiState.Success -> {
-                toLog("Success")
                 isLoading = false
             }
 
             is UiState.Error -> {
-                toLog("Error")
                 isLoading = false
-                toLog("error: ${result.message}")
                 errorMessage = result.message
             }
 
-            else -> {
-                toLog("Else")
-            }
+            else -> { }
         }
     }
     LaunchedEffect(key1 = resultExit) {

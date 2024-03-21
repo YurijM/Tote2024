@@ -20,7 +20,6 @@ import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.StakeModel
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.toLog
 
 @Composable
 fun StakeListScreen(
@@ -32,14 +31,12 @@ fun StakeListScreen(
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(key1 = state.result) {
-        toLog("state: ${state.result}")
         when (state.result) {
             is UiState.Loading -> {
                 isLoading = true
             }
 
             is UiState.Success -> {
-                toLog("stakes: ${viewModel.stakes.size}")
                 isLoading = false
                 stakes = viewModel.stakes
             }
