@@ -8,9 +8,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_GAME_IS_NOT_FOUND
+import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.StakeModel
+import com.mu.tote2024.domain.model.TeamModel
 import com.mu.tote2024.domain.usecase.game_usecase.GameUseCase
 import com.mu.tote2024.domain.usecase.stake_usecase.StakeUseCase
+import com.mu.tote2024.domain.usecase.team_usecase.TeamUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.Errors.ADD_GOAL_INCORRECT
 import com.mu.tote2024.presentation.utils.Constants.Errors.THE_GAME_IS_STARTED_YET
@@ -29,6 +32,7 @@ import javax.inject.Inject
 class StakeViewModel @Inject constructor(
     private val stakeUseCase: StakeUseCase,
     private val gameUseCase: GameUseCase,
+    private val teamUseCase: TeamUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _state = MutableStateFlow(StakeState())
@@ -39,6 +43,8 @@ class StakeViewModel @Inject constructor(
 
     val gameId by mutableStateOf(savedStateHandle.get<String>(KEY_ID))
     var stake by mutableStateOf(StakeModel())
+        private set
+    var flags = GameFlagsModel()
         private set
     var isExtraTime = false
         private set
@@ -60,38 +66,56 @@ class StakeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            stakeUseCase.getStake(gameId ?: "", CURRENT_ID).collect { stateStake ->
-                when (val result = StakeState(stateStake).result) {
-                    is UiState.Success -> {
-                        stake = result.data
-                        _state.value = StakeState(stateStake)
+            teamUseCase.getTeamList().collect { stateTeams ->
+                if (stateTeams is UiState.Success) {
+                    val teams = stateTeams.data
 
-                        enabled = checkValues()
-                    }
+                    stakeUseCase.getStake(gameId ?: "", CURRENT_ID).collect { stateStake ->
+                        when (val result = StakeState(stateStake).result) {
+                            is UiState.Success -> {
+                                stake = result.data
+                                _state.value = StakeState(stateStake)
 
-                    is UiState.Error -> {
-                        if (result.message == ERROR_GAME_IS_NOT_FOUND) {
-                            gameUseCase.getGame(gameId ?: "").collect { stateGame ->
-                                if (stateGame is UiState.Success) {
-                                    val game = stateGame.data
-                                    stake = stake.copy(
-                                        gameId = game.gameId,
-                                        gamblerId = CURRENT_ID,
-                                        start = game.start,
-                                        group = game.group,
-                                        team1 = game.team1,
-                                        team2 = game.team2,
-                                    )
-                                    enabled = checkValues()
-                                    _state.value = StakeState(UiState.Success(stake))
-                                } else {
-                                    _state.value = StakeState(UiState.Loading)
+                                flags = setFlags(
+                                    teams = teams,
+                                    gameId = stake.gameId,
+                                    stake.team1,
+                                    stake.team2
+                                )
+                                enabled = checkValues()
+                            }
+
+                            is UiState.Error -> {
+                                if (result.message == ERROR_GAME_IS_NOT_FOUND) {
+                                    gameUseCase.getGame(gameId ?: "").collect { stateGame ->
+                                        if (stateGame is UiState.Success) {
+                                            val game = stateGame.data
+                                            stake = stake.copy(
+                                                gameId = game.gameId,
+                                                gamblerId = CURRENT_ID,
+                                                start = game.start,
+                                                group = game.group,
+                                                team1 = game.team1,
+                                                team2 = game.team2,
+                                            )
+                                            flags = setFlags(
+                                                teams = teams,
+                                                gameId = game.gameId,
+                                                game.team1,
+                                                game.team2
+                                            )
+                                            enabled = checkValues()
+                                            _state.value = StakeState(UiState.Success(stake))
+                                        } else {
+                                            _state.value = StakeState(UiState.Loading)
+                                        }
+                                    }
                                 }
                             }
+
+                            else -> {}
                         }
                     }
-
-                    else -> {}
                 }
             }
         }
@@ -128,6 +152,21 @@ class StakeViewModel @Inject constructor(
             }
         }
         enabled = checkValues()
+    }
+
+    private fun setFlags(
+        teams: List<TeamModel>,
+        gameId: String,
+        team1: String,
+        team2: String
+    ): GameFlagsModel {
+        val flag1 = teams.first { it.team == team1 }.flag
+        val flag2 = teams.first { it.team == team2 }.flag
+        return GameFlagsModel(
+            gameId = gameId,
+            flag1 = flag1,
+            flag2 = flag2
+        )
     }
 
     private fun checkValues(): Boolean {

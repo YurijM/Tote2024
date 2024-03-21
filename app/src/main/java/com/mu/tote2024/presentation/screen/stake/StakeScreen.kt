@@ -34,10 +34,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
+import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.presentation.components.AppDropDownList
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.OkAndCancel
+import com.mu.tote2024.presentation.components.ShowFlag
 import com.mu.tote2024.presentation.components.TextError
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.GROUPS
@@ -129,6 +131,7 @@ fun StakeScreen(
                             team2 = viewModel.stake.team2,
                             goal1 = viewModel.stake.goal1,
                             goal2 = viewModel.stake.goal2,
+                            flags = viewModel.flags,
                             errorMessage = viewModel.errorMainTime,
                             onGoal1Change = { goal -> viewModel.onEvent(StakeEvent.OnGoalChange(false, 1, goal)) },
                             onGoal2Change = { goal -> viewModel.onEvent(StakeEvent.OnGoalChange(false, 2, goal)) }
@@ -214,19 +217,23 @@ private fun MainTime(
     team2: String,
     goal1: String,
     goal2: String,
+    flags: GameFlagsModel,
     errorMessage: String,
     onGoal1Change: (String) -> Unit,
     onGoal2Change: (String) -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             modifier = Modifier.weight(1f),
             text = team1,
             textAlign = TextAlign.End
         )
-        Spacer(modifier = Modifier.width(32.dp))
+        ShowFlag(flags.flag1)
+        Spacer(modifier = Modifier.width(8.dp))
+        ShowFlag(flags.flag2)
         Text(
             modifier = Modifier.weight(1f),
             text = team2
