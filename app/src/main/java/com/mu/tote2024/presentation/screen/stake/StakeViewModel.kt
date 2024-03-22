@@ -229,6 +229,13 @@ class StakeViewModel @Inject constructor(
         ) {
             isExtraTime = (GROUPS.indexOf(stake.group) >= GROUPS_COUNT
                     && stake.goal1 == stake.goal2)
+            if (!isExtraTime) {
+                stake = stake.copy(
+                    addGoal1 = "",
+                    addGoal2 = "",
+                    penalty = "",
+                )
+            }
             true
         } else {
             false
@@ -248,6 +255,9 @@ class StakeViewModel @Inject constructor(
         isByPenalty = (stake.addGoal1.isNotBlank() && stake.addGoal1 >= stake.goal1
                 && stake.addGoal2.isNotBlank() && stake.addGoal2 >= stake.goal2
                 && stake.addGoal1 == stake.addGoal2)
+        if (!isByPenalty) {
+            stake = stake.copy(penalty = "")
+        }
         errorByPenalty = checkIsFieldEmpty(stake.penalty)
 
         if (isByPenalty) {

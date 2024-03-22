@@ -185,6 +185,13 @@ class GameViewModel @Inject constructor(
                 ) {
                     isExtraTime = (GROUPS.indexOf(game.group) >= GROUPS_COUNT
                             && game.goal1 == game.goal2)
+                    if (!isExtraTime) {
+                        game = game.copy(
+                            addGoal1 = "",
+                            addGoal2 = "",
+                            penalty = "",
+                        )
+                    }
                     true
                 } else {
                     false
@@ -208,7 +215,9 @@ class GameViewModel @Inject constructor(
         isByPenalty = (game.addGoal1.isNotBlank() && game.addGoal1 >= game.goal1
                 && game.addGoal2.isNotBlank() && game.addGoal2 >= game.goal2
                 && game.addGoal1 == game.addGoal2)
-
+        if (!isByPenalty) {
+            game = game.copy(penalty = "")
+        }
         return result
     }
 
