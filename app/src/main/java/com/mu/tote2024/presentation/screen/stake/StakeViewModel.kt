@@ -255,13 +255,12 @@ class StakeViewModel @Inject constructor(
         isByPenalty = (stake.addGoal1.isNotBlank() && stake.addGoal1 >= stake.goal1
                 && stake.addGoal2.isNotBlank() && stake.addGoal2 >= stake.goal2
                 && stake.addGoal1 == stake.addGoal2)
-        if (!isByPenalty) {
-            stake = stake.copy(penalty = "")
-        }
-        errorByPenalty = checkIsFieldEmpty(stake.penalty)
+        //errorByPenalty = checkIsFieldEmpty(stake.penalty)
 
         if (isByPenalty) {
             result = result && stake.penalty.isNotBlank()
+        } else {
+            stake = stake.copy(penalty = "")
         }
 
         return result

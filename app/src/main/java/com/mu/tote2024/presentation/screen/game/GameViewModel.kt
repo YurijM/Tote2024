@@ -215,9 +215,12 @@ class GameViewModel @Inject constructor(
         isByPenalty = (game.addGoal1.isNotBlank() && game.addGoal1 >= game.goal1
                 && game.addGoal2.isNotBlank() && game.addGoal2 >= game.goal2
                 && game.addGoal1 == game.addGoal2)
-        if (!isByPenalty) {
+        if (isByPenalty) {
+            result = result && game.penalty.isNotBlank()
+        } else {
             game = game.copy(penalty = "")
         }
+
         return result
     }
 
