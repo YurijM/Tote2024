@@ -15,6 +15,7 @@ object Constants {
         const val NODE_TEAMS = "teams"
         const val NODE_GAMES = "games"
         const val NODE_STAKES = "stakes"
+        const val NODE_PROGNOSIS = "prognosis"
 
         const val GAMBLER_PHOTO_URL = "photoUrl"
     }
