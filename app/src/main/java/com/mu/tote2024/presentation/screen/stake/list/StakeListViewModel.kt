@@ -3,6 +3,7 @@ package com.mu.tote2024.presentation.screen.stake.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
+import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.StakeModel
 import com.mu.tote2024.domain.usecase.game_usecase.GameUseCase
@@ -24,27 +25,25 @@ class StakeListViewModel @Inject constructor(
     private val _state: MutableStateFlow<StakeListState> = MutableStateFlow(StakeListState())
     val state: StateFlow<StakeListState> = _state
 
-    var stakes = mutableListOf<StakeModel>()
+    private var stakes = mutableListOf<StakeModel>()
     val flags = mutableListOf<GameFlagsModel>()
 
     init {
         viewModelScope.launch {
-            _state.value = StakeListState(UiState.Loading)
             teamUseCase.getTeamList().collect { stateTeams ->
-                //_state.value = StakeListState(UiState.Loading)
+                _state.value = StakeListState(UiState.Loading)
 
                 if (stateTeams is UiState.Success) {
                     val teams = stateTeams.data
 
-                    stakeUseCase.getStakeList().collect { stateStake ->
-                        if (stateStake is UiState.Success) {
-                            stakes = stateStake.data.filter {
-                                it.gamblerId == CURRENT_ID
-                                        && it.start.toLong() > System.currentTimeMillis()
-                            }.toMutableList()
-
-                            gameUseCase.getGameList().collect { stateGame ->
-                                if (stateGame is UiState.Success) {
+                    gameUseCase.getGameList().collect { stateGame ->
+                        if (stateGame is UiState.Success) {
+                            stakeUseCase.getStakeList().collect { stateStake ->
+                                if (stateStake is UiState.Success) {
+                                    stakes = stateStake.data.filter {
+                                        it.gamblerId == CURRENT_ID
+                                                && it.start.toLong() > System.currentTimeMillis()
+                                    }.toMutableList()
                                     stateGame.data
                                         .filter { it.start.toLong() > System.currentTimeMillis() }
                                         .forEach { game ->
@@ -62,6 +61,7 @@ class StakeListViewModel @Inject constructor(
                                                 val stake = StakeModel(
                                                     gameId = game.gameId,
                                                     gamblerId = CURRENT_ID,
+                                                    gamblerNick = GAMBLER.profile.nickname,
                                                     start = game.start,
                                                     group = game.group,
                                                     team1 = game.team1,
@@ -70,9 +70,8 @@ class StakeListViewModel @Inject constructor(
                                                 stakes.add(stake)
                                             }
                                         }
-
                                     stakes = stakes.sortedBy { it.gameId.toInt() }.toMutableList()
-                                    _state.value = StakeListState(UiState.Success(true))
+                                    _state.value = StakeListState(UiState.Success(stakes))
                                 }
                             }
                         }
@@ -84,7 +83,8 @@ class StakeListViewModel @Inject constructor(
 
     companion object {
         data class StakeListState(
-            val result: UiState<Boolean> = UiState.Default
+            //val result: UiState<Boolean> = UiState.Default
+            val result: UiState<List<StakeModel>> = UiState.Default
         )
     }
 }

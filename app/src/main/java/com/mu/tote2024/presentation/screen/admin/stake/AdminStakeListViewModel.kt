@@ -21,9 +21,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AdminStakeListViewModel @Inject constructor(
-    private val gameUseCase: GameUseCase,
+    gameUseCase: GameUseCase,
+    gamblerUseCase: GamblerUseCase,
     private val stakeUseCase: StakeUseCase,
-    private val gamblerUseCase: GamblerUseCase,
     private val teamUseCase: TeamUseCase
 ) : ViewModel() {
     private val _state: MutableStateFlow<AdminStakeListState> = MutableStateFlow(AdminStakeListState())
@@ -53,10 +53,12 @@ class AdminStakeListViewModel @Inject constructor(
                                     )
                                 )
                             }
+                            //_state.value = AdminStakeListState(state)
+                            /*} else {
                             _state.value = AdminStakeListState(state)
-                        } else {
-                            _state.value = AdminStakeListState(state)
+                        }*/
                         }
+                        _state.value = AdminStakeListState(state)
                     }
                 }
             }
@@ -66,6 +68,7 @@ class AdminStakeListViewModel @Inject constructor(
                 games = stateGame.data.sortedBy { it.gameId }.toMutableList()
             }
         }.launchIn(viewModelScope)
+
         gamblerUseCase.getGamblerList().onEach { stateGambler ->
             if (stateGambler is UiState.Success) {
                 gamblers = stateGambler.data.sortedBy { it.profile.nickname }.toMutableList()
@@ -76,28 +79,26 @@ class AdminStakeListViewModel @Inject constructor(
     fun onEvent(event: AdminStakeListEvent) {
         when (event) {
             is AdminStakeListEvent.OnGenerate -> {
-                viewModelScope.launch {
-                    _state.value = AdminStakeListState(UiState.Loading)
-                    games.forEach { game ->
-                        gamblers.forEach { gambler ->
-                            val stake = StakeModel(
-                                gameId = game.gameId,
-                                gamblerId = gambler.gamblerId ?: "",
-                                gamblerNick = gambler.profile.nickname,
-                                start = game.start,
-                                group = game.group,
-                                team1 = game.team1,
-                                team2 = game.team2,
-                                goal1 = (0..3).random().toString(),
-                                goal2 = (0..3).random().toString(),
-                            )
+                _state.value = AdminStakeListState(UiState.Loading)
+
+                games.forEach { game ->
+                    gamblers.forEach { gambler ->
+                        val stake = StakeModel(
+                            gameId = game.gameId,
+                            gamblerId = gambler.gamblerId ?: "",
+                            gamblerNick = gambler.profile.nickname,
+                            start = game.start,
+                            group = game.group,
+                            team1 = game.team1,
+                            team2 = game.team2,
+                            goal1 = (0..3).random().toString(),
+                            goal2 = (0..3).random().toString(),
+                        )
+                        viewModelScope.launch {
                             stakeUseCase.saveStake(stake).collect {}
                         }
                     }
                 }
-                /*stakeUseCase.getStakeList().onEach { state ->
-                    _state.value = AdminStakeListState(state)
-                }.launchIn(viewModelScope)*/
             }
         }
     }

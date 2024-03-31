@@ -10,9 +10,12 @@ import com.mu.tote2024.data.utils.Constants.CURRENT_ID
 import com.mu.tote2024.data.utils.Constants.Errors.ERROR_GAME_IS_NOT_FOUND
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.GameModel
+import com.mu.tote2024.domain.model.PrognosisModel
 import com.mu.tote2024.domain.model.StakeModel
 import com.mu.tote2024.domain.model.TeamModel
+import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.domain.usecase.game_usecase.GameUseCase
+import com.mu.tote2024.domain.usecase.prognosis_usecase.PrognosisUseCase
 import com.mu.tote2024.domain.usecase.stake_usecase.StakeUseCase
 import com.mu.tote2024.domain.usecase.team_usecase.TeamUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
@@ -34,6 +37,8 @@ class StakeViewModel @Inject constructor(
     private val stakeUseCase: StakeUseCase,
     private val gameUseCase: GameUseCase,
     private val teamUseCase: TeamUseCase,
+    private val gamblerUseCase: GamblerUseCase,
+    private val prognosisUseCase: PrognosisUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _state = MutableStateFlow(StakeState())
@@ -185,7 +190,17 @@ class StakeViewModel @Inject constructor(
                 } else {
                     viewModelScope.launch {
                         stakeUseCase.saveStake(stake).collect { stateSave ->
-                            _stateExit.value = ExitState(stateSave)
+                            if (stateSave is UiState.Success) {
+                                gamblerUseCase.getGamblerList().collect { gamblerListState ->
+                                    if (gamblerListState is UiState.Success) {
+                                        calcPrognosis(
+                                            gameId = stake.gameId,
+                                            gamblersCount = gamblerListState.data.size.toDouble()
+                                        )
+                                        _stateExit.value = ExitState(stateSave)
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -294,6 +309,44 @@ class StakeViewModel @Inject constructor(
                 }
             }
             errorExtraTime = errorAddGoal1.ifBlank { errorAddGoal2 }
+        }
+    }
+
+    //private fun calcPrognosis(game: GameModel, stakesForGame: List<StakeModel>, gamblersCount: Double) {
+    private fun calcPrognosis(gameId: String, gamblersCount: Double) {
+        viewModelScope.launch {
+            stakeUseCase.getStakeList().collect { stateStakes ->
+                if (stateStakes is UiState.Success) {
+                    val stakes = stateStakes.data.filter { it.gameId == gameId }
+
+                    toLog("gameId: $gameId")
+                    val stakesWinCount =
+                        stakes.filter { stake -> stake.goal1.isNotBlank() && stake.goal1 > stake.goal2 }.size
+                    val stakesDrawCount =
+                        stakes.filter { stake -> stake.goal1.isNotBlank() && stake.goal1 == stake.goal2 }.size
+                    val stakesDefeatCount =
+                        stakes.filter { stake -> stake.goal1.isNotBlank() && stake.goal1 < stake.goal2 }.size
+                    toLog("stakesWinCount: $stakesWinCount")
+                    toLog("stakesDrawCount: $stakesDrawCount")
+                    toLog("stakesDefeatCount: $stakesDefeatCount")
+                    toLog("gamblersCount: $gamblersCount")
+
+                    val coefficientForWin = if (stakesWinCount > 0) gamblersCount / stakesWinCount else 0.0
+                    val coefficientForDraw = if (stakesDrawCount > 0) gamblersCount / stakesDrawCount else 0.0
+                    val coefficientForDefeat = if (stakesDefeatCount > 0) gamblersCount / stakesDefeatCount else 0.0
+                    val coefficientForFine = -((coefficientForWin + coefficientForDraw + coefficientForDefeat) / 3)
+
+                    prognosisUseCase.savePrognosis(
+                        PrognosisModel(
+                            gameId,
+                            coefficientForWin,
+                            coefficientForDraw,
+                            coefficientForDefeat,
+                            coefficientForFine,
+                        )
+                    ).collect {}
+                }
+            }
         }
     }
 

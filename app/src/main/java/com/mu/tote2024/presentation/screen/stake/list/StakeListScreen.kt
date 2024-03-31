@@ -28,17 +28,19 @@ fun StakeListScreen(
 ) {
     var isLoading by remember { mutableStateOf(false) }
     var stakes by remember { mutableStateOf<List<StakeModel>>(listOf()) }
-    val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(key1 = state.result) {
-        when (state.result) {
+    val state by viewModel.state.collectAsState()
+    val result = state.result
+
+    LaunchedEffect(key1 = result) {
+        when (result) {
             is UiState.Loading -> {
                 isLoading = true
             }
 
             is UiState.Success -> {
                 isLoading = false
-                stakes = viewModel.stakes
+                stakes = result.data
             }
 
             is UiState.Error -> {
