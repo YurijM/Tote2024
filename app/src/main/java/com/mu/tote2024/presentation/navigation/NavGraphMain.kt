@@ -56,11 +56,7 @@ fun NavGraphMain(
             }
         )
 
-        prognosis(
-            toPrognosisList = {
-                navMainController.popBackStack()
-            },
-        )
+        prognosis()
 
         gameList(
             toGroupGameList = { group ->
