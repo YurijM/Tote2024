@@ -7,7 +7,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.domain.model.GameModel
+import com.mu.tote2024.domain.model.StakeModel
+import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.domain.usecase.game_usecase.GameUseCase
+import com.mu.tote2024.domain.usecase.prognosis_usecase.PrognosisUseCase
+import com.mu.tote2024.domain.usecase.stake_usecase.StakeUseCase
 import com.mu.tote2024.domain.usecase.team_usecase.TeamUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.Errors.ADD_GOAL_INCORRECT
@@ -17,6 +21,7 @@ import com.mu.tote2024.presentation.utils.Constants.ID_NEW_GAME
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import com.mu.tote2024.presentation.utils.asTime
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
+import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +33,10 @@ import javax.inject.Inject
 @HiltViewModel
 class GameViewModel @Inject constructor(
     private val gameUseCase: GameUseCase,
+    private val prognosisUseCase: PrognosisUseCase,
+    private val stakeUseCase: StakeUseCase,
     teamUseCase: TeamUseCase,
+    gamblerUseCase: GamblerUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _state: MutableStateFlow<GameState> = MutableStateFlow(GameState())
@@ -50,6 +58,8 @@ class GameViewModel @Inject constructor(
     var startTime = ""
 
     val teams = mutableListOf<String>()
+
+    private var gamblersCount = 0
 
     var isExtraTime = false
         private set
@@ -102,6 +112,11 @@ class GameViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+        gamblerUseCase.getGamblerList().onEach { stateGambler ->
+            if (stateGambler is UiState.Success) {
+                gamblersCount = stateGambler.data.size
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun onEvent(event: GameEvent) {
@@ -149,13 +164,70 @@ class GameViewModel @Inject constructor(
             is GameEvent.OnSave -> {
                 viewModelScope.launch {
                     gameUseCase.saveGame(game).collect { stateSave ->
-                        _stateExit.value = ExitState(stateSave)
+                        if (stateSave is UiState.Success) {
+                            prognosisUseCase.getPrognosis(game.gameId).collect{ prognosisState ->
+                                if (prognosisState is UiState.Success) {
+                                    val prognosis = prognosisState.data
+                                    stakeUseCase.getStakeList().collect { stakesState ->
+                                        if (stakesState is UiState.Success) {
+                                            val stakes = stakesState.data.filter { it.gameId == game.gameId }
+                                            stakes.forEach { stake ->
+                                                val coefficient = when  {
+                                                    stake.goal1.isBlank() -> prognosis.coefficientForFine
+                                                    (stake.goal1 > stake.goal2) -> prognosis.coefficientForWin
+                                                    (stake.goal1 < stake.goal2) -> prognosis.coefficientForDefeat
+                                                    else -> prognosis.coefficientForDraw
+                                                }
+
+                                                val newStake = stake.copy(points = if (stake.goal1.isBlank()) {
+                                                    prognosis.coefficientForFine
+                                                } else {
+                                                    calcPoints(stake, game, coefficient)
+                                                })
+
+                                                viewModelScope.launch {
+                                                    stakeUseCase.saveStake(newStake).collect {
+                                                        toLog("points: ${newStake.points}")
+                                                    }
+                                                }
+                                            }
+                                            _stateExit.value = ExitState(stateSave)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        //_stateExit.value = ExitState(stateSave)
                     }
                 }
             }
         }
         enabled = checkValues()
     }
+
+    private fun calcPoints(stake: StakeModel, game: GameModel, coefficient: Double): Double =
+        if (stake.goal1 == game.goal1 && stake.goal2 == game.goal2) {
+            val points = coefficient * 2
+            if (points <= gamblersCount) points else coefficient
+        } else if (game.goal1 != game.goal2
+            && (game.goal1.toInt() - game.goal2.toInt()) == (stake.goal1.toInt() - stake.goal2.toInt())
+        ) {
+            coefficient * 1.25
+        } else if (
+            (game.goal1 > game.goal2 && stake.goal1 > stake.goal2)
+            || (game.goal1 == game.goal2 && stake.goal1 == stake.goal2)
+            || (game.goal1 < game.goal2 && stake.goal1 < stake.goal2)
+        ) {
+            if (stake.goal1 == game.goal1 || stake.goal2 == game.goal2) {
+                coefficient * 1.1
+            } else {
+                coefficient
+            }
+        } else if (stake.goal1 == game.goal1 || stake.goal2 == game.goal2) {
+            0.15
+        } else {
+            0.0
+        }
 
     private fun checkValues(): Boolean {
         isExtraTime = false

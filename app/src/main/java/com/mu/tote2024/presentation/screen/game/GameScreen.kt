@@ -59,6 +59,7 @@ import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.asDate
 import com.mu.tote2024.presentation.utils.asDateTime
 import com.mu.tote2024.presentation.utils.convertDateTimeToTimestamp
+import com.mu.tote2024.presentation.utils.toLog
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,6 +74,9 @@ fun GameScreen(
 
     val result = state.result
     val resultExit = stateExit.result
+
+    toLog("result: $result")
+    toLog("resultExit: $resultExit")
 
     LaunchedEffect(key1 = true) {
         when (result) {
