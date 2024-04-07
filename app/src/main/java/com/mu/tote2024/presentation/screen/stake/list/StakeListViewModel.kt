@@ -38,25 +38,31 @@ class StakeListViewModel @Inject constructor(
 
                     gameUseCase.getGameList().collect { stateGame ->
                         if (stateGame is UiState.Success) {
+                            val games = stateGame.data.filter { it.start.toDouble() > System.currentTimeMillis() }
+                            val gameIds = arrayListOf<String>()
+                            games.forEach { game ->
+                                gameIds.add(game.gameId)
+
+                                val flag1 = teams.first { it.team == game.team1 }.flag
+                                val flag2 = teams.first { it.team == game.team2 }.flag
+                                flags.add(
+                                    GameFlagsModel(
+                                        gameId = game.gameId,
+                                        flag1 = flag1,
+                                        flag2 = flag2
+                                    )
+                                )
+                            }
+
                             stakeUseCase.getStakeList().collect { stateStake ->
                                 if (stateStake is UiState.Success) {
                                     stakes = stateStake.data.filter {
                                         it.gamblerId == CURRENT_ID
-                                                && it.start.toLong() > System.currentTimeMillis()
+                                                && it.gameId in gameIds
+                                                //&& it.start.toLong() > System.currentTimeMillis()
                                     }.toMutableList()
-                                    stateGame.data
-                                        .filter { it.start.toLong() > System.currentTimeMillis() }
-                                        .forEach { game ->
-                                            val flag1 = teams.first { it.team == game.team1 }.flag
-                                            val flag2 = teams.first { it.team == game.team2 }.flag
-                                            flags.add(
-                                                GameFlagsModel(
-                                                    gameId = game.gameId,
-                                                    flag1 = flag1,
-                                                    flag2 = flag2
-                                                )
-                                            )
 
+                                    games.forEach { game ->
                                             if (stakes.find { it.gameId == game.gameId } == null) {
                                                 val stake = StakeModel(
                                                     gameId = game.gameId,
@@ -83,7 +89,6 @@ class StakeListViewModel @Inject constructor(
 
     companion object {
         data class StakeListState(
-            //val result: UiState<Boolean> = UiState.Default
             val result: UiState<List<StakeModel>> = UiState.Default
         )
     }
