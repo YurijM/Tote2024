@@ -59,7 +59,6 @@ import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.asDate
 import com.mu.tote2024.presentation.utils.asDateTime
 import com.mu.tote2024.presentation.utils.convertDateTimeToTimestamp
-import com.mu.tote2024.presentation.utils.toLog
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,7 +71,6 @@ fun GameScreen(
     val state by viewModel.state.collectAsState()
 
     val result = state.result
-    toLog("result: $result")
     LaunchedEffect(key1 = result) {
         when (result) {
             is UiState.Loading -> {

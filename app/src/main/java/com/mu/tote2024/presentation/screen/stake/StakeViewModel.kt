@@ -336,7 +336,7 @@ class StakeViewModel @Inject constructor(
                     val coefficientForWin = if (stakesWinCount > 0) gamblersCount / stakesWinCount else 0.0
                     val coefficientForDraw = if (stakesDrawCount > 0) gamblersCount / stakesDrawCount else 0.0
                     val coefficientForDefeat = if (stakesDefeatCount > 0) gamblersCount / stakesDefeatCount else 0.0
-                    val coefficientForFine = -((coefficientForWin + coefficientForDraw + coefficientForDefeat) / 3)
+                    val coefficientForFine = -((coefficientForWin + coefficientForDraw + coefficientForDefeat) / 3.0)
 
                     prognosisUseCase.savePrognosis(
                         PrognosisModel(

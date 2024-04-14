@@ -22,6 +22,7 @@ import com.mu.tote2024.presentation.utils.Constants.ID_NEW_GAME
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import com.mu.tote2024.presentation.utils.asTime
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
+import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -103,6 +104,15 @@ class GameViewModel @Inject constructor(
                 }
             }
             .launchIn(viewModelScope)
+        gameId?.let {
+            prognosisUseCase.getPrognosis(gameId = it)
+                .onEach { statePrognosis ->
+                    if (statePrognosis is UiState.Success) {
+                        prognosis = statePrognosis.data
+                    }
+                }
+                .launchIn(viewModelScope)
+        }
         gamblerUseCase.getGamblerList()
             .onEach { stateGambler ->
                 if (stateGambler is UiState.Success) {
@@ -116,7 +126,7 @@ class GameViewModel @Inject constructor(
                     if (stateStake is UiState.Success) {
                         stakes = stateStake.data.filter { it.gameId == gameId }
 
-                        stakes.forEach { stake ->
+                        /*stakes.forEach { stake ->
                             val coefficient = when {
                                 stake.goal1.isBlank() -> prognosis.coefficientForFine
                                 (stake.goal1 > stake.goal2) -> prognosis.coefficientForWin
@@ -129,24 +139,17 @@ class GameViewModel @Inject constructor(
                                 points = if (stake.goal1.isBlank()) {
                                     prognosis.coefficientForFine
                                 } else {
+                                    toLog("stake: ${stake.goal1}:${stake.goal2}, game: ${game.goal1}:${game.goal2}, coef: $coefficient")
                                     calcPoints(stake, game, coefficient)
                                 }
                             )
+                            toLog("points: ${gamblerPoints.points}")
                             points.add(gamblerPoints)
-                        }
+                        }*/
                     }
                 }
             }
             .launchIn(viewModelScope)
-        gameId?.let {
-            prognosisUseCase.getPrognosis(gameId = it)
-                .onEach { statePrognosis ->
-                    if (statePrognosis is UiState.Success) {
-                        prognosis = statePrognosis.data
-                    }
-                }
-                .launchIn(viewModelScope)
-        }
     }
 
     fun onEvent(event: GameEvent) {
@@ -192,13 +195,33 @@ class GameViewModel @Inject constructor(
             }
 
             is GameEvent.OnSave -> {
-                points.forEach { item ->
+                /*points.forEach { item ->
                     val stake = stakes.find { it.gamblerId == item.gamblerId }?.copy(
                         points = item.points
                     )
                     if (stake != null) {
+                        toLog("stake.points: ${stake.points}")
                         stakeUseCase.saveStake(stake).launchIn(viewModelScope)
                     }
+                }*/
+                stakes.forEach { stake ->
+                    val coefficient = when {
+                        stake.goal1.isBlank() -> prognosis.coefficientForFine
+                        (stake.goal1 > stake.goal2) -> prognosis.coefficientForWin
+                        (stake.goal1 < stake.goal2) -> prognosis.coefficientForDefeat
+                        else -> prognosis.coefficientForDraw
+                    }
+
+                    val points = if (stake.goal1.isBlank()) {
+                            prognosis.coefficientForFine
+                        } else {
+                            toLog("stake: ${stake.goal1}:${stake.goal2}, game: ${game.goal1}:${game.goal2}, coef: $coefficient")
+                            calcPoints(stake, game, coefficient)
+                        }
+                    toLog("points: $points")
+                    val stakeNew = stake.copy(points = points)
+
+                    stakeUseCase.saveStake(stakeNew).launchIn(viewModelScope)
                 }
                 gameUseCase.saveGame(game).onEach { stateSave ->
                     _state.value = StateGame(stateSave)
