@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.domain.model.GameModel
+import com.mu.tote2024.domain.model.PrognosisModel
 import com.mu.tote2024.domain.model.StakeModel
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
 import com.mu.tote2024.domain.usecase.game_usecase.GameUseCase
@@ -21,13 +22,11 @@ import com.mu.tote2024.presentation.utils.Constants.ID_NEW_GAME
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import com.mu.tote2024.presentation.utils.asTime
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
-import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,27 +38,29 @@ class GameViewModel @Inject constructor(
     gamblerUseCase: GamblerUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _state: MutableStateFlow<GameState> = MutableStateFlow(GameState())
-    val state: StateFlow<GameState> = _state
-
-    private val _stateExit: MutableStateFlow<ExitState> = MutableStateFlow(ExitState())
-    val stateExit: StateFlow<ExitState> = _stateExit
-
-    //var isExit = false
+    private val _state: MutableStateFlow<StateGame> = MutableStateFlow(StateGame())
+    val state: StateFlow<StateGame> = _state
 
     var gameId by mutableStateOf(savedStateHandle.get<String>(KEY_ID))
         private set
 
     private val isNewGame = gameId == ID_NEW_GAME
-
     var game by mutableStateOf(GameModel())
         private set
 
     var startTime = ""
 
     val teams = mutableListOf<String>()
-
     private var gamblersCount = 0
+    var prognosis = PrognosisModel()
+    private var stakes = listOf<StakeModel>()
+
+    data class GamblerPoints(
+        val gamblerId: String = "",
+        val points: Double = 0.00
+    )
+
+    private val points = mutableListOf<GamblerPoints>()
 
     var isExtraTime = false
         private set
@@ -83,40 +84,69 @@ class GameViewModel @Inject constructor(
         private set
 
     init {
-        viewModelScope.launch {
-            gameUseCase.getGame(gameId ?: ID_NEW_GAME).collect { state ->
-                val result = GameState(state).result
-                if (result is UiState.Success) {
-                    game = result.data
-
-                    startTime = game.start.asTime()
-
-                    enabled = checkValues()
-
-                    /*teamUseCase.getTeamList().collect { stateTeam ->
-                        if (stateTeam is UiState.Success) {
-                            stateTeam.data.sortedBy { it.team }.forEach { team ->
-                                teams.add(team.team)
-                            }
-                        }
-                    }*/
+        //_state.value = StateGame(UiState.Loading)
+        gameId?.let {
+            gameUseCase.getGame(id = it)
+                .onEach { stateGame ->
+                    if (stateGame is UiState.Success) {
+                        game = stateGame.data
+                    }
                 }
-
-                _state.value = GameState(state)
-            }
+                .launchIn(viewModelScope)
         }
-        teamUseCase.getTeamList().onEach { stateTeam ->
-            if (stateTeam is UiState.Success) {
-                stateTeam.data.sortedBy { it.team }.forEach { team ->
-                    teams.add(team.team)
+        teamUseCase.getTeamList()
+            .onEach { stateTeam ->
+                if (stateTeam is UiState.Success) {
+                    stateTeam.data.sortedBy { it.team }.forEach { team ->
+                        teams.add(team.team)
+                    }
                 }
             }
-        }.launchIn(viewModelScope)
-        gamblerUseCase.getGamblerList().onEach { stateGambler ->
-            if (stateGambler is UiState.Success) {
-                gamblersCount = stateGambler.data.size
+            .launchIn(viewModelScope)
+        gamblerUseCase.getGamblerList()
+            .onEach { stateGambler ->
+                if (stateGambler is UiState.Success) {
+                    gamblersCount = stateGambler.data.size
+                }
             }
-        }.launchIn(viewModelScope)
+            .launchIn(viewModelScope)
+        stakeUseCase.getStakeList()
+            .onEach { stateStake ->
+                if (points.size == 0) {
+                    if (stateStake is UiState.Success) {
+                        stakes = stateStake.data.filter { it.gameId == gameId }
+
+                        stakes.forEach { stake ->
+                            val coefficient = when {
+                                stake.goal1.isBlank() -> prognosis.coefficientForFine
+                                (stake.goal1 > stake.goal2) -> prognosis.coefficientForWin
+                                (stake.goal1 < stake.goal2) -> prognosis.coefficientForDefeat
+                                else -> prognosis.coefficientForDraw
+                            }
+
+                            val gamblerPoints = GamblerPoints(
+                                gamblerId = stake.gamblerId,
+                                points = if (stake.goal1.isBlank()) {
+                                    prognosis.coefficientForFine
+                                } else {
+                                    calcPoints(stake, game, coefficient)
+                                }
+                            )
+                            points.add(gamblerPoints)
+                        }
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+        gameId?.let {
+            prognosisUseCase.getPrognosis(gameId = it)
+                .onEach { statePrognosis ->
+                    if (statePrognosis is UiState.Success) {
+                        prognosis = statePrognosis.data
+                    }
+                }
+                .launchIn(viewModelScope)
+        }
     }
 
     fun onEvent(event: GameEvent) {
@@ -158,48 +188,21 @@ class GameViewModel @Inject constructor(
             }
 
             is GameEvent.OnCancel -> {
-                _stateExit.value = ExitState(UiState.Success(true))
+                _state.value = StateGame(UiState.Success(true))
             }
 
             is GameEvent.OnSave -> {
-                viewModelScope.launch {
-                    gameUseCase.saveGame(game).collect { stateSave ->
-                        if (stateSave is UiState.Success) {
-                            prognosisUseCase.getPrognosis(game.gameId).collect{ prognosisState ->
-                                if (prognosisState is UiState.Success) {
-                                    val prognosis = prognosisState.data
-                                    stakeUseCase.getStakeList().collect { stakesState ->
-                                        if (stakesState is UiState.Success) {
-                                            val stakes = stakesState.data.filter { it.gameId == game.gameId }
-                                            stakes.forEach { stake ->
-                                                val coefficient = when  {
-                                                    stake.goal1.isBlank() -> prognosis.coefficientForFine
-                                                    (stake.goal1 > stake.goal2) -> prognosis.coefficientForWin
-                                                    (stake.goal1 < stake.goal2) -> prognosis.coefficientForDefeat
-                                                    else -> prognosis.coefficientForDraw
-                                                }
-
-                                                val newStake = stake.copy(points = if (stake.goal1.isBlank()) {
-                                                    prognosis.coefficientForFine
-                                                } else {
-                                                    calcPoints(stake, game, coefficient)
-                                                })
-
-                                                viewModelScope.launch {
-                                                    stakeUseCase.saveStake(newStake).collect {
-                                                        toLog("points: ${newStake.points}")
-                                                    }
-                                                }
-                                            }
-                                            _stateExit.value = ExitState(stateSave)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        //_stateExit.value = ExitState(stateSave)
+                points.forEach { item ->
+                    val stake = stakes.find { it.gamblerId == item.gamblerId }?.copy(
+                        points = item.points
+                    )
+                    if (stake != null) {
+                        stakeUseCase.saveStake(stake).launchIn(viewModelScope)
                     }
                 }
+                gameUseCase.saveGame(game).onEach { stateSave ->
+                    _state.value = StateGame(stateSave)
+                }.launchIn(viewModelScope)
             }
         }
         enabled = checkValues()
@@ -323,11 +326,7 @@ class GameViewModel @Inject constructor(
     }
 
     companion object {
-        data class GameState(
-            val result: UiState<GameModel> = UiState.Default,
-        )
-
-        data class ExitState(
+        data class StateGame(
             val result: UiState<Boolean> = UiState.Default,
         )
     }
