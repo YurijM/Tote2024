@@ -53,41 +53,9 @@ class PrognosisListViewModel @Inject constructor(
                 _state.value = GameState(stateGame)
             }
         }.launchIn(viewModelScope)
-
-
-
-        /*viewModelScope.launch {
-            gameUseCase.getGameList().collect { stateGame ->
-                _state.value = PrognosisListState(UiState.Loading)
-
-                if (stateGame is UiState.Success) {
-                    games = stateGame.data.filter { it.start.toDouble() < System.currentTimeMillis() }
-                    games.forEach { game ->
-                        gameIds.add(game.gameId)
-                    }
-
-                    stakeUseCase.getStakeList().collect { stateStake ->
-                        if (stateStake is UiState.Success) {
-                            stakes = stateStake.data.filter { it.gameId in gameIds }
-                                .sortedWith(
-                                    compareBy<StakeModel> { it.gameId }
-                                        .thenBy { it.gamblerNick }
-                                )
-
-                            prognosisUseCase.getPrognosisList().collect { statePrognosis ->
-                                _state.value = PrognosisListState(statePrognosis)
-                            }
-                        }
-                    }
-                }
-            }
-        }*/
     }
 
     companion object {
-        /*data class PrognosisListState(
-            val result: UiState<List<PrognosisModel>> = UiState.Default
-        )*/
         data class GameState(
             val result: UiState<List<GameModel>> = UiState.Default
         )

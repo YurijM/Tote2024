@@ -17,6 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.model.PrognosisModel
 import com.mu.tote2024.domain.model.StakeModel
+import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.ui.common.UiState
 
 @Composable
@@ -67,20 +68,9 @@ fun PrognosisListScreen(
                 )
             }
         }
-        /*items(prognosis) { item ->
-            PrognosisItemScreen(
-                game = viewModel.games.first { it.gameId == item.gameId },
-                stakes = viewModel.stakes.filter { it.gameId == item.gameId }.sortedBy { it.gamblerNick }
-            )
-        }*/
     }
-    /*Box(
-    contentAlignment = Alignment.Center
-) {
-    Text(
-        text = stringResource(R.string.prognosis),
-        style = MaterialTheme.typography.displaySmall,
-        color = MaterialTheme.colorScheme.primary
-    )
-}*/
+
+    if (isLoading) {
+        AppProgressBar()
+    }
 }

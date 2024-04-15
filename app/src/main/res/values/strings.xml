@@ -57,4 +57,10 @@
     <string name="game_no">Игра №%1$s</string>
     <string name="group_no">Группа %1$s</string>
     <string name="games_played_yet">Прошедшие игры с участием данных команд:</string>
+
+    <string name="coefficients">коэффициенты</string>
+    <string name="on_win">на победу %1$s</string>
+    <string name="on_draw">на ничью %1$s</string>
+    <string name="on_defeat">на поражение %1$s</string>
+    <string name="fine">штраф %1$s</string>
 </resources>
