@@ -36,7 +36,7 @@ class GameViewModel @Inject constructor(
     private val prognosisUseCase: PrognosisUseCase,
     private val stakeUseCase: StakeUseCase,
     teamUseCase: TeamUseCase,
-    gamblerUseCase: GamblerUseCase,
+    private val gamblerUseCase: GamblerUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _state: MutableStateFlow<StateGame> = MutableStateFlow(StateGame())
@@ -55,13 +55,6 @@ class GameViewModel @Inject constructor(
     private var gamblersCount = 0
     var prognosis = PrognosisModel()
     private var stakes = listOf<StakeModel>()
-
-    data class GamblerPoints(
-        val gamblerId: String = "",
-        val points: Double = 0.00
-    )
-
-    private val points = mutableListOf<GamblerPoints>()
 
     var isExtraTime = false
         private set
@@ -83,6 +76,8 @@ class GameViewModel @Inject constructor(
 
     var enabled = false
         private set
+
+    private var isSaved = false
 
     init {
         //_state.value = StateGame(UiState.Loading)
@@ -122,30 +117,9 @@ class GameViewModel @Inject constructor(
             .launchIn(viewModelScope)
         stakeUseCase.getStakeList()
             .onEach { stateStake ->
-                if (points.size == 0) {
+                if (!isSaved) {
                     if (stateStake is UiState.Success) {
                         stakes = stateStake.data.filter { it.gameId == gameId }
-
-                        /*stakes.forEach { stake ->
-                            val coefficient = when {
-                                stake.goal1.isBlank() -> prognosis.coefficientForFine
-                                (stake.goal1 > stake.goal2) -> prognosis.coefficientForWin
-                                (stake.goal1 < stake.goal2) -> prognosis.coefficientForDefeat
-                                else -> prognosis.coefficientForDraw
-                            }
-
-                            val gamblerPoints = GamblerPoints(
-                                gamblerId = stake.gamblerId,
-                                points = if (stake.goal1.isBlank()) {
-                                    prognosis.coefficientForFine
-                                } else {
-                                    toLog("stake: ${stake.goal1}:${stake.goal2}, game: ${game.goal1}:${game.goal2}, coef: $coefficient")
-                                    calcPoints(stake, game, coefficient)
-                                }
-                            )
-                            toLog("points: ${gamblerPoints.points}")
-                            points.add(gamblerPoints)
-                        }*/
                     }
                 }
             }
@@ -195,15 +169,6 @@ class GameViewModel @Inject constructor(
             }
 
             is GameEvent.OnSave -> {
-                /*points.forEach { item ->
-                    val stake = stakes.find { it.gamblerId == item.gamblerId }?.copy(
-                        points = item.points
-                    )
-                    if (stake != null) {
-                        toLog("stake.points: ${stake.points}")
-                        stakeUseCase.saveStake(stake).launchIn(viewModelScope)
-                    }
-                }*/
                 stakes.forEach { stake ->
                     val coefficient = when {
                         stake.goal1.isBlank() -> prognosis.coefficientForFine
@@ -213,15 +178,23 @@ class GameViewModel @Inject constructor(
                     }
 
                     val points = if (stake.goal1.isBlank()) {
-                            prognosis.coefficientForFine
-                        } else {
-                            toLog("stake: ${stake.goal1}:${stake.goal2}, game: ${game.goal1}:${game.goal2}, coef: $coefficient")
-                            calcPoints(stake, game, coefficient)
-                        }
-                    toLog("points: $points")
-                    val stakeNew = stake.copy(points = points)
+                        prognosis.coefficientForFine
+                    } else {
+                        calcPoints(stake, game, coefficient) +
+                                if (game.addGoal1.isNotBlank() && game.addGoal2.isNotBlank()
+                                    && stake.addGoal1.isNotBlank() && stake.addGoal2.isNotBlank()
+                                ) {
+                                    calcPointsForAddTime(stake, game)
+                                } else 0.0
+                    }
 
-                    stakeUseCase.saveStake(stakeNew).launchIn(viewModelScope)
+                    val stakeNew = stake.copy(points = points)
+                    stakeUseCase.saveStake(stakeNew).onEach { stateSave ->
+                        if (stateSave is UiState.Success) {
+                            isSaved = true
+                            saveGamblerPoints(stake, stakeNew.points)
+                        }
+                    }.launchIn(viewModelScope)
                 }
                 gameUseCase.saveGame(game).onEach { stateSave ->
                     _state.value = StateGame(stateSave)
@@ -229,6 +202,60 @@ class GameViewModel @Inject constructor(
             }
         }
         enabled = checkValues()
+    }
+
+    private fun saveGamblerPoints(stake: StakeModel, newPoints: Double) {
+        val oldPoints = stakes.filter { it.gamblerId == stake.gamblerId }.sumOf { it.points }
+        val prevPoints = oldPoints - stake.points
+        val currentPoints = prevPoints + newPoints
+        toLog(
+            "gambler ${stake.gamblerId}:\n" +
+                    "\tstake.points ${stake.points}\n" +
+                    "\toldPoints $oldPoints\n" +
+                    "\tprevPoints $prevPoints\n" +
+                    "\tcurrentPoints $currentPoints\n"
+        )
+
+        gamblerUseCase.getGambler(stake.gamblerId).onEach { gambler ->
+            if (gambler is UiState.Success) {
+                val result = gambler.data.result.copy(
+                    points = currentPoints,
+                    pointsPrev = prevPoints
+                )
+                val newGambler = gambler.data.copy(result = result)
+
+                gamblerUseCase.saveGambler(newGambler).launchIn(viewModelScope)
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun calcPointsForAddTime(stake: StakeModel, game: GameModel): Double {
+        var points = stake.points
+        points += if (stake.goal1 == game.goal1 && stake.goal2 == game.goal2
+            && stake.addGoal1 == game.addGoal1 && stake.addGoal2 == game.addGoal2
+        ) {
+            2.0
+        } else if (game.addGoal1 != game.addGoal2
+            && (stake.addGoal1.toInt() - stake.addGoal2.toInt()) == (game.addGoal1.toInt() - game.addGoal2.toInt())
+        ) {
+            1.25
+        } else if (
+            (game.addGoal1 > game.addGoal2 && stake.addGoal1 > stake.addGoal2)
+            || (game.addGoal1 == game.addGoal2 && stake.addGoal1 == stake.addGoal2)
+            || (game.addGoal1 < game.addGoal2 && stake.addGoal1 < stake.addGoal2)
+        ) {
+            1.0
+        } else if (stake.addGoal1 == game.addGoal1 || stake.addGoal2 == game.addGoal2) {
+            0.1
+        } else {
+            0.0
+        }
+
+        if (game.penalty.isNotBlank() && stake.penalty == game.penalty) {
+            points += 1
+        }
+
+        return points
     }
 
     private fun calcPoints(stake: StakeModel, game: GameModel, coefficient: Double): Double =
