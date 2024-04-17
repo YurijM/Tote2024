@@ -167,6 +167,12 @@ fun PrognosisItemScreen(
                     color = MaterialTheme.colorScheme.onSurface,
                     text = String.format("%.2f", stake.points)
                 )
+                Text(
+                    modifier = Modifier.weight(.1f),
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    text = stake.place.toString()
+                )
             }
         }
         HorizontalDivider(
