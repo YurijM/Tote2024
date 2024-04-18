@@ -22,7 +22,6 @@ import com.mu.tote2024.presentation.utils.Constants.ID_NEW_GAME
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import com.mu.tote2024.presentation.utils.asTime
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
-import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -191,15 +190,6 @@ class GameViewModel @Inject constructor(
                     val stakeNew = stake.copy(points = points)
                     saveGamblerPoints(stake, stakeNew.points)
                     stakes[index] = stakeNew.copy(points = points)
-                    /*stakeUseCase.saveStake(stakeNew).onEach { stateSave ->
-                        if (stateSave is UiState.Success) {
-                            isSaved = true
-                            saveGamblerPoints(stake, stakeNew.points)
-                            toLog("points before: ${stakes[index].points}")
-                            stakes[index] = stakeNew.copy(points = points)
-                            toLog("points after: ${stakes[index].points}")
-                        }
-                    }.launchIn(viewModelScope)*/
                 }
                 calcStakePointsAndPlace(stakes)
                 gameUseCase.saveGame(game).onEach { stateSave ->
@@ -211,22 +201,17 @@ class GameViewModel @Inject constructor(
     }
 
     private fun calcStakePointsAndPlace(stakes: MutableList<StakeModel>) {
-        var place = 1
-        var step = 0
+        var place = 0
         var points = 0.0
 
         stakes.sortedWith(
             compareByDescending<StakeModel> { item -> item.points }
                 .thenBy { el -> el.gamblerId }
-        ).forEach { stake ->
-            if (points == stake.points) {
-                step++
-            } else {
-                place += step
-                points = stake.points
+        ).forEachIndexed { index, stake ->
+            if (index == 0 && stake.points == 0.0) return@forEachIndexed
+            if (points != stake.points) place++
 
-                step = 1
-            }
+            points = stake.points
 
             val stakeNew = stake.copy(
                 place = place,
@@ -241,14 +226,6 @@ class GameViewModel @Inject constructor(
         val oldPoints = stakes.filter { it.gamblerId == stake.gamblerId }.sumOf { it.points }
         val prevPoints = oldPoints - stake.points
         val currentPoints = prevPoints + newPoints
-        toLog(
-            "gambler ${stake.gamblerId}:\n" +
-                    "\tstake.points ${stake.points}\n" +
-                    "\toldPoints $oldPoints\n" +
-                    "\tprevPoints $prevPoints\n" +
-                    "\tcurrentPoints $currentPoints\n"
-        )
-
         gamblerUseCase.getGambler(stake.gamblerId).onEach { gambler ->
             if (gambler is UiState.Success) {
                 val result = gambler.data.result.copy(

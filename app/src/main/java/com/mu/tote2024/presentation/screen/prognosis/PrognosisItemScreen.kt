@@ -92,31 +92,24 @@ fun PrognosisItemScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(
-                modifier = Modifier.weight(1f),
-                color = ColorWin,
-                style = MaterialTheme.typography.labelSmall,
-                textAlign = TextAlign.Center,
-                text = stringResource(R.string.on_win, String.format("%.2f", prognosis.coefficientForWin))
-            )
-            Text(
-                modifier = Modifier.weight(1f),
-                color = ColorDraw,
-                style = MaterialTheme.typography.labelSmall,
-                textAlign = TextAlign.Center,
-                text = stringResource(R.string.on_draw, String.format("%.2f", prognosis.coefficientForDraw))
-            )
-            Text(
-                modifier = Modifier.weight(1f),
-                color = ColorDefeat,
-                style = MaterialTheme.typography.labelSmall,
-                textAlign = TextAlign.Center,
-                text = stringResource(R.string.on_defeat, String.format("%.2f", prognosis.coefficientForDefeat))
-            )
+            repeat(3) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.labelSmall,
+                    textAlign = TextAlign.Center,
+                    text = when (it) {
+                        0 -> stringResource(R.string.on_win, String.format("%.2f", prognosis.coefficientForWin))
+                        1 -> stringResource(R.string.on_draw, String.format("%.2f", prognosis.coefficientForDraw))
+                        2 -> stringResource(R.string.on_defeat, String.format("%.2f", prognosis.coefficientForDefeat))
+                        else -> ""
+                    }
+                )
+            }
         }
         Text(
             modifier = Modifier.fillMaxWidth(),
-            color = ColorFine,
+            color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center,
             text = stringResource(R.string.fine, String.format("%.2f", prognosis.coefficientForFine))
@@ -164,14 +157,14 @@ fun PrognosisItemScreen(
                 Text(
                     modifier = Modifier.weight(.2f),
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = when (stake.place) {
+                        1 -> ColorWin
+                        2 -> ColorDraw
+                        3 -> MaterialTheme.colorScheme.onSurface
+                        else -> if (stake.points < 0) ColorFine
+                            else ColorDefeat
+                    },
                     text = String.format("%.2f", stake.points)
-                )
-                Text(
-                    modifier = Modifier.weight(.1f),
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    text = stake.place.toString()
                 )
             }
         }
