@@ -12,6 +12,7 @@
     <string name="save">Сохранить</string>
     <string name="load">Загрузить</string>
     <string name="generate_stakes">Сгенерировать ставки</string>
+    <string name="gambler_result_clear">Очистка результатов участников</string>
 
     <string name="rating">Рейтинг</string>
     <string name="stake">Ставки</string>
