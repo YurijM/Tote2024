@@ -106,7 +106,7 @@ class AdminGameListViewModel @Inject constructor(
                 gameId = "5",
                 start = convertDateTimeToTimestamp("16.06.2024 16:00"),
                 group = "D",
-                team1 = "Team-D",
+                team1 = "Польша",
                 team2 = "Нидерланды"
             ),
             GameModel(
@@ -128,7 +128,7 @@ class AdminGameListViewModel @Inject constructor(
                 start = convertDateTimeToTimestamp("17.06.2024 16:00"),
                 group = "E",
                 team1 = "Румыния",
-                team2 = "Team-E"
+                team2 = "Украина"
             ),
             GameModel(
                 gameId = "9",
@@ -149,7 +149,7 @@ class AdminGameListViewModel @Inject constructor(
                 start = convertDateTimeToTimestamp("18.06.2024 19:00"),
                 group = "F",
                 team1 = "Турция",
-                team2 = "Team-F"
+                team2 = "Грузия"
             ),
             GameModel(
                 gameId = "12",
@@ -205,13 +205,13 @@ class AdminGameListViewModel @Inject constructor(
                 start = convertDateTimeToTimestamp("21.06.2024 16:00"),
                 group = "E",
                 team1 = "Словакия",
-                team2 = "Team-E"
+                team2 = "Украина"
             ),
             GameModel(
                 gameId = "20",
                 start = convertDateTimeToTimestamp("21.06.2024 19:00"),
                 group = "D",
-                team1 = "Team-D",
+                team1 = "Польша",
                 team2 = "Австрия"
             ),
             GameModel(
@@ -225,7 +225,7 @@ class AdminGameListViewModel @Inject constructor(
                 gameId = "22",
                 start = convertDateTimeToTimestamp("22.06.2024 16:00"),
                 group = "F",
-                team1 = "Team-F",
+                team1 = "Грузия",
                 team2 = "Чехия"
             ),
             GameModel(
@@ -282,7 +282,7 @@ class AdminGameListViewModel @Inject constructor(
                 start = convertDateTimeToTimestamp("25.06.2024 19:00"),
                 group = "D",
                 team1 = "Франция",
-                team2 = "Team-D"
+                team2 = "Польша"
             ),
             GameModel(
                 gameId = "31",
@@ -309,14 +309,14 @@ class AdminGameListViewModel @Inject constructor(
                 gameId = "34",
                 start = convertDateTimeToTimestamp("26.06.2024 19:00"),
                 group = "E",
-                team1 = "Team-E",
+                team1 = "Украина",
                 team2 = "Бельгия"
             ),
             GameModel(
                 gameId = "35",
                 start = convertDateTimeToTimestamp("26.06.2024 22:00"),
                 group = "F",
-                team1 = "Team-F",
+                team1 = "Грузия",
                 team2 = "Португалия"
             ),
             GameModel(

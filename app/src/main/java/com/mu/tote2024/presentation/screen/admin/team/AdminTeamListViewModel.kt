@@ -8,6 +8,8 @@ import com.mu.tote2024.presentation.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,9 +33,7 @@ class AdminTeamListViewModel @Inject constructor(
             is AdminTeamListEvent.OnLoad -> {
                 teams.forEach { team ->
                     if (team.team.isNotBlank()) {
-                        viewModelScope.launch {
-                            teamUseCase.saveTeam(team).collect {}
-                        }
+                        teamUseCase.saveTeam(team).onEach{}.launchIn(viewModelScope)
                     }
                 }
             }
@@ -121,32 +121,32 @@ class AdminTeamListViewModel @Inject constructor(
             TeamModel(
                 group = "D",
                 itemNo = 1,
-                team = "Team-D",
-                flag = ""
-            ),
-            TeamModel(
-                group = "D",
-                itemNo = 2,
                 team = "Нидерланды",
                 flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Fned.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
             ),
             TeamModel(
                 group = "D",
-                itemNo = 3,
-                team = "Австрия",
-                flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Faut.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
-            ),
-            TeamModel(
-                group = "D",
-                itemNo = 4,
+                itemNo = 2,
                 team = "Франция",
                 flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Ffra.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
             ),
             TeamModel(
+                group = "D",
+                itemNo = 3,
+                team = "Польша",
+                flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Fpol.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
+            ),
+            TeamModel(
+                group = "D",
+                itemNo = 4,
+                team = "Австрия",
+                flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Faut.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
+            ),
+            TeamModel(
                 group = "E",
                 itemNo = 1,
-                team = "Бельгия",
-                flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Fbel.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
+                team = "Украина",
+                flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Fukr.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
             ),
             TeamModel(
                 group = "E",
@@ -157,39 +157,39 @@ class AdminTeamListViewModel @Inject constructor(
             TeamModel(
                 group = "E",
                 itemNo = 3,
-                team = "Румыния",
-                flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Frou.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
+                team = "Бельгия",
+                flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Fbel.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
             ),
             TeamModel(
                 group = "E",
                 itemNo = 4,
-                team = "Team-E",
-                flag = ""
+                team = "Румыния",
+                flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Frou.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
             ),
             TeamModel(
                 group = "F",
                 itemNo = 1,
-                team = "Турция",
-                flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Ftur.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
-            ),
-            TeamModel(
-                group = "F",
-                itemNo = 2,
-                team = "Team-F",
-                flag = ""
-            ),
-            TeamModel(
-                group = "F",
-                itemNo = 3,
                 team = "Португалия",
                 flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Fpor.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
             ),
             TeamModel(
                 group = "F",
-                itemNo = 4,
+                itemNo = 2,
                 team = "Чехия",
                 flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Fcze.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
-            )
+            ),
+            TeamModel(
+                group = "F",
+                itemNo = 3,
+                team = "Грузия",
+                flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Fgeo.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
+            ),
+            TeamModel(
+                group = "F",
+                itemNo = 4,
+                team = "Турция",
+                flag = "https://firebasestorage.googleapis.com/v0/b/tote-2024-e3d04.appspot.com/o/flags%2Ftur.png?alt=media&token=f35cb273-26fd-400f-ae01-081e200f6951"
+            ),
         )
     }
 }
