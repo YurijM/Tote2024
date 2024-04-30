@@ -53,10 +53,6 @@ class AdminStakeListViewModel @Inject constructor(
                                     )
                                 )
                             }
-                            //_state.value = AdminStakeListState(state)
-                            /*} else {
-                            _state.value = AdminStakeListState(state)
-                        }*/
                         }
                         _state.value = AdminStakeListState(state)
                     }
@@ -87,7 +83,6 @@ class AdminStakeListViewModel @Inject constructor(
                             gameId = game.gameId,
                             gamblerId = gambler.gamblerId ?: "",
                             gamblerNick = gambler.profile.nickname,
-                            start = game.start,
                             group = game.group,
                             team1 = game.team1,
                             team2 = game.team2,

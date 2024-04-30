@@ -4,7 +4,7 @@ data class StakeModel(
     val gameId: String = "",
     val gamblerId: String = "",
     val gamblerNick: String = "",
-    val start: String = "",
+    //val start: String = "",
     val group: String = "",
     val team1: String = "",
     val team2: String = "",

@@ -145,7 +145,6 @@ private fun EditCard(
 ) {
     Card(
         modifier = Modifier
-            //.fillMaxWidth()
             .width(400.dp)
             .padding(horizontal = 24.dp, vertical = 12.dp),
         border = BorderStroke(
@@ -155,7 +154,7 @@ private fun EditCard(
     ) {
         GameInfo(
             id = viewModel.stake.gameId,
-            start = viewModel.stake.start,
+            start = viewModel.start,
             group = viewModel.stake.group
         )
         MainTime(
@@ -206,7 +205,11 @@ private fun EditCard(
 }
 
 @Composable
-private fun GameInfo(id: String, start: String, group: String) {
+private fun GameInfo(
+    id: String,
+    start: String,
+    group: String
+) {
     Text(
         modifier = Modifier
             .fillMaxWidth()

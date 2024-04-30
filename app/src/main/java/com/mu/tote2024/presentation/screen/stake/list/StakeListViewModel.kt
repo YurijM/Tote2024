@@ -28,6 +28,8 @@ class StakeListViewModel @Inject constructor(
     private var stakes = mutableListOf<StakeModel>()
     val flags = mutableListOf<GameFlagsModel>()
 
+    val listStart = mutableListOf<StartList>()
+
     init {
         viewModelScope.launch {
             teamUseCase.getTeamList().collect { stateTeams ->
@@ -52,6 +54,12 @@ class StakeListViewModel @Inject constructor(
                                         flag2 = flag2
                                     )
                                 )
+                                listStart.add(
+                                    StartList(
+                                        gameId = game.gameId,
+                                        start = game.start
+                                    )
+                                )
                             }
 
                             stakeUseCase.getStakeList().collect { stateStake ->
@@ -59,23 +67,21 @@ class StakeListViewModel @Inject constructor(
                                     stakes = stateStake.data.filter {
                                         it.gamblerId == CURRENT_ID
                                                 && it.gameId in gameIds
-                                                //&& it.start.toLong() > System.currentTimeMillis()
                                     }.toMutableList()
 
                                     games.forEach { game ->
-                                            if (stakes.find { it.gameId == game.gameId } == null) {
-                                                val stake = StakeModel(
-                                                    gameId = game.gameId,
-                                                    gamblerId = CURRENT_ID,
-                                                    gamblerNick = GAMBLER.profile.nickname,
-                                                    start = game.start,
-                                                    group = game.group,
-                                                    team1 = game.team1,
-                                                    team2 = game.team2
-                                                )
-                                                stakes.add(stake)
-                                            }
+                                        if (stakes.find { it.gameId == game.gameId } == null) {
+                                            val stake = StakeModel(
+                                                gameId = game.gameId,
+                                                gamblerId = CURRENT_ID,
+                                                gamblerNick = GAMBLER.profile.nickname,
+                                                group = game.group,
+                                                team1 = game.team1,
+                                                team2 = game.team2
+                                            )
+                                            stakes.add(stake)
                                         }
+                                    }
                                     stakes = stakes.sortedBy { it.gameId.toInt() }.toMutableList()
                                     _state.value = StakeListState(UiState.Success(stakes))
                                 }
@@ -90,6 +96,11 @@ class StakeListViewModel @Inject constructor(
     companion object {
         data class StakeListState(
             val result: UiState<List<StakeModel>> = UiState.Default
+        )
+
+        data class StartList(
+            val gameId: String,
+            val start: String
         )
     }
 }

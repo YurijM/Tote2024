@@ -23,6 +23,7 @@ import com.mu.tote2024.presentation.utils.asDateTime
 @Composable
 fun StakeItemScreen(
     stake: StakeModel,
+    start: String,
     flags: GameFlagsModel,
     onClick: () -> Unit
 ) {
@@ -43,7 +44,7 @@ fun StakeItemScreen(
             )
             Text(
                 modifier = Modifier.weight(1f),
-                text = stake.start.asDateTime(),
+                text = start.asDateTime(),
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.End
             )

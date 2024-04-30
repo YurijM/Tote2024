@@ -62,6 +62,7 @@ fun StakeListScreen(
         items(stakes) { stake ->
             StakeItemScreen(
                 stake = stake,
+                start = viewModel.listStart.find { it.gameId == stake.gameId }?.start ?: "",
                 flags = if (viewModel.flags.isNotEmpty()) {
                     viewModel.flags.first { it.gameId == stake.gameId }
                 } else {

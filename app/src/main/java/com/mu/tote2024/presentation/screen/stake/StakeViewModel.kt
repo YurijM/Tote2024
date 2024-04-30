@@ -30,6 +30,8 @@ import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,6 +55,8 @@ class StakeViewModel @Inject constructor(
     var stake by mutableStateOf(StakeModel())
         private set
     var games by mutableStateOf(listOf<GameModel>())
+        private set
+    var start = ""
         private set
     var teams by mutableStateOf(listOf<TeamModel>())
         private set
@@ -93,18 +97,24 @@ class StakeViewModel @Inject constructor(
                     stakeUseCase.getStake(gameId ?: "", CURRENT_ID).collect { stateStake ->
                         when (val result = StakeState(stateStake).result) {
                             is UiState.Success -> {
-                                stake = result.data
-                                _state.value = StakeState(stateStake)
+                                gameUseCase.getGame(gameId ?: "").onEach { stateGame ->
+                                    if (stateGame is UiState.Success) {
+                                        start = stateGame.data.start
 
-                                team1 = stake.team1
-                                team2 = stake.team2
+                                        stake = result.data
+                                        _state.value = StakeState(stateStake)
 
-                                addFlags(
-                                    gameId = stake.gameId,
-                                    team1 = team1,
-                                    team2 = team2
-                                )
-                                enabled = checkValues()
+                                        team1 = stake.team1
+                                        team2 = stake.team2
+
+                                        addFlags(
+                                            gameId = stake.gameId,
+                                            team1 = team1,
+                                            team2 = team2
+                                        )
+                                        enabled = checkValues()
+                                    }
+                                }.launchIn(viewModelScope)
                             }
 
                             is UiState.Error -> {
@@ -116,7 +126,6 @@ class StakeViewModel @Inject constructor(
                                                 gameId = game.gameId,
                                                 gamblerId = CURRENT_ID,
                                                 gamblerNick = GAMBLER.profile.nickname,
-                                                start = game.start,
                                                 group = game.group,
                                                 team1 = game.team1,
                                                 team2 = game.team2,
@@ -187,7 +196,7 @@ class StakeViewModel @Inject constructor(
             }
 
             is StakeEvent.OnSave -> {
-                if (stake.start.toLong() < System.currentTimeMillis()) {
+                if (start.toLong() < System.currentTimeMillis()) {
                     _state.value = StakeState(UiState.Error(THE_GAME_IS_STARTED_YET))
                 } else {
                     viewModelScope.launch {
