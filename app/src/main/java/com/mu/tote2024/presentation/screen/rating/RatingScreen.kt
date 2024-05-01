@@ -97,6 +97,9 @@ fun RatingScreen(
                     nickname = gambler.profile.nickname,
                     photoUrl = gambler.profile.photoUrl,
                     points = gambler.result.points,
+                    place = gambler.result.place,
+                    prevPlace = gambler.result.placePrev,
+                    showArrow = viewModel.showArrow,
                     toAdminGamblerPhoto = { toAdminGamblerPhoto(gambler.profile.photoUrl) }
                 )
             }

@@ -20,10 +20,16 @@ class RatingViewModel @Inject constructor(
     private val _state: MutableStateFlow<RatingState> = MutableStateFlow(RatingState())
     val state: StateFlow<RatingState> = _state.asStateFlow()
 
+    var showArrow = false
+        private set
+
     init {
         viewModelScope.launch {
-            gamblerUseCase.getGamblerList().collect {
-                _state.value = RatingState(it)
+            gamblerUseCase.getGamblerList().collect { stateGambler ->
+                if (stateGambler is UiState.Success) {
+                    showArrow = stateGambler.data.maxOf { it.result.placePrev } > 0
+                }
+                _state.value = RatingState(stateGambler)
             }
         }
     }

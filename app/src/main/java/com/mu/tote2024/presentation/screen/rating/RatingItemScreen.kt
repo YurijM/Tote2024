@@ -8,7 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +24,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
+import com.mu.tote2024.presentation.ui.ColorDefeat
+import com.mu.tote2024.presentation.ui.ColorWin
 import java.text.DecimalFormat
 
 @Composable
@@ -27,6 +33,9 @@ fun RatingItemScreen(
     nickname: String,
     photoUrl: String,
     points: Double,
+    place: Int,
+    prevPlace: Int,
+    showArrow: Boolean,
     toAdminGamblerPhoto: () -> Unit
 ) {
     Row(
@@ -69,6 +78,33 @@ fun RatingItemScreen(
         )
         Text(
             text = DecimalFormat("0.00").format(points),
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        if (showArrow) {
+            when {
+                (place > prevPlace) -> Icon(
+                    imageVector = Icons.Filled.KeyboardArrowUp,
+                    tint = ColorWin,
+                    contentDescription = ""
+                )
+
+                (place < prevPlace) -> Icon(
+                    imageVector = Icons.Filled.KeyboardArrowDown,
+                    tint = ColorDefeat,
+                    contentDescription = ""
+                )
+
+                else -> {}
+            }
+        }
+        Text(
+            modifier = Modifier.padding(horizontal = 4.dp),
+            text = place.toString(),
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Text(
+            modifier = Modifier.padding(horizontal = 4.dp),
+            text = prevPlace.toString(),
             color = MaterialTheme.colorScheme.onSurface
         )
     }
