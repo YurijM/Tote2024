@@ -1,5 +1,6 @@
 package com.mu.tote2024.presentation.screen.stake.list
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,11 +15,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.StakeModel
 import com.mu.tote2024.presentation.components.AppProgressBar
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
 
 @Composable
@@ -50,38 +54,43 @@ fun StakeListScreen(
             else -> {}
         }
     }
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                start = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp
-            )
+    Column(
+        modifier = Modifier.fillMaxSize(),
     ) {
-        items(stakes) { stake ->
-            StakeItemScreen(
-                stake = stake,
-                start = viewModel.listStart.find { it.gameId == stake.gameId }?.start ?: "",
-                flags = if (viewModel.flags.isNotEmpty()) {
-                    viewModel.flags.first { it.gameId == stake.gameId }
-                } else {
-                    GameFlagsModel()
-                },
-                onClick = { toStake(stake.gameId, stake.gamblerId) }
-            )
-            HorizontalDivider(
-                modifier = Modifier.padding(
-                    top = 8.dp,
-                    bottom = 4.dp
-                ),
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+        Title(title = stringResource(id = R.string.stake))
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    start = 8.dp,
+                    end = 8.dp,
+                    bottom = 8.dp
+                )
+        ) {
+            items(stakes) { stake ->
+                StakeItemScreen(
+                    stake = stake,
+                    start = viewModel.listStart.find { it.gameId == stake.gameId }?.start ?: "",
+                    flags = if (viewModel.flags.isNotEmpty()) {
+                        viewModel.flags.first { it.gameId == stake.gameId }
+                    } else {
+                        GameFlagsModel()
+                    },
+                    onClick = { toStake(stake.gameId, stake.gamblerId) }
+                )
+                HorizontalDivider(
+                    modifier = Modifier.padding(
+                        top = 8.dp,
+                        bottom = 4.dp
+                    ),
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
         }
     }
 
-    if (isLoading) {
-        AppProgressBar()
-    }
+        if (isLoading) {
+            AppProgressBar()
+        }
 }
