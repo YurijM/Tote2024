@@ -1,5 +1,6 @@
 package com.mu.tote2024.presentation.screen.prognosis
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,12 +13,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.model.PrognosisModel
 import com.mu.tote2024.domain.model.StakeModel
 import com.mu.tote2024.presentation.components.AppProgressBar
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
 
 @Composable
@@ -54,18 +58,23 @@ fun PrognosisListScreen(
         }
     }
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp)
+    Column(
+        modifier = Modifier.fillMaxSize(),
     ) {
-        items(games) { game ->
-            prognosis.find { it.gameId == game.gameId }?.let {item ->
-                PrognosisItemScreen(
-                    game = game,
-                    prognosis = item,
-                    stakes = stakes.filter { stake ->  stake.gameId == game.gameId }.sortedBy { it.gamblerNick }
-                )
+        Title(title = stringResource(id = R.string.prognosis))
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
+        ) {
+            items(games) { game ->
+                prognosis.find { it.gameId == game.gameId }?.let { item ->
+                    PrognosisItemScreen(
+                        game = game,
+                        prognosis = item,
+                        stakes = stakes.filter { stake -> stake.gameId == game.gameId }.sortedBy { it.gamblerNick }
+                    )
+                }
             }
         }
     }
