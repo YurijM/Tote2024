@@ -3,6 +3,7 @@ package com.mu.tote2024.presentation.screen.rating
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
 import com.mu.tote2024.presentation.ui.ColorDefeat
+import com.mu.tote2024.presentation.ui.ColorDraw
+import com.mu.tote2024.presentation.ui.ColorFine
 import com.mu.tote2024.presentation.ui.ColorWin
 import java.text.DecimalFormat
 
@@ -80,24 +83,36 @@ fun RatingItemScreen(
             text = DecimalFormat("0.00").format(points),
             color = MaterialTheme.colorScheme.onSurface
         )
+        Text(
+            modifier = Modifier.padding(start = 4.dp),
+            text = place.toString(),
+            color = when (place) {
+                1 -> ColorWin
+                2 -> ColorDraw
+                3 -> MaterialTheme.colorScheme.onSurface
+                else -> ColorDefeat
+            }
+        )
         if (showArrow) {
             when {
-                (place > prevPlace) -> Icon(
+                (place < prevPlace) -> Icon(
+                    modifier = Modifier.size(20.dp),
                     imageVector = Icons.Filled.KeyboardArrowUp,
                     tint = ColorWin,
                     contentDescription = ""
                 )
 
-                (place < prevPlace) -> Icon(
+                (place > prevPlace) -> Icon(
+                    modifier = Modifier.size(20.dp),
                     imageVector = Icons.Filled.KeyboardArrowDown,
-                    tint = ColorDefeat,
+                    tint = ColorFine,
                     contentDescription = ""
                 )
 
-                else -> {}
+                else -> Spacer(modifier = Modifier.size(20.dp))
             }
         }
-        Text(
+       /* Text(
             modifier = Modifier.padding(horizontal = 4.dp),
             text = place.toString(),
             color = MaterialTheme.colorScheme.onSurface
@@ -106,6 +121,6 @@ fun RatingItemScreen(
             modifier = Modifier.padding(horizontal = 4.dp),
             text = prevPlace.toString(),
             color = MaterialTheme.colorScheme.onSurface
-        )
+        )*/
     }
 }

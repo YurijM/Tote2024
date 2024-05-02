@@ -23,7 +23,6 @@ import com.mu.tote2024.presentation.utils.Constants.ID_NEW_GAME
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import com.mu.tote2024.presentation.utils.asTime
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
-import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -93,8 +92,6 @@ class GameViewModel @Inject constructor(
         gameUseCase.getGameList().onEach { stateGames ->
             if (stateGames is UiState.Success) {
                 games = stateGames.data
-                val game = games.find { it.gameId == gameId }
-                toLog("current game: ${game?.goal1}:${game?.goal2}")
             }
         }.launchIn(viewModelScope)
         teamUseCase.getTeamList().onEach { stateTeam ->
@@ -198,10 +195,10 @@ class GameViewModel @Inject constructor(
                     if (stateSave is UiState.Success) {
                         saveStakePlace()
 
-                        calcGamblerPoints()
-                        calcGamblerPlace()
                         calcGamblerPointsPrev()
                         calcGamblerPlacePrev()
+                        calcGamblerPoints()
+                        calcGamblerPlace()
 
                         saveGamblerResult()
                     }
@@ -232,7 +229,7 @@ class GameViewModel @Inject constructor(
                 .thenBy { item -> item.profile.nickname }
         )
         var points = 0.0
-        var place = 0
+        var place = 1
         var step = 0
 
         gamblersSortedByPoints.forEach { gambler ->
@@ -253,10 +250,11 @@ class GameViewModel @Inject constructor(
     }
 
     private fun calcGamblerPlacePrev() {
-        if (games.filter { game.start.toLong() <= System.currentTimeMillis() }.size > 1) {
-            val gamblersSortedByPointsPrev = gamblers.sortedByDescending { item -> item.result.pointsPrev }
+        val gamblersSortedByPointsPrev = gamblers.sortedByDescending { item -> item.result.pointsPrev }
+
+        if (games.filter { it.start.toLong() <= System.currentTimeMillis() }.size > 1) {
             var points = 0.0
-            var place = 0
+            var place = 1
             var step = 0
 
             gamblersSortedByPointsPrev.forEach { gambler ->
@@ -269,8 +267,16 @@ class GameViewModel @Inject constructor(
                     step = 1
                 }
 
-                val index = gamblers.indexOf(gamblers.find { it.gamblerId == gambler.gamblerId })
                 val result = gambler.result.copy(placePrev = place)
+                val index = gamblers.indexOf(gamblers.find { it.gamblerId == gambler.gamblerId })
+
+                gamblers[index] = gambler.copy(result = result)
+            }
+        } else {
+            gamblersSortedByPointsPrev.forEach { gambler ->
+                val place = gambler.result.place
+                val result = gambler.result.copy(placePrev = place)
+                val index = gamblers.indexOf(gamblers.find { it.gamblerId == gambler.gamblerId })
 
                 gamblers[index] = gambler.copy(result = result)
             }
@@ -278,23 +284,31 @@ class GameViewModel @Inject constructor(
     }
 
     private fun calcGamblerPointsPrev() {
-        var prevGameId = games.filter {
-            game.start.toLong() <= System.currentTimeMillis()
-        }.maxOf { it.gameId.toInt() } - 1
+        val gamesPlayed = games.filter { it.start.toLong() <= System.currentTimeMillis() }
+        var prevGameId = if (gamesPlayed.isNotEmpty()) gamesPlayed.maxOf { it.gameId.toInt() } - 1 else 0
 
         if (prevGameId > 0) {
-            val maxStart = games.find { it.gameId.toInt() == (prevGameId + 1) }?.start
-            val prevStart = games.find { it.gameId.toInt() == prevGameId }?.start
+            val maxStart = gamesPlayed.find { it.gameId.toInt() == (prevGameId + 1) }?.start
+            val prevStart = gamesPlayed.find { it.gameId.toInt() == prevGameId }?.start
 
             if (maxStart == prevStart) {
                 prevGameId = games.filter { it.start == prevStart }.minOf { it.gameId.toInt() } - 1
             }
 
-            gamblers.forEachIndexed { index, gambler ->
+            gamblers.forEach { gambler ->
                 val pointsPrev = stakes
                     .filter { it.gamblerId == gambler.gamblerId && it.gameId.toInt() <= prevGameId }
                     .sumOf { it.points }
                 val result = gambler.result.copy(pointsPrev = pointsPrev)
+                val index = gamblers.indexOf(gamblers.find { it.gamblerId == gambler.gamblerId })
+                gamblers[index] = gambler.copy(result = result)
+            }
+        } else {
+            gamblers.forEach { gambler ->
+                val points = gambler.result.points
+                val result = gambler.result.copy(pointsPrev = points)
+                val index = gamblers.indexOf(gamblers.find { it.gamblerId == gambler.gamblerId })
+
                 gamblers[index] = gambler.copy(result = result)
             }
         }
