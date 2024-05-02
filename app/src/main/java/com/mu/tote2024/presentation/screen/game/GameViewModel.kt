@@ -23,6 +23,7 @@ import com.mu.tote2024.presentation.utils.Constants.ID_NEW_GAME
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import com.mu.tote2024.presentation.utils.asTime
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
+import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,7 +37,7 @@ class GameViewModel @Inject constructor(
     private val prognosisUseCase: PrognosisUseCase,
     private val stakeUseCase: StakeUseCase,
     teamUseCase: TeamUseCase,
-    gamblerUseCase: GamblerUseCase,
+    private val gamblerUseCase: GamblerUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _state: MutableStateFlow<StateGame> = MutableStateFlow(StateGame())
@@ -55,6 +56,7 @@ class GameViewModel @Inject constructor(
     private var gamblersCount = 0
     var prognosis = PrognosisModel()
     private var stakes = mutableListOf<StakeModel>()
+    private var games = listOf<GameModel>()
 
     private var gamblers = mutableListOf<GamblerModel>()
 
@@ -81,48 +83,45 @@ class GameViewModel @Inject constructor(
 
     init {
         gameId?.let {
-            gameUseCase.getGame(id = it)
-                .onEach { stateGame ->
-                    if (stateGame is UiState.Success) {
-                        game = stateGame.data
-                        startTime = game.start.asTime()
-                    }
+            gameUseCase.getGame(id = it).onEach { stateGame ->
+                if (stateGame is UiState.Success) {
+                    game = stateGame.data
+                    startTime = game.start.asTime()
                 }
-                .launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
         }
-        teamUseCase.getTeamList()
-            .onEach { stateTeam ->
-                if (stateTeam is UiState.Success) {
-                    stateTeam.data.sortedBy { it.team }.forEach { team ->
-                        teams.add(team.team)
-                    }
+        gameUseCase.getGameList().onEach { stateGames ->
+            if (stateGames is UiState.Success) {
+                games = stateGames.data
+                val game = games.find { it.gameId == gameId }
+                toLog("current game: ${game?.goal1}:${game?.goal2}")
+            }
+        }.launchIn(viewModelScope)
+        teamUseCase.getTeamList().onEach { stateTeam ->
+            if (stateTeam is UiState.Success) {
+                stateTeam.data.sortedBy { it.team }.forEach { team ->
+                    teams.add(team.team)
                 }
             }
-            .launchIn(viewModelScope)
+        }.launchIn(viewModelScope)
         gameId?.let {
-            prognosisUseCase.getPrognosis(gameId = it)
-                .onEach { statePrognosis ->
-                    if (statePrognosis is UiState.Success) {
-                        prognosis = statePrognosis.data
-                    }
+            prognosisUseCase.getPrognosis(gameId = it).onEach { statePrognosis ->
+                if (statePrognosis is UiState.Success) {
+                    prognosis = statePrognosis.data
                 }
-                .launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
         }
-        gamblerUseCase.getGamblerList()
-            .onEach { stateGambler ->
-                if (stateGambler is UiState.Success) {
-                    gamblers = stateGambler.data.toMutableList()
-                    gamblersCount = stateGambler.data.size
-                }
+        gamblerUseCase.getGamblerList().onEach { stateGambler ->
+            if (stateGambler is UiState.Success) {
+                gamblers = stateGambler.data.toMutableList()
+                gamblersCount = stateGambler.data.size
             }
-            .launchIn(viewModelScope)
-        stakeUseCase.getStakeList()
-            .onEach { stateStake ->
-                    if (stateStake is UiState.Success) {
-                        stakes = stateStake.data.toMutableList()
-                    }
+        }.launchIn(viewModelScope)
+        stakeUseCase.getStakeList().onEach { stateStake ->
+            if (stateStake is UiState.Success) {
+                stakes = stateStake.data.toMutableList()
             }
-            .launchIn(viewModelScope)
+        }.launchIn(viewModelScope)
     }
 
     fun onEvent(event: GameEvent) {
@@ -179,7 +178,7 @@ class GameViewModel @Inject constructor(
                     val points = if (stake.goal1.isBlank()) {
                         prognosis.coefficientForFine
                     } else {
-                        calcPoints(stake, game, coefficient)
+                        calcStakePoints(stake, game, coefficient)
                     }
 
                     val index = stakes.indexOf(stakes.find { it.gameId == gameId && it.gamblerId == stake.gamblerId })
@@ -198,12 +197,107 @@ class GameViewModel @Inject constructor(
                 gameUseCase.saveGame(game).onEach { stateSave ->
                     if (stateSave is UiState.Success) {
                         saveStakePlace()
+
+                        calcGamblerPoints()
+                        calcGamblerPlace()
+                        calcGamblerPointsPrev()
+                        calcGamblerPlacePrev()
+
+                        saveGamblerResult()
                     }
                     _state.value = StateGame(stateSave)
                 }.launchIn(viewModelScope)
             }
         }
         enabled = checkValues()
+    }
+
+    private fun saveGamblerResult() {
+        gamblers.forEach { gambler ->
+            gamblerUseCase.saveGambler(gambler).launchIn(viewModelScope)
+        }
+    }
+
+    private fun calcGamblerPoints() {
+        gamblers.forEachIndexed { index, gambler ->
+            val points = stakes.filter { it.gamblerId == gambler.gamblerId }.sumOf { it.points }
+            val result = gambler.result.copy(points = points)
+            gamblers[index] = gambler.copy(result = result)
+        }
+    }
+
+    private fun calcGamblerPlace() {
+        val gamblersSortedByPoints = gamblers.sortedWith(
+            compareByDescending<GamblerModel> { item -> item.result.points }
+                .thenBy { item -> item.profile.nickname }
+        )
+        var points = 0.0
+        var place = 0
+        var step = 0
+
+        gamblersSortedByPoints.forEach { gambler ->
+            if (points == gambler.result.points) {
+                step++
+            } else {
+                place += step
+                points = gambler.result.points
+
+                step = 1
+            }
+
+            val index = gamblers.indexOf(gamblers.find { it.gamblerId == gambler.gamblerId })
+            val result = gambler.result.copy(place = place)
+
+            gamblers[index] = gambler.copy(result = result)
+        }
+    }
+
+    private fun calcGamblerPlacePrev() {
+        if (games.filter { game.start.toLong() <= System.currentTimeMillis() }.size > 1) {
+            val gamblersSortedByPointsPrev = gamblers.sortedByDescending { item -> item.result.pointsPrev }
+            var points = 0.0
+            var place = 0
+            var step = 0
+
+            gamblersSortedByPointsPrev.forEach { gambler ->
+                if (points == gambler.result.pointsPrev) {
+                    step++
+                } else {
+                    place += step
+                    points = gambler.result.pointsPrev
+
+                    step = 1
+                }
+
+                val index = gamblers.indexOf(gamblers.find { it.gamblerId == gambler.gamblerId })
+                val result = gambler.result.copy(placePrev = place)
+
+                gamblers[index] = gambler.copy(result = result)
+            }
+        }
+    }
+
+    private fun calcGamblerPointsPrev() {
+        var prevGameId = games.filter {
+            game.start.toLong() <= System.currentTimeMillis()
+        }.maxOf { it.gameId.toInt() } - 1
+
+        if (prevGameId > 0) {
+            val maxStart = games.find { it.gameId.toInt() == (prevGameId + 1) }?.start
+            val prevStart = games.find { it.gameId.toInt() == prevGameId }?.start
+
+            if (maxStart == prevStart) {
+                prevGameId = games.filter { it.start == prevStart }.minOf { it.gameId.toInt() } - 1
+            }
+
+            gamblers.forEachIndexed { index, gambler ->
+                val pointsPrev = stakes
+                    .filter { it.gamblerId == gambler.gamblerId && it.gameId.toInt() <= prevGameId }
+                    .sumOf { it.points }
+                val result = gambler.result.copy(pointsPrev = pointsPrev)
+                gamblers[index] = gambler.copy(result = result)
+            }
+        }
     }
 
     private fun saveStakePlace() {
@@ -224,7 +318,7 @@ class GameViewModel @Inject constructor(
         }
     }
 
-    private fun calcPointsForAddTime(stake: StakeModel, game: GameModel): Double {
+    private fun calcStakePointsAddTime(stake: StakeModel, game: GameModel): Double {
         var points = stake.points
         points += if (stake.goal1 == game.goal1 && stake.goal2 == game.goal2
             && stake.addGoal1 == game.addGoal1 && stake.addGoal2 == game.addGoal2
@@ -253,7 +347,7 @@ class GameViewModel @Inject constructor(
         return points
     }
 
-    private fun calcPoints(stake: StakeModel, game: GameModel, coefficient: Double): Double =
+    private fun calcStakePoints(stake: StakeModel, game: GameModel, coefficient: Double): Double =
         if (stake.goal1 == game.goal1 && stake.goal2 == game.goal2) {
             val points = coefficient * 2
             if (points <= gamblersCount) points else coefficient
@@ -278,7 +372,7 @@ class GameViewModel @Inject constructor(
         } + if (game.addGoal1.isNotBlank() && game.addGoal2.isNotBlank()
             && stake.addGoal1.isNotBlank() && stake.addGoal2.isNotBlank()
         ) {
-            calcPointsForAddTime(stake, game)
+            calcStakePointsAddTime(stake, game)
         } else 0.0
 
     private fun checkValues(): Boolean {
