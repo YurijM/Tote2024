@@ -6,12 +6,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -20,14 +19,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
-import com.mu.tote2024.presentation.ui.ColorDefeat
 import com.mu.tote2024.presentation.ui.ColorDraw
-import com.mu.tote2024.presentation.ui.ColorFine
 import com.mu.tote2024.presentation.ui.ColorWin
 import java.text.DecimalFormat
 
@@ -41,6 +41,14 @@ fun RatingItemScreen(
     showArrow: Boolean,
     toAdminGamblerPhoto: () -> Unit
 ) {
+    val step = prevPlace - place
+    var icon: Painter = painterResource(id = R.drawable.ic_up)
+    var color: Color = ColorWin
+
+    if (prevPlace < place) {
+        icon = painterResource(id = R.drawable.ic_down)
+        color = ColorDraw
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -83,8 +91,10 @@ fun RatingItemScreen(
             text = DecimalFormat("0.00").format(points),
             color = MaterialTheme.colorScheme.onSurface
         )
-        Text(
-            modifier = Modifier.padding(start = 4.dp),
+        /*Text(
+            modifier = Modifier.padding(
+                start = 12.dp,
+            ),
             text = place.toString(),
             color = when (place) {
                 1 -> ColorWin
@@ -92,35 +102,56 @@ fun RatingItemScreen(
                 3 -> MaterialTheme.colorScheme.onSurface
                 else -> ColorDefeat
             }
-        )
+        )*/
+
         if (showArrow) {
-            when {
-                (place < prevPlace) -> Icon(
-                    modifier = Modifier.size(20.dp),
-                    imageVector = Icons.Filled.KeyboardArrowUp,
-                    tint = ColorWin,
+            /*BadgedBox(
+                badge = {
+                    Badge(
+                        containerColor = Color.Yellow,
+                        contentColor = Color.Red
+                    ) {
+                        Text(
+                            text = step.toString()
+                        )
+                    }
+                }) {
+                when {
+                    (place != prevPlace) -> Icon(
+                        modifier = Modifier.padding(start = 8.dp),
+                        painter = icon,
+                        tint = color,
+                        contentDescription = ""
+                    )
+
+                    else -> Spacer(modifier = Modifier.size(20.dp))
+                }
+            }*/
+            if (place != prevPlace) {
+                Icon(
+                    modifier = Modifier.height(16.dp),
+                    painter = icon,
+                    tint = color,
                     contentDescription = ""
                 )
-
-                (place > prevPlace) -> Icon(
-                    modifier = Modifier.size(20.dp),
-                    imageVector = Icons.Filled.KeyboardArrowDown,
-                    tint = ColorFine,
-                    contentDescription = ""
+                Text(
+                    text = step.toString(),
+                    color = color,
+                    fontSize = MaterialTheme.typography.labelSmall.fontSize
                 )
-
-                else -> Spacer(modifier = Modifier.size(20.dp))
+            } else {
+                Spacer(modifier = Modifier.width(24.dp))
             }
         }
-       /* Text(
-            modifier = Modifier.padding(horizontal = 4.dp),
-            text = place.toString(),
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Text(
-            modifier = Modifier.padding(horizontal = 4.dp),
-            text = prevPlace.toString(),
-            color = MaterialTheme.colorScheme.onSurface
-        )*/
     }
+    /* Text(
+         modifier = Modifier.padding(horizontal = 4.dp),
+         text = place.toString(),
+         color = MaterialTheme.colorScheme.onSurface
+     )
+     Text(
+         modifier = Modifier.padding(horizontal = 4.dp),
+         text = prevPlace.toString(),
+         color = MaterialTheme.colorScheme.onSurface
+     )*/
 }
