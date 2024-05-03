@@ -1,9 +1,9 @@
 package com.mu.tote2024.presentation.screen.rating
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
 import com.mu.tote2024.presentation.ui.ColorDraw
@@ -44,11 +45,17 @@ fun RatingItemScreen(
     val step = prevPlace - place
     var icon: Painter = painterResource(id = R.drawable.ic_up)
     var color: Color = ColorWin
+    var height = 16.dp
+    var fontSize = MaterialTheme.typography.labelSmall.fontSize
 
     if (prevPlace < place) {
         icon = painterResource(id = R.drawable.ic_down)
         color = ColorDraw
+    } else if (place == prevPlace) {
+        height = 0.dp
+        fontSize = 0.sp
     }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -91,67 +98,25 @@ fun RatingItemScreen(
             text = DecimalFormat("0.00").format(points),
             color = MaterialTheme.colorScheme.onSurface
         )
-        /*Text(
-            modifier = Modifier.padding(
-                start = 12.dp,
-            ),
-            text = place.toString(),
-            color = when (place) {
-                1 -> ColorWin
-                2 -> ColorDraw
-                3 -> MaterialTheme.colorScheme.onSurface
-                else -> ColorDefeat
-            }
-        )*/
 
         if (showArrow) {
-            /*BadgedBox(
-                badge = {
-                    Badge(
-                        containerColor = Color.Yellow,
-                        contentColor = Color.Red
-                    ) {
-                        Text(
-                            text = step.toString()
-                        )
-                    }
-                }) {
-                when {
-                    (place != prevPlace) -> Icon(
-                        modifier = Modifier.padding(start = 8.dp),
-                        painter = icon,
-                        tint = color,
-                        contentDescription = ""
-                    )
-
-                    else -> Spacer(modifier = Modifier.size(20.dp))
-                }
-            }*/
-            if (place != prevPlace) {
+            Row(
+                modifier = Modifier.width(40.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Icon(
-                    modifier = Modifier.height(16.dp),
+                    modifier = Modifier.height(height),
                     painter = icon,
                     tint = color,
                     contentDescription = ""
                 )
                 Text(
-                    text = step.toString(),
+                    text = (if (step > 0) "+" else "") + step.toString(),
                     color = color,
-                    fontSize = MaterialTheme.typography.labelSmall.fontSize
+                    fontSize = fontSize
                 )
-            } else {
-                Spacer(modifier = Modifier.width(24.dp))
             }
         }
     }
-    /* Text(
-         modifier = Modifier.padding(horizontal = 4.dp),
-         text = place.toString(),
-         color = MaterialTheme.colorScheme.onSurface
-     )
-     Text(
-         modifier = Modifier.padding(horizontal = 4.dp),
-         text = prevPlace.toString(),
-         color = MaterialTheme.colorScheme.onSurface
-     )*/
 }

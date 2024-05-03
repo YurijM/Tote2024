@@ -43,6 +43,8 @@
 
     <string name="email">Email</string>
 
+    <string name="place">%1$s место</string>
+
     <string name="game_number">№ игры</string>
     <string name="game_start">начало матча</string>
     <string name="group">Группа</string>
