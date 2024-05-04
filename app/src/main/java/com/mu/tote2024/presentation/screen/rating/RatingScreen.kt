@@ -35,7 +35,6 @@ fun RatingScreen(
 ) {
     var isLoading by remember { mutableStateOf(false) }
     var gamblers by remember { mutableStateOf<List<GamblerModel>>(listOf()) }
-    var winningsList by remember { mutableStateOf<List<RatingViewModel.Companion.WinningsModel>>(listOf()) }
     var rate by remember { mutableIntStateOf(1) }
     var profileIsValid by remember { mutableStateOf(false) }
 
@@ -53,14 +52,12 @@ fun RatingScreen(
                 isLoading = false
                 gamblers = result.data
                     .filter { it.rate > 0 }
-                    //.sortedWith(compareBy { it.result?.points ?: 0.00 })
                     .sortedWith(
                         compareByDescending<GamblerModel> { it.result.points }
                             .thenBy { it.profile.nickname }
                     )
 
                 rate = GAMBLER.rate
-                winningsList = viewModel.winningsList
                 profileIsValid = viewModel.checkProfile()
             }
 
@@ -97,18 +94,15 @@ fun RatingScreen(
             }
         }
 
-        //if (viewModel.showArrows) {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                //items(gamblers.filter { it.result.place <= 3 }) { gambler ->
-                items(viewModel.winners) { winner ->
-                    val winnings = winningsList.find { it.gamblerId == winner.gamblerId }?.winnings ?: 0
-                    RatingWinItemScreen(winner, winnings)
-                }
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            items(viewModel.winners) { winner ->
+                val winnings = viewModel.winningsList.find { it.gamblerId == winner.gamblerId }?.winnings ?: 0
+                RatingWinItemScreen(winner, winnings)
             }
-        //}
+        }
 
         LazyColumn {
             items(gamblers) { gambler ->

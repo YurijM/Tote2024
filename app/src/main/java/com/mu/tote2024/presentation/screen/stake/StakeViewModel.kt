@@ -26,7 +26,6 @@ import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
-import com.mu.tote2024.presentation.utils.toLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -293,7 +292,6 @@ class StakeViewModel @Inject constructor(
     }
 
     private fun checkGoal(extraTime: Boolean, teamNo: Int, goal: String) {
-        toLog("extraTime: $extraTime, teamNo: $teamNo, goal: $goal")
         if (!extraTime) {
             if (teamNo == 1) {
                 stake = stake.copy(goal1 = goal)
@@ -323,24 +321,18 @@ class StakeViewModel @Inject constructor(
         }
     }
 
-    //private fun calcPrognosis(game: GameModel, stakesForGame: List<StakeModel>, gamblersCount: Double) {
     private fun calcPrognosis(gameId: String, gamblersCount: Double) {
         viewModelScope.launch {
             stakeUseCase.getStakeList().collect { stateStakes ->
                 if (stateStakes is UiState.Success) {
                     val stakes = stateStakes.data.filter { it.gameId == gameId }
 
-                    toLog("gameId: $gameId")
                     val stakesWinCount =
                         stakes.filter { stake -> stake.goal1.isNotBlank() && stake.goal1 > stake.goal2 }.size
                     val stakesDrawCount =
                         stakes.filter { stake -> stake.goal1.isNotBlank() && stake.goal1 == stake.goal2 }.size
                     val stakesDefeatCount =
                         stakes.filter { stake -> stake.goal1.isNotBlank() && stake.goal1 < stake.goal2 }.size
-                    toLog("stakesWinCount: $stakesWinCount")
-                    toLog("stakesDrawCount: $stakesDrawCount")
-                    toLog("stakesDefeatCount: $stakesDefeatCount")
-                    toLog("gamblersCount: $gamblersCount")
 
                     val coefficientForWin = if (stakesWinCount > 0) gamblersCount / stakesWinCount else 0.0
                     val coefficientForDraw = if (stakesDrawCount > 0) gamblersCount / stakesDrawCount else 0.0
