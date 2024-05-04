@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="profile_photo_size">116.dp</dimen>
+    <dimen name="winner_card_size">128.dp</dimen>
+    <dimen name="winner_photo_size">108.dp</dimen>
     <dimen name="app_bar_photo_size">44.dp</dimen>
     <dimen name="app_bar_no_name_size">24.dp</dimen>
 </resources>

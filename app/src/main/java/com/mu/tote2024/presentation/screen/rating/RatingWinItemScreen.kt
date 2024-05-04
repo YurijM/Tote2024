@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -22,26 +23,28 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.GamblerModel
-import com.mu.tote2024.presentation.ui.ColorDefeat
 import com.mu.tote2024.presentation.ui.ColorDraw
 import com.mu.tote2024.presentation.ui.ColorWin
 
 @Composable
 fun RatingWinItemScreen(
-    gambler: GamblerModel
+    gambler: GamblerModel,
+    winnings: Int
 ) {
     val color = when (gambler.result.place) {
         1 -> ColorWin
         2 -> ColorDraw
-        else -> ColorDefeat
+        else -> MaterialTheme.colorScheme.onSurface
     }
     Card(
         modifier = Modifier
-            .fillMaxWidth()
+            //.fillMaxWidth()
+            .width(dimensionResource(id = R.dimen.winner_card_size))
             .padding(4.dp),
         border = BorderStroke(
             width = 1.dp,
@@ -49,7 +52,7 @@ fun RatingWinItemScreen(
         ),
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 8.dp),
+            modifier = Modifier.padding(horizontal = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -64,7 +67,7 @@ fun RatingWinItemScreen(
                     model = gambler.profile.photoUrl,
                     contentDescription = null,
                     modifier = Modifier
-                        .requiredSize(dimensionResource(id = R.dimen.profile_photo_size))
+                        .requiredSize(dimensionResource(id = R.dimen.winner_photo_size))
                         .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop,
                     loading = {
@@ -80,6 +83,8 @@ fun RatingWinItemScreen(
                 )
             }
             Text(
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 text = gambler.profile.nickname,
                 color = color
             )
@@ -87,7 +92,7 @@ fun RatingWinItemScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "1234.56",
+                    text = winnings.toString(),
                     color = color
                 )
                 Icon(

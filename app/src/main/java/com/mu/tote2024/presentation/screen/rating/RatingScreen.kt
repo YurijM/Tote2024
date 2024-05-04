@@ -35,11 +35,13 @@ fun RatingScreen(
 ) {
     var isLoading by remember { mutableStateOf(false) }
     var gamblers by remember { mutableStateOf<List<GamblerModel>>(listOf()) }
+    var winningsList by remember { mutableStateOf<List<RatingViewModel.Companion.WinningsModel>>(listOf()) }
     var rate by remember { mutableIntStateOf(1) }
     var profileIsValid by remember { mutableStateOf(false) }
 
     val state by viewModel.state.collectAsState()
     val result = state.result
+
 
     LaunchedEffect(key1 = result) {
         when (result) {
@@ -56,7 +58,9 @@ fun RatingScreen(
                         compareByDescending<GamblerModel> { it.result.points }
                             .thenBy { it.profile.nickname }
                     )
+
                 rate = GAMBLER.rate
+                winningsList = viewModel.winningsList
                 profileIsValid = viewModel.checkProfile()
             }
 
@@ -93,14 +97,18 @@ fun RatingScreen(
             }
         }
 
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            items(gamblers.filter { it.result.place <= 3 }) { gambler ->
-                RatingWinItemScreen(gambler)
+        //if (viewModel.showArrows) {
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                //items(gamblers.filter { it.result.place <= 3 }) { gambler ->
+                items(viewModel.winners) { winner ->
+                    val winnings = winningsList.find { it.gamblerId == winner.gamblerId }?.winnings ?: 0
+                    RatingWinItemScreen(winner, winnings)
+                }
             }
-        }
+        //}
 
         LazyColumn {
             items(gamblers) { gambler ->
@@ -110,7 +118,7 @@ fun RatingScreen(
                     points = gambler.result.points,
                     place = gambler.result.place,
                     prevPlace = gambler.result.placePrev,
-                    showArrow = viewModel.showArrow,
+                    showArrow = viewModel.showArrows,
                     toAdminGamblerPhoto = { toAdminGamblerPhoto(gambler.profile.photoUrl) }
                 )
             }
