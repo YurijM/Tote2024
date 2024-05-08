@@ -42,6 +42,7 @@ import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.OkAndCancel
 import com.mu.tote2024.presentation.components.ShowFlag
 import com.mu.tote2024.presentation.components.TextError
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
@@ -100,34 +101,40 @@ fun StakeScreen(
     }
 
     if (viewModel.stake.gameId.isNotBlank()) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center
         ) {
-            item {
-                EditCard(
-                    viewModel = viewModel,
-                    errorMessage = errorMessage
-                )
-            }
-
-            if (viewModel.games.isNotEmpty()) {
+            Title(title = stringResource(id = R.string.stake))
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                //verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 item {
-                    Text(
-                        text = stringResource(R.string.games_played_yet),
-                        fontWeight = FontWeight.Bold
+                    EditCard(
+                        viewModel = viewModel,
+                        errorMessage = errorMessage
                     )
                 }
-                items(viewModel.games) { game ->
-                    GamePlayed(
-                        game = game,
-                        flags = viewModel.flags.first { it.gameId == game.gameId },
-                        team1 = viewModel.team1,
-                        team2 = viewModel.team2
-                    )
+
+                if (viewModel.games.isNotEmpty()) {
+                    item {
+                        Text(
+                            text = stringResource(R.string.games_played_yet),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    items(viewModel.games) { game ->
+                        GamePlayed(
+                            game = game,
+                            flags = viewModel.flags.first { it.gameId == game.gameId },
+                            team1 = viewModel.team1,
+                            team2 = viewModel.team2
+                        )
+                    }
                 }
             }
         }

@@ -15,7 +15,7 @@
     <string name="gambler_result_clear">Очистка результатов участников</string>
 
     <string name="rating">Рейтинг</string>
-    <string name="stake">Ставки</string>
+    <string name="stakes">Ставки</string>
     <string name="prognosis">Прогноз</string>
     <string name="games">Игры</string>
 
@@ -44,6 +44,9 @@
     <string name="email">Email</string>
 
     <string name="place">%1$s место</string>
+
+    <string name="game">Игра</string>
+    <string name="stake">Ставка</string>
 
     <string name="game_number">№ игры</string>
     <string name="game_start">начало матча</string>

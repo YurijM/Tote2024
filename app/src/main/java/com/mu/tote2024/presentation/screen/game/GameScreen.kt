@@ -54,6 +54,7 @@ import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.AppTextField
 import com.mu.tote2024.presentation.components.OkAndCancel
 import com.mu.tote2024.presentation.components.TextError
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
 import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.asDate
@@ -107,6 +108,7 @@ fun GameScreen(
             Column(
                 verticalArrangement = Arrangement.Center
             ) {
+                Title(title = stringResource(id = R.string.game))
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -193,59 +195,59 @@ fun GameScreen(
                     )
                 }
             }
+            //}
+
+            if (showDatePicker) {
+                val datePickerState = rememberDatePickerState(
+                    initialSelectedDateMillis = if (viewModel.game.start.isNotBlank()) {
+                        viewModel.game.start.toLong()
+                    } else {
+                        calendar.timeInMillis
+                    }
+                )
+
+                SetDate(
+                    datePickerState = datePickerState,
+                    onDismissRequest = { showDatePicker = false },
+                    onClickConfirm = {
+                        val date = "${(datePickerState.selectedDateMillis!!).toString().asDate()} ${viewModel.startTime}"
+                        val selectedDate = convertDateTimeToTimestamp(date).toLong()
+                        viewModel.onEvent(GameEvent.OnStartChange(selectedDate.toString()))
+                        showDatePicker = false
+                        showTimePicker = true
+                    },
+                    onClickCancel = { showDatePicker = false }
+                )
+            }
+
+            if (showTimePicker) {
+                val time = viewModel.startTime.split(":")
+
+                var selectedHour by remember { mutableIntStateOf(time[0].toInt()) }
+                var selectedMinute by remember { mutableIntStateOf(time[1].toInt()) }
+                val timePickerState = rememberTimePickerState(
+                    initialHour = selectedHour,
+                    initialMinute = selectedMinute
+                )
+
+                SetTime(
+                    timePickerState,
+                    onDismissRequest = { },
+                    onClickConfirm = {
+                        selectedHour = timePickerState.hour
+                        selectedMinute = timePickerState.minute
+                        val date = "${viewModel.game.start.asDate()} $selectedHour:$selectedMinute"
+                        val selectedDate = convertDateTimeToTimestamp(date).toLong()
+                        viewModel.onEvent(GameEvent.OnStartChange(selectedDate.toString()))
+                        showTimePicker = false
+                    },
+                    onClickCancel = { showTimePicker = false }
+                )
+            }
         }
-
-        if (showDatePicker) {
-            val datePickerState = rememberDatePickerState(
-                initialSelectedDateMillis = if (viewModel.game.start.isNotBlank()) {
-                    viewModel.game.start.toLong()
-                } else {
-                    calendar.timeInMillis
-                }
-            )
-
-            SetDate(
-                datePickerState = datePickerState,
-                onDismissRequest = { showDatePicker = false },
-                onClickConfirm = {
-                    val date = "${(datePickerState.selectedDateMillis!!).toString().asDate()} ${viewModel.startTime}"
-                    val selectedDate = convertDateTimeToTimestamp(date).toLong()
-                    viewModel.onEvent(GameEvent.OnStartChange(selectedDate.toString()))
-                    showDatePicker = false
-                    showTimePicker = true
-                },
-                onClickCancel = { showDatePicker = false }
-            )
-        }
-
-        if (showTimePicker) {
-            val time = viewModel.startTime.split(":")
-
-            var selectedHour by remember { mutableIntStateOf(time[0].toInt()) }
-            var selectedMinute by remember { mutableIntStateOf(time[1].toInt()) }
-            val timePickerState = rememberTimePickerState(
-                initialHour = selectedHour,
-                initialMinute = selectedMinute
-            )
-
-            SetTime(
-                timePickerState,
-                onDismissRequest = { },
-                onClickConfirm = {
-                    selectedHour = timePickerState.hour
-                    selectedMinute = timePickerState.minute
-                    val date = "${viewModel.game.start.asDate()} $selectedHour:$selectedMinute"
-                    val selectedDate = convertDateTimeToTimestamp(date).toLong()
-                    viewModel.onEvent(GameEvent.OnStartChange(selectedDate.toString()))
-                    showTimePicker = false
-                },
-                onClickCancel = { showTimePicker = false }
-            )
-        }
-
-        if (isLoading) {
-            AppProgressBar()
-        }
+    }
+    if (isLoading) {
+        AppProgressBar()
     }
 }
 

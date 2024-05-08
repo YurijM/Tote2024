@@ -57,7 +57,7 @@ fun StakeListScreen(
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        Title(title = stringResource(id = R.string.stake))
+        Title(title = stringResource(id = R.string.stakes))
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

@@ -55,7 +55,7 @@ class GameViewModel @Inject constructor(
     private var gamblersCount = 0
     var prognosis = PrognosisModel()
     private var stakes = mutableListOf<StakeModel>()
-    private var games = listOf<GameModel>()
+    private var games = mutableListOf<GameModel>()
 
     private var gamblers = mutableListOf<GamblerModel>()
 
@@ -91,7 +91,7 @@ class GameViewModel @Inject constructor(
         }
         gameUseCase.getGameList().onEach { stateGames ->
             if (stateGames is UiState.Success) {
-                games = stateGames.data
+                games = stateGames.data.toMutableList()
             }
         }.launchIn(viewModelScope)
         teamUseCase.getTeamList().onEach { stateTeam ->
@@ -178,7 +178,7 @@ class GameViewModel @Inject constructor(
                         calcStakePoints(stake, game, coefficient)
                     }
 
-                    val index = stakes.indexOf(stakes.find { it.gameId == gameId && it.gamblerId == stake.gamblerId })
+                    val index = stakes.indexOf(stake)
                     stakes[index] = stake.copy(points = points)
 
                     stakeUseCase.saveStake(
@@ -188,6 +188,9 @@ class GameViewModel @Inject constructor(
 
                 gameUseCase.saveGame(game).onEach { stateSave ->
                     if (stateSave is UiState.Success) {
+                        val index = games.indexOf(games.find { it.gameId == gameId })
+                        games[index] = game.copy()
+
                         saveStakePlace()
 
                         calcGamblerPointsPrev()
@@ -251,10 +254,10 @@ class GameViewModel @Inject constructor(
     }
 
     private fun calcGamblerPlacePrev() {
-        val gamesPlayed = games.filter { it.start.toLong() <= System.currentTimeMillis() }
+        val gamesPlayed = games.filter { it.start.toLong() <= System.currentTimeMillis() && it.gameId != gameId }
         val gamblersSortedByPointsPrev = gamblers.sortedByDescending { item -> item.result.pointsPrev }
 
-        if (gamesPlayed.size > 1) {
+        if (gamesPlayed.isNotEmpty()) {
             var points = 0.0
             var place = 1
             var step = 0
@@ -286,25 +289,19 @@ class GameViewModel @Inject constructor(
     }
 
     private fun calcGamblerPointsPrev() {
-        val gamesPlayed = games.filter { it.start.toLong() <= System.currentTimeMillis() }
-        var prevGameId = if (gamesPlayed.isNotEmpty()) gamesPlayed.maxOf { it.gameId.toInt() } - 1 else 0
+        val gameIds = mutableListOf<Int>()
+        games.filter { it.start.toLong() <= System.currentTimeMillis() && it.gameId != gameId }.forEach { game ->
+            gameIds.add(game.gameId.toInt())
+        }
 
-        if (prevGameId > 0) {
-            val maxStart = gamesPlayed.find { it.gameId.toInt() == (prevGameId + 1) }?.start
-            val prevStart = gamesPlayed.find { it.gameId.toInt() == prevGameId }?.start
+        gamblers.forEach { gambler ->
+            val pointsPrev = stakes
+                .filter { it.gamblerId == gambler.gamblerId && it.gameId.toInt() in gameIds }
+                .sumOf { it.points }
+            val result = gambler.result.copy(pointsPrev = pointsPrev)
+            val index = gamblers.indexOf(gamblers.find { it.gamblerId == gambler.gamblerId })
 
-            if (maxStart == prevStart) {
-                prevGameId = games.filter { it.start == prevStart }.minOf { it.gameId.toInt() } - 1
-            }
-
-            gamblers.forEach { gambler ->
-                val pointsPrev = stakes
-                    .filter { it.gamblerId == gambler.gamblerId && it.gameId.toInt() <= prevGameId }
-                    .sumOf { it.points }
-                val result = gambler.result.copy(pointsPrev = pointsPrev)
-                val index = gamblers.indexOf(gamblers.find { it.gamblerId == gambler.gamblerId })
-                gamblers[index] = gambler.copy(result = result)
-            }
+            gamblers[index] = gambler.copy(result = result)
         } /*else {
             gamblers.forEach { gambler ->
                 val points = gambler.result.points
@@ -331,6 +328,9 @@ class GameViewModel @Inject constructor(
             stakeUseCase.saveStake(
                 stake.copy(place = place)
             ).launchIn(viewModelScope)
+
+            val index = stakes.indexOf(stake)
+            stakes[index] = stake.copy(place = place)
         }
     }
 

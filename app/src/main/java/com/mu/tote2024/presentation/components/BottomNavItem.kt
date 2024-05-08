@@ -14,7 +14,7 @@ sealed class BottomNavItem(
         route = Constants.Routes.RATING_SCREEN
     )
     object StakeItem: BottomNavItem(
-        titleId = R.string.stake,
+        titleId = R.string.stakes,
         iconId = R.drawable.ic_ruble,
         route = Constants.Routes.STAKE_LIST_SCREEN
     )

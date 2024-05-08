@@ -89,11 +89,11 @@ class StakeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            teamUseCase.getTeamList().collect { stateTeams ->
+            teamUseCase.getTeamList().onEach { stateTeams ->
                 if (stateTeams is UiState.Success) {
                     teams = stateTeams.data
 
-                    stakeUseCase.getStake(gameId ?: "", CURRENT_ID).collect { stateStake ->
+                    stakeUseCase.getStake(gameId ?: "", CURRENT_ID).onEach { stateStake ->
                         when (val result = StakeState(stateStake).result) {
                             is UiState.Success -> {
                                 gameUseCase.getGame(gameId ?: "").onEach { stateGame ->
@@ -101,7 +101,7 @@ class StakeViewModel @Inject constructor(
                                         start = stateGame.data.start
 
                                         stake = result.data
-                                        _state.value = StakeState(stateStake)
+                                        //_state.value = StakeState(stateStake)
 
                                         team1 = stake.team1
                                         team2 = stake.team2
@@ -118,8 +118,9 @@ class StakeViewModel @Inject constructor(
 
                             is UiState.Error -> {
                                 if (result.message == ERROR_GAME_IS_NOT_FOUND) {
-                                    gameUseCase.getGame(gameId ?: "").collect { stateGame ->
+                                    gameUseCase.getGame(gameId ?: "").onEach { stateGame ->
                                         if (stateGame is UiState.Success) {
+                                            start = stateGame.data.start
                                             val game = stateGame.data
                                             stake = stake.copy(
                                                 gameId = game.gameId,
@@ -139,40 +140,36 @@ class StakeViewModel @Inject constructor(
                                                 team2 = team2
                                             )
                                             enabled = checkValues()
-                                            _state.value = StakeState(UiState.Success(stake))
-                                        } else {
-                                            _state.value = StakeState(UiState.Loading)
                                         }
-                                    }
+                                    }.launchIn(viewModelScope)
                                 }
                             }
 
                             else -> {}
                         }
 
-                        if (team1.isNotBlank() && team2.isNotBlank()) {
-                            gameUseCase.getGameList().collect { stateGame ->
-                                if (stateGame is UiState.Success) {
-                                    games = stateGame.data
-                                        .filter {
-                                            (it.team1 in listOf(team1, team2) || it.team2 in listOf(team1, team2))
-                                                    && it.start.toLong() < System.currentTimeMillis()
-                                                    && it.gameId != gameId
-                                        }
-                                        .sortedBy { it.gameId }
-                                    games.forEach {
-                                        addFlags(
-                                            gameId = it.gameId,
-                                            team1 = it.team1,
-                                            team2 = it.team2
-                                        )
+                        gameUseCase.getGameList().onEach { stateGame ->
+                            if (stateGame is UiState.Success) {
+                                games = stateGame.data
+                                    .filter {
+                                        (it.team1 in listOf(team1, team2) || it.team2 in listOf(team1, team2))
+                                                && it.start.toLong() < System.currentTimeMillis()
+                                                && it.gameId != gameId
                                     }
+                                    .sortedBy { it.gameId }
+                                games.forEach {
+                                    addFlags(
+                                        gameId = it.gameId,
+                                        team1 = it.team1,
+                                        team2 = it.team2
+                                    )
                                 }
                             }
-                        }
-                    }
+                        }.launchIn(viewModelScope)
+                        _state.value = StakeState(stateStake)
+                    }.launchIn(viewModelScope)
                 }
-            }
+            }.launchIn(viewModelScope)
         }
     }
 
