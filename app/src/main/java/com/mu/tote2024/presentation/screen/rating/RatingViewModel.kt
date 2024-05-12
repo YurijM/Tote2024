@@ -34,7 +34,7 @@ class RatingViewModel @Inject constructor(
                 winningsList = mutableListOf()
                 winners = mutableListOf()
                 if (stateGambler is UiState.Success) {
-                    val gamblers = stateGambler.data
+                    val gamblers = stateGambler.data.filter { it.rate > 0}
 
                     showArrows = gamblers.maxOf { it.result.placePrev } > 0
 
@@ -49,7 +49,6 @@ class RatingViewModel @Inject constructor(
                     val averageRate = sumRates / gamblersCount
 
                     var winningsSecondPart = sumRates
-
                     winners.forEach { winner ->
                         val firstPartCoefficient = when (winner.result.place) {
                             1 -> 3

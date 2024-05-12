@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
+import com.mu.tote2024.presentation.ui.ColorDefeat
 import com.mu.tote2024.presentation.ui.ColorDraw
 import com.mu.tote2024.presentation.ui.ColorWin
 import java.text.DecimalFormat
@@ -54,6 +55,13 @@ fun RatingItemScreen(
     } else if (place == prevPlace) {
         height = 0.dp
         fontSize = 0.sp
+    }
+
+    val colorPlace: Color = when (place) {
+        1 -> ColorWin
+        2 -> ColorDraw
+        3 -> MaterialTheme.colorScheme.onSurface
+        else -> ColorDefeat
     }
 
     Row(
@@ -101,10 +109,15 @@ fun RatingItemScreen(
 
         if (showArrow) {
             Row(
-                modifier = Modifier.width(40.dp),
+                modifier = Modifier.width(52.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Text(
+                    modifier = Modifier.padding(horizontal = 4.dp),
+                    text = place.toString(),
+                    color = colorPlace
+                )
                 Icon(
                     modifier = Modifier.height(height),
                     painter = icon,

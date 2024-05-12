@@ -1,5 +1,6 @@
 package com.mu.tote2024.presentation.screen.prognosis
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +28,7 @@ import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
 import com.mu.tote2024.presentation.utils.asDateTime
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun PrognosisItemScreen(
     game: GameModel,
@@ -116,6 +118,13 @@ fun PrognosisItemScreen(
         )
 
         stakes.forEach { stake ->
+            val color = when (stake.place) {
+                1 -> ColorWin
+                2 -> ColorDraw
+                3 -> MaterialTheme.colorScheme.onSurface
+                else -> if (stake.points < 0) ColorFine
+                else ColorDefeat
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -155,16 +164,16 @@ fun PrognosisItemScreen(
                     }
                 }
                 Text(
-                    modifier = Modifier.weight(.2f),
+                    modifier = Modifier.weight(.1f),
                     textAlign = TextAlign.Center,
-                    color = when (stake.place) {
-                        1 -> ColorWin
-                        2 -> ColorDraw
-                        3 -> MaterialTheme.colorScheme.onSurface
-                        else -> if (stake.points < 0) ColorFine
-                            else ColorDefeat
-                    },
-                    text = String.format("%.2f", stake.points)
+                    color = color,
+                    text = stake.place.toString()
+                )
+                Text(
+                    modifier = Modifier.weight(.275f),
+                    textAlign = TextAlign.Center,
+                    color = color,
+                    text = "(" + String.format("%.2f", stake.points) + ")"
                 )
             }
         }
