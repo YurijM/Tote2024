@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
+import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.StakeModel
 import com.mu.tote2024.presentation.components.AppProgressBar
@@ -35,6 +36,7 @@ fun AdminStakeListScreen(
 ) {
     var isLoading by remember { mutableStateOf(false) }
     var stakeList by remember { mutableStateOf<List<StakeModel>>(listOf()) }
+    var gamblers by remember { mutableStateOf<List<GamblerModel>>(listOf()) }
     var flagList by remember { mutableStateOf<List<GameFlagsModel>>(listOf()) }
     var gameId = ""
 
@@ -49,6 +51,8 @@ fun AdminStakeListScreen(
 
             is UiState.Success -> {
                 isLoading = false
+
+                gamblers = viewModel.gamblers.sortedBy { item -> item.profile.nickname }
 
                 flagList = viewModel.listGameFlags
 
@@ -92,26 +96,24 @@ fun AdminStakeListScreen(
                 if (gameId != stake.gameId) {
                     gameId = stake.gameId
                     Text(text = stringResource(id = R.string.game_no, stake.gameId))
-                    stakeList
-                        .filter { it.gameId == gameId }
-                        .sortedBy { item -> item.gamblerNick }
-                        .forEach { stakeByGambler ->
-                            Row(
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(end = 8.dp),
-                                    textAlign = TextAlign.End,
-                                    text = stakeByGambler.gamblerNick
-                                )
-                                Text(
-                                    modifier = Modifier.weight(1f),
-                                    text = "${stakeByGambler.goal1} : ${stakeByGambler.goal2}"
-                                )
-                            }
+                    gamblers.forEach { gambler ->
+                        val stakeByGambler = stakeList.find { it.gameId == gameId && it.gamblerId == gambler.gamblerId }
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = 8.dp),
+                                textAlign = TextAlign.End,
+                                text = gambler.profile.nickname
+                            )
+                            Text(
+                                modifier = Modifier.weight(1f),
+                                text = "${stakeByGambler?.goal1 ?: ""} : ${stakeByGambler?.goal2 ?: ""}"
+                            )
                         }
+                    }
                 }
             }
         }

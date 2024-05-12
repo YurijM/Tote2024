@@ -31,7 +31,7 @@ class AdminStakeListViewModel @Inject constructor(
 
     val listGameFlags = mutableListOf<GameFlagsModel>()
     private var games = mutableListOf<GameModel>()
-    private var gamblers = mutableListOf<GamblerModel>()
+    var gamblers = mutableListOf<GamblerModel>()
 
     init {
         viewModelScope.launch {
@@ -64,7 +64,6 @@ class AdminStakeListViewModel @Inject constructor(
                 games = stateGame.data.sortedBy { it.gameId }.toMutableList()
             }
         }.launchIn(viewModelScope)
-
         gamblerUseCase.getGamblerList().onEach { stateGambler ->
             if (stateGambler is UiState.Success) {
                 gamblers = stateGambler.data.sortedBy { it.profile.nickname }.toMutableList()
@@ -82,7 +81,7 @@ class AdminStakeListViewModel @Inject constructor(
                         val stake = StakeModel(
                             gameId = game.gameId,
                             gamblerId = gambler.gamblerId ?: "",
-                            gamblerNick = gambler.profile.nickname,
+                            //gamblerNick = gambler.profile.nickname,
                             group = game.group,
                             team1 = game.team1,
                             team2 = game.team2,

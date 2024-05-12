@@ -3,7 +3,6 @@ package com.mu.tote2024.presentation.screen.stake.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
-import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.StakeModel
 import com.mu.tote2024.domain.usecase.game_usecase.GameUseCase
@@ -74,7 +73,7 @@ class StakeListViewModel @Inject constructor(
                                             val stake = StakeModel(
                                                 gameId = game.gameId,
                                                 gamblerId = CURRENT_ID,
-                                                gamblerNick = GAMBLER.profile.nickname,
+                                                //gamblerNick = GAMBLER.profile.nickname,
                                                 group = game.group,
                                                 team1 = game.team1,
                                                 team2 = game.team2

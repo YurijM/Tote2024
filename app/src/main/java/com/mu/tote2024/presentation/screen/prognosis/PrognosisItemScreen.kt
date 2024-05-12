@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mu.tote2024.R
+import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.model.PrognosisModel
 import com.mu.tote2024.domain.model.StakeModel
@@ -33,6 +34,7 @@ import com.mu.tote2024.presentation.utils.asDateTime
 fun PrognosisItemScreen(
     game: GameModel,
     prognosis: PrognosisModel,
+    gamblers: List<GamblerModel>,
     stakes: List<StakeModel>
 ) {
     Column {
@@ -117,64 +119,68 @@ fun PrognosisItemScreen(
             text = stringResource(R.string.fine, String.format("%.2f", prognosis.coefficientForFine))
         )
 
-        stakes.forEach { stake ->
-            val color = when (stake.place) {
-                1 -> ColorWin
-                2 -> ColorDraw
-                3 -> MaterialTheme.colorScheme.onSurface
-                else -> if (stake.points < 0) ColorFine
-                else ColorDefeat
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    modifier = Modifier.weight(.4f),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    text = stake.gamblerNick
-                )
-                Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+        gamblers.forEach { gambler ->
+            //stakes.forEach { stake ->
+            val stake = stakes.find {it.gamblerId == gambler.gamblerId}
+            if (stake != null) {
+                val color = when (stake.place) {
+                    1 -> ColorWin
+                    2 -> ColorDraw
+                    3 -> MaterialTheme.colorScheme.onSurface
+                    else -> if (stake.points < 0) ColorFine
+                    else ColorDefeat
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row {
-                        Text(
-                            modifier = Modifier.height(20.dp),
-                            color = MaterialTheme.colorScheme.onSurface,
-                            text = "${stake.goal1}:${stake.goal2}"
-                        )
-                        if (stake.addGoal1.isNotBlank()) {
+                    Text(
+                        modifier = Modifier.weight(.4f),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        text = gamblers.find { it.gamblerId == stake.gamblerId }?.profile?.nickname ?: ""
+                    )
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Row {
                             Text(
                                 modifier = Modifier.height(20.dp),
                                 color = MaterialTheme.colorScheme.onSurface,
-                                text = ", ${stringResource(R.string.add_time)} ${stake.addGoal1}:${stake.addGoal2}"
+                                text = "${stake.goal1}:${stake.goal2}"
+                            )
+                            if (stake.addGoal1.isNotBlank()) {
+                                Text(
+                                    modifier = Modifier.height(20.dp),
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    text = ", ${stringResource(R.string.add_time)} ${stake.addGoal1}:${stake.addGoal2}"
+                                )
+                            }
+                        }
+                        if (stake.penalty.isNotBlank()) {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(20.dp),
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                text = "${stringResource(R.string.by_penalty)} ${stake.penalty}"
                             )
                         }
                     }
-                    if (stake.penalty.isNotBlank()) {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(20.dp),
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            text = "${stringResource(R.string.by_penalty)} ${stake.penalty}"
-                        )
-                    }
+                    Text(
+                        modifier = Modifier.weight(.1f),
+                        textAlign = TextAlign.Center,
+                        color = color,
+                        text = stake.place.toString()
+                    )
+                    Text(
+                        modifier = Modifier.weight(.275f),
+                        textAlign = TextAlign.Center,
+                        color = color,
+                        text = "(" + String.format("%.2f", stake.points) + ")"
+                    )
                 }
-                Text(
-                    modifier = Modifier.weight(.1f),
-                    textAlign = TextAlign.Center,
-                    color = color,
-                    text = stake.place.toString()
-                )
-                Text(
-                    modifier = Modifier.weight(.275f),
-                    textAlign = TextAlign.Center,
-                    color = color,
-                    text = "(" + String.format("%.2f", stake.points) + ")"
-                )
             }
         }
         HorizontalDivider(

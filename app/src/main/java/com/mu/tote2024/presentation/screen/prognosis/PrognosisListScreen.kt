@@ -17,12 +17,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
+import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.model.PrognosisModel
 import com.mu.tote2024.domain.model.StakeModel
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
+import com.mu.tote2024.presentation.utils.toLog
 
 @Composable
 fun PrognosisListScreen(
@@ -30,6 +32,7 @@ fun PrognosisListScreen(
 ) {
     var isLoading by remember { mutableStateOf(false) }
     var games by remember { mutableStateOf<List<GameModel>>(listOf()) }
+    var gamblers by remember { mutableStateOf<List<GamblerModel>>(listOf()) }
     var stakes by remember { mutableStateOf<List<StakeModel>>(listOf()) }
     var prognosis by remember { mutableStateOf<List<PrognosisModel>>(listOf()) }
 
@@ -48,6 +51,7 @@ fun PrognosisListScreen(
                     .sortedByDescending { it.gameId }
                 stakes = viewModel.stakes
                 prognosis = viewModel.prognosis
+                gamblers = viewModel.gamblers.sortedBy { it.profile.nickname }
             }
 
             is UiState.Error -> {
@@ -72,7 +76,8 @@ fun PrognosisListScreen(
                     PrognosisItemScreen(
                         game = game,
                         prognosis = item,
-                        stakes = stakes.filter { stake -> stake.gameId == game.gameId }.sortedBy { it.gamblerNick }
+                        gamblers = gamblers,
+                        stakes = stakes.filter { stake -> stake.gameId == game.gameId }//.sortedBy { it.gamblerNick }
                     )
                 }
             }
