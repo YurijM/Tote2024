@@ -17,7 +17,7 @@ import com.mu.tote2024.R
 
 @Composable
 fun OkAndCancel(
-    titleOk: String = "OK",
+    titleOk: String = stringResource(id = R.string.ok),
     enabledOk: Boolean = false,
     showCancel: Boolean = true,
     onOK: () -> Unit,

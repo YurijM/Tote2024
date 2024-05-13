@@ -9,6 +9,8 @@ object Constants {
     const val MALE = "мужской"
     const val FEMALE = "женский"
 
+    const val NO = "нет"
+
     const val KEY_ID = "id"
     const val KEY_GROUP = "group"
     const val KEY_PHOTO_URL = "photoUrl"
@@ -31,7 +33,6 @@ object Constants {
         const val RATING_SCREEN = "rating_screen"
         const val STAKE_LIST_SCREEN = "stake_list_screen"
         const val STAKE_SCREEN = "stake_screen"
-        const val PROGNOSIS_LIST_SCREEN = "prognosis_list_screen"
         const val PROGNOSIS_SCREEN = "prognosis_screen"
         const val GAME_LIST_SCREEN = "game_list_screen"
         const val GROUP_GAME_LIST_SCREEN = "group_game_list_screen"

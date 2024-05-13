@@ -27,6 +27,7 @@ import com.mu.tote2024.presentation.ui.ColorFine
 import com.mu.tote2024.presentation.ui.ColorWin
 import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
+import com.mu.tote2024.presentation.utils.Constants.NO
 import com.mu.tote2024.presentation.utils.asDateTime
 
 @SuppressLint("DefaultLocale")
@@ -130,6 +131,9 @@ fun PrognosisItemScreen(
                     else -> if (stake.points < 0) ColorFine
                     else ColorDefeat
                 }
+                val rate = if (stake.goal1.isNotBlank() && stake.goal2.isNotBlank()) {
+                    "${stake.goal1}:${stake.goal2}"
+                } else NO
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
@@ -146,8 +150,8 @@ fun PrognosisItemScreen(
                         Row {
                             Text(
                                 modifier = Modifier.height(20.dp),
-                                color = MaterialTheme.colorScheme.onSurface,
-                                text = "${stake.goal1}:${stake.goal2}"
+                                color = if (rate == NO) ColorFine else MaterialTheme.colorScheme.onSurface,
+                                text = rate
                             )
                             if (stake.addGoal1.isNotBlank()) {
                                 Text(
