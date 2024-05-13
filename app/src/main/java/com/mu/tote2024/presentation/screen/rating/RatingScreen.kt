@@ -112,7 +112,7 @@ fun RatingScreen(
                     points = gambler.result.points,
                     place = gambler.result.place,
                     prevPlace = gambler.result.placePrev,
-                    showArrow = viewModel.showArrows,
+                    showArrows = viewModel.showArrows,
                     toAdminGamblerPhoto = { toAdminGamblerPhoto(gambler.profile.photoUrl) }
                 )
             }

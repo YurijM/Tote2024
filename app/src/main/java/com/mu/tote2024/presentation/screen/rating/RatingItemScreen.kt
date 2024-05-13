@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
@@ -40,7 +41,7 @@ fun RatingItemScreen(
     points: Double,
     place: Int,
     prevPlace: Int,
-    showArrow: Boolean,
+    showArrows: Boolean,
     toAdminGamblerPhoto: () -> Unit
 ) {
     val step = prevPlace - place
@@ -107,17 +108,23 @@ fun RatingItemScreen(
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        if (showArrow) {
+        if (showArrows) {
+            Text(
+                modifier = Modifier.width(32.dp),
+                textAlign = TextAlign.Center,
+                text = place.toString(),
+                color = colorPlace
+            )
             Row(
-                modifier = Modifier.width(52.dp),
+                modifier = Modifier.width(32.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
+                /*Text(
                     modifier = Modifier.padding(horizontal = 4.dp),
                     text = place.toString(),
                     color = colorPlace
-                )
+                )*/
                 Icon(
                     modifier = Modifier.height(height),
                     painter = icon,
