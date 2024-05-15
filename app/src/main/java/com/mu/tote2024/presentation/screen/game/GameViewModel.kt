@@ -314,17 +314,22 @@ class GameViewModel @Inject constructor(
     }
 
     private fun saveStakePlace() {
-        var place = 0
+        var place = 1
         var points = 0.0
+        var step = 0
 
         stakes.filter { it.gameId == gameId }.sortedWith(
             compareByDescending<StakeModel> { item -> item.points }
                 .thenBy { el -> el.gamblerId }
         ).forEach { stake ->
-            if (points != stake.points) place++
+            if (points == stake.points) {
+                step++
+            } else {
+                place += step
+                points = stake.points
 
-            points = stake.points
-
+                step = 1
+            }
             stakeUseCase.saveStake(
                 stake.copy(place = place)
             ).launchIn(viewModelScope)
