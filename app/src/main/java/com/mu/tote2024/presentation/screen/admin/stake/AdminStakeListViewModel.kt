@@ -82,11 +82,10 @@ class AdminStakeListViewModel @Inject constructor(
                 _state.value = AdminStakeListState(UiState.Loading)
 
                 games.forEach { game ->
-                    gamblers.forEach { gambler ->
+                    gamblers.filter { it.rate > 0 }.forEach { gambler ->
                         val stake = StakeModel(
                             gameId = game.gameId,
                             gamblerId = gambler.gamblerId ?: "",
-                            //gamblerNick = gambler.profile.nickname,
                             group = game.group,
                             team1 = game.team1,
                             team2 = game.team2,
