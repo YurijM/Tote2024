@@ -37,6 +37,7 @@ fun AdminStakeListScreen(
     var isLoading by remember { mutableStateOf(false) }
     var stakeList by remember { mutableStateOf<List<StakeModel>>(listOf()) }
     var gamblers by remember { mutableStateOf<List<GamblerModel>>(listOf()) }
+    var gameIds by remember { mutableStateOf<List<Int>>(listOf()) }
     var flagList by remember { mutableStateOf<List<GameFlagsModel>>(listOf()) }
     var gameId = ""
 
@@ -53,10 +54,12 @@ fun AdminStakeListScreen(
                 isLoading = false
 
                 gamblers = viewModel.gamblers.sortedBy { item -> item.profile.nickname }
+                gameIds = viewModel.gameIds.sortedBy { item -> item }
 
                 flagList = viewModel.listGameFlags
 
                 stakeList = result.data
+                    .filter { it.gameId.toInt() in gameIds }
                     .sortedBy { it.gameId.toInt() }
             }
 
@@ -110,7 +113,10 @@ fun AdminStakeListScreen(
                             )
                             Text(
                                 modifier = Modifier.weight(1f),
-                                text = "${stakeByGambler?.goal1 ?: ""} : ${stakeByGambler?.goal2 ?: ""}"
+                                text = if (stakeByGambler == null)
+                                    stringResource(R.string.stake_is_absent)
+                                else
+                                    "${stakeByGambler.goal1} : ${stakeByGambler.goal2}"
                             )
                         }
                     }

@@ -48,6 +48,8 @@
     <string name="game">Игра</string>
     <string name="stake">Ставка</string>
 
+    <string name="stake_is_absent">ставка отсутствует</string>
+
     <string name="game_number">№ игры</string>
     <string name="game_start">начало матча</string>
     <string name="group">Группа</string>
