@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.GamblerModel
+import com.mu.tote2024.presentation.utils.Constants.NO
 
 @Composable
 fun AdminGamblerItemScreen(
@@ -65,9 +66,8 @@ fun AdminGamblerItemScreen(
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
-            text = "${gambler.rate} руб.",
-            //modifier = Modifier.weight(1f),
-            color = MaterialTheme.colorScheme.onSurface
+            text = if (gambler.rate > 0) "${gambler.rate} руб." else NO,
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
