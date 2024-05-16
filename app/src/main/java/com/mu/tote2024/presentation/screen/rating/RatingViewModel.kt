@@ -38,7 +38,7 @@ class RatingViewModel @Inject constructor(
 
                     showArrows = gamblers.maxOf { it.result.placePrev } > 0
 
-                    val gamblersCount = gamblers.size
+                    val gamblersCount = gamblers.size.toDouble()
                     winners = gamblers
                         .filter { it.result.place in 1..3 }
                         .sortedWith(
@@ -51,13 +51,13 @@ class RatingViewModel @Inject constructor(
                     var winningsSecondPart = sumRates
                     winners.forEach { winner ->
                         val firstPartCoefficient = when (winner.result.place) {
-                            1 -> 3
-                            2 -> 6
-                            3 -> 12
-                            else -> 0
+                            1 -> 3.0
+                            2 -> 6.0
+                            3 -> 12.0
+                            else -> 0.0
                         }
 
-                        winningsSecondPart -= (gamblersCount / firstPartCoefficient) * winner.rate
+                        winningsSecondPart -= (gamblersCount / firstPartCoefficient) * winner.rate.toDouble()
                     }
 
                     val winnerAttrs = getWinnerAttrs(winners)
@@ -79,15 +79,14 @@ class RatingViewModel @Inject constructor(
 
                     winners.forEach { winner ->
                         val firstPartCoefficient = when (winner.result.place) {
-                            1 -> 3
-                            2 -> 6
-                            3 -> 12
-                            else -> 0
+                            1 -> 3.0
+                            2 -> 6.0
+                            3 -> 12.0
+                            else -> 0.0
                         }
-                        val winningsFirstPart = (gamblersCount / firstPartCoefficient) * winner.rate
+                        val winningsFirstPart = (gamblersCount / firstPartCoefficient) * winner.rate.toDouble()
                         val rateCoefficient = winner.rate.toDouble() / averageRate
                         val coefficient = rateCoefficient * (winnerAttrs.find { item -> item.place == winner.result.place }?.addCoefficient ?: 1.0)
-
                         winningsList.add(
                             WinningsModel(
                                 gamblerId = winner.gamblerId ?: "",
@@ -131,11 +130,11 @@ class RatingViewModel @Inject constructor(
         if (attr.place == 1) {
             if (attr.gamblersCount <= 2) {
                 (attr.points - (attrs.find { item -> item.place == 3 }?.points
-                    ?: attrs.find { item -> item.place == 2 }?.points ?: 0.0)) / 10 + 1
+                    ?: attrs.find { item -> item.place == 2 }?.points ?: 0.0)) / 10.0 + 1.0
             } else 1.0
         } else if (attr.place == 2) {
             if (attr.gamblersCount == 1) {
-                (attr.points - (attrs.find { item -> item.place == 3 }?.points ?: 0.0)) / 10 + 1
+                (attr.points - (attrs.find { item -> item.place == 3 }?.points ?: 0.0)) / 10.0 + 1.0
             } else 1.0
         } else 1.0
 
