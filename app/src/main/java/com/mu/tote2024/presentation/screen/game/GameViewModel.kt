@@ -64,6 +64,9 @@ class GameViewModel @Inject constructor(
     var isByPenalty = false
         private set
 
+    var result = mutableStateOf("Test")
+        private set
+
     var errorGameId = ""
         private set
     var errorStart = ""
@@ -202,6 +205,20 @@ class GameViewModel @Inject constructor(
                     }
                     _state.value = StateGame(stateSave)
                 }.launchIn(viewModelScope)
+            }
+
+            is GameEvent.OnGenerateResult -> {
+                val goal1 = (0..3).random()
+                val goal2 = (0..3).random()
+                result.value = "$goal1 : $goal2"
+                if (goal1 == goal2) {
+                    val addGoal1 = (0..3).random()
+                    val addGoal2 = (0..3).random()
+                    result.value += ", доп.время $addGoal1 : $addGoal2"
+                    if (addGoal1 == addGoal2) {
+                        result.value += ", по пенальти ${(1..2).random()}"
+                    }
+                }
             }
         }
         enabled = checkValues()

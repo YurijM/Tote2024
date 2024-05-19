@@ -194,8 +194,21 @@ fun GameScreen(
                         onCancel = { viewModel.onEvent(GameEvent.OnCancel) }
                     )
                 }
+
+                OkAndCancel(
+                    titleOk = "Сгенерировать результат",
+                    enabledOk = true,
+                    showCancel = false,
+                    onOK = { viewModel.onEvent(GameEvent.OnGenerateResult) },
+                    onCancel = {}
+                )
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = viewModel.result.value,
+                    textAlign = TextAlign.Center
+                )
             }
-            //}
 
             if (showDatePicker) {
                 val datePickerState = rememberDatePickerState(
@@ -313,7 +326,6 @@ private fun SetTime(
                 TimePicker(state = timePickerState)
                 Row(
                     modifier = Modifier
-                        //.padding(top = 12.dp)
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
@@ -394,7 +406,7 @@ private fun GameIdAndGroup(
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center  //.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.Center
         ) {
             AppTextField(
                 modifier = Modifier

@@ -9,4 +9,5 @@ sealed class GameEvent {
     data class OnPenaltyChange(val team: String) : GameEvent()
     object OnCancel : GameEvent()
     object OnSave : GameEvent()
+    object OnGenerateResult : GameEvent()
 }
