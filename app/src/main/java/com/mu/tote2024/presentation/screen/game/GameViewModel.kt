@@ -23,6 +23,7 @@ import com.mu.tote2024.presentation.utils.Constants.ID_NEW_GAME
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import com.mu.tote2024.presentation.utils.asTime
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
+import com.mu.tote2024.presentation.utils.generateResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -64,7 +65,7 @@ class GameViewModel @Inject constructor(
     var isByPenalty = false
         private set
 
-    var result = mutableStateOf("Test")
+    var result = mutableStateOf("")
         private set
 
     var errorGameId = ""
@@ -208,17 +209,7 @@ class GameViewModel @Inject constructor(
             }
 
             is GameEvent.OnGenerateResult -> {
-                val goal1 = (0..3).random()
-                val goal2 = (0..3).random()
-                result.value = "$goal1 : $goal2"
-                if (goal1 == goal2) {
-                    val addGoal1 = (0..3).random()
-                    val addGoal2 = (0..3).random()
-                    result.value += ", доп.время $addGoal1 : $addGoal2"
-                    if (addGoal1 == addGoal2) {
-                        result.value += ", по пенальти ${(1..2).random()}"
-                    }
-                }
+                result.value = generateResult()
             }
         }
         enabled = checkValues()

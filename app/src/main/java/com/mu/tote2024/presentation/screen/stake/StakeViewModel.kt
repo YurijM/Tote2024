@@ -25,6 +25,7 @@ import com.mu.tote2024.presentation.utils.Constants.GROUPS
 import com.mu.tote2024.presentation.utils.Constants.GROUPS_COUNT
 import com.mu.tote2024.presentation.utils.Constants.KEY_ID
 import com.mu.tote2024.presentation.utils.checkIsFieldEmpty
+import com.mu.tote2024.presentation.utils.generateResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -81,6 +82,9 @@ class StakeViewModel @Inject constructor(
     var errorExtraTime = ""
         private set
     var errorByPenalty = ""
+        private set
+
+    var generatedStake = mutableStateOf("")
         private set
 
     var enabled = false
@@ -210,6 +214,10 @@ class StakeViewModel @Inject constructor(
                         }
                     }
                 }
+            }
+
+            is StakeEvent.OnGenerateStake -> {
+                generatedStake.value = generateResult()
             }
         }
         enabled = checkValues()

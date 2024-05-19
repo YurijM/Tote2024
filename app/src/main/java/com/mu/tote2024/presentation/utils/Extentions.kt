@@ -121,3 +121,19 @@ fun String.asTime(): String {
 }
 
 fun String.withParam(param: String) = this.replace("%_%", param)
+
+fun generateResult() : String {
+    val goal1 = (0..3).random()
+    val goal2 = (0..3).random()
+    var result = "$goal1 : $goal2"
+    if (goal1 == goal2) {
+        val addGoal1 = (0..3).random()
+        val addGoal2 = (0..3).random()
+        result += ", доп.время $addGoal1 : $addGoal2"
+        if (addGoal1 == addGoal2) {
+            result += ", по пенальти ${(1..2).random()}"
+        }
+    }
+
+    return result
+}

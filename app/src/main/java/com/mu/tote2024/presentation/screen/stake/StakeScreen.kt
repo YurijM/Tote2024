@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
+import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.presentation.components.AppDropDownList
@@ -110,7 +111,6 @@ fun StakeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                //verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
@@ -133,6 +133,24 @@ fun StakeScreen(
                             flags = viewModel.flags.first { it.gameId == game.gameId },
                             team1 = viewModel.team1,
                             team2 = viewModel.team2
+                        )
+                    }
+                }
+
+                if (GAMBLER.admin) {
+                    item {
+                        OkAndCancel(
+                            titleOk = "Сгенерировать ставку",
+                            enabledOk = true,
+                            showCancel = false,
+                            onOK = { viewModel.onEvent(StakeEvent.OnGenerateStake) },
+                            onCancel = {}
+                        )
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            text = viewModel.generatedStake.value,
+                            textAlign = TextAlign.Center
                         )
                     }
                 }

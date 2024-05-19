@@ -5,4 +5,5 @@ sealed class StakeEvent {
     data class OnPenaltyChange(val team: String) : StakeEvent()
     object OnCancel :StakeEvent()
     object OnSave :StakeEvent()
+    object OnGenerateStake :StakeEvent()
 }
