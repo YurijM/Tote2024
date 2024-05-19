@@ -1,12 +1,10 @@
 package com.mu.tote2024.presentation.screen.admin.gambler.list
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.model.GamblerResultModel
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
-import com.mu.tote2024.presentation.screen.admin.gambler.AdminGamblerEvent
 import com.mu.tote2024.presentation.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,7 +38,10 @@ class AdminGamblerListViewModel @Inject constructor(
         when (event) {
             is AdminGamblerListEvent.OnResultClear -> {
                 gamblers.forEach { gambler ->
-                    val newGambler = gambler.copy(result = GamblerResultModel())
+                    val newGambler = gambler.copy(
+                        rate = (1..10).random() * 100,
+                        result = GamblerResultModel()
+                    )
                     gamblerUseCase.saveGambler(newGambler).onEach {}.launchIn(viewModelScope)
                 }
             }
