@@ -29,7 +29,7 @@ class StakeRepositoryImpl(
                 if (isSuccess)
                     trySend(UiState.Success(result))
                 else
-                    trySend(UiState.Error(Constants.Errors.ERROR_GAME_IS_NOT_FOUND))
+                    trySend(UiState.Error(Constants.Errors.ERROR_STAKE_IS_ABSENT))
             }
 
             override fun onCancelled(error: DatabaseError) {

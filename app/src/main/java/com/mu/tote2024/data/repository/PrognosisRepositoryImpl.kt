@@ -27,7 +27,7 @@ class PrognosisRepositoryImpl(
                 if (isSuccess)
                     trySend(UiState.Success(result))
                 else
-                    trySend(UiState.Error(Constants.Errors.ERROR_GAME_IS_NOT_FOUND))
+                    trySend(UiState.Error(Constants.Errors.ERROR_PROGNOSIS_IS_NOT_FOUND))
             }
 
             override fun onCancelled(error: DatabaseError) {

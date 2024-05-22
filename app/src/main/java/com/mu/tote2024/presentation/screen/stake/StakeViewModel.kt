@@ -7,7 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.data.utils.Constants.CURRENT_ID
-import com.mu.tote2024.data.utils.Constants.Errors.ERROR_GAME_IS_NOT_FOUND
+import com.mu.tote2024.data.utils.Constants.Errors.ERROR_STAKE_IS_ABSENT
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.model.PrognosisModel
@@ -120,7 +120,7 @@ class StakeViewModel @Inject constructor(
                             }
 
                             is UiState.Error -> {
-                                if (result.message == ERROR_GAME_IS_NOT_FOUND) {
+                                if (result.message == ERROR_STAKE_IS_ABSENT) {
                                     gameUseCase.getGame(gameId ?: "").onEach { stateGame ->
                                         if (stateGame is UiState.Success) {
                                             start = stateGame.data.start
