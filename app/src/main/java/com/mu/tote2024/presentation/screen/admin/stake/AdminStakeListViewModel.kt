@@ -31,6 +31,7 @@ class AdminStakeListViewModel @Inject constructor(
 
     val listGameFlags = mutableListOf<GameFlagsModel>()
     private var games = mutableListOf<GameModel>()
+    private var stakes = mutableListOf<StakeModel>()
     val gameIds = mutableListOf<Int>()
     var gamblers = mutableListOf<GamblerModel>()
 
@@ -42,7 +43,7 @@ class AdminStakeListViewModel @Inject constructor(
 
                     stakeUseCase.getStakeList().collect { state ->
                         if (state is UiState.Success) {
-                            val stakes = state.data
+                            stakes = state.data.toMutableList()
                             stakes.forEach { game ->
                                 val flag1 = teams.first { it.team == game.team1 }.flag
                                 val flag2 = teams.first { it.team == game.team2 }.flag
@@ -62,7 +63,8 @@ class AdminStakeListViewModel @Inject constructor(
         }
         gameUseCase.getGameList().onEach { stateGame ->
             if (stateGame is UiState.Success) {
-                games = stateGame.data.filter { it.start.toDouble() > System.currentTimeMillis() }.sortedBy { it.gameId }.toMutableList()
+                games = stateGame.data.filter { it.start.toDouble() > System.currentTimeMillis() }.sortedBy { it.gameId }
+                    .toMutableList()
                 gameIds.clear()
                 games.forEach { game ->
                     gameIds.add(game.gameId.toInt())
@@ -82,7 +84,7 @@ class AdminStakeListViewModel @Inject constructor(
                 _state.value = AdminStakeListState(UiState.Loading)
 
                 games.forEach { game ->
-                    gamblers.filter { it.rate > 0 }.forEach { gambler ->
+                    /*gamblers.filter { it.rate > 0 }.forEach { gambler ->
                         val stake = StakeModel(
                             gameId = game.gameId,
                             gamblerId = gambler.gamblerId ?: "",
@@ -94,6 +96,24 @@ class AdminStakeListViewModel @Inject constructor(
                         )
                         viewModelScope.launch {
                             stakeUseCase.saveStake(stake).collect {}
+                        }
+                    }*/
+                    gamblers.forEach { gambler ->
+                        var stake = stakes.find { it.gamblerId == gambler.gamblerId && it.gameId == game.gameId }
+                        if (stake != null) {
+                            stake = stake.copy(
+                                points = 0.0,
+                                place = 0
+                            )
+                            if (gambler.rate > 0) {
+                                stake = stake.copy(
+                                    goal1 = (0..3).random().toString(),
+                                    goal2 = (0..3).random().toString()
+                                )
+                            }
+                            viewModelScope.launch {
+                                stakeUseCase.saveStake(stake).collect {}
+                            }
                         }
                     }
                 }
