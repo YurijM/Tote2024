@@ -390,7 +390,7 @@ class GameViewModel @Inject constructor(
     private fun calcStakePoints(stake: StakeModel, game: GameModel, coefficient: Double): Double =
         if (stake.goal1 == game.goal1 && stake.goal2 == game.goal2) {
             val points = coefficient * 2
-            if (points <= gamblersCount) points else coefficient
+            if (points <= gamblersCount) points else coefficient * 1.1
         } else if (game.goal1 != game.goal2
             && (game.goal1.toInt() - game.goal2.toInt()) == (stake.goal1.toInt() - stake.goal2.toInt())
         ) {
