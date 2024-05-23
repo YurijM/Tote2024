@@ -168,7 +168,18 @@ class GameViewModel @Inject constructor(
             }
 
             is GameEvent.OnSave -> {
-                stakes.filter { it.gameId == gameId }.forEach { stake ->
+                gamblers.forEach { gambler ->
+                    var stake = stakes.find { it.gameId == gameId && it.gamblerId == gambler.gamblerId }
+                    if (stake == null) {
+                        stake = StakeModel(
+                            gameId = game.gameId,
+                            gamblerId = gambler.gamblerId ?: "",
+                            group = game.group,
+                            team1 = game.team1,
+                            team2 = game.team2
+                        )
+                        stakes.add(stake)
+                    }
                     val coefficient = when {
                         stake.goal1.isBlank() -> prognosis.coefficientForFine
                         (stake.goal1 > stake.goal2) -> prognosis.coefficientForWin
