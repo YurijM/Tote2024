@@ -98,7 +98,7 @@ fun AdminStakeListScreen(
             items(stakeList) { stake ->
                 if (gameId != stake.gameId) {
                     gameId = stake.gameId
-                    Text(text = stringResource(id = R.string.game_no, stake.gameId))
+                    Text(text = stringResource(id = R.string.game_no, gameId))
                     gamblers.forEach { gambler ->
                         val stakeByGambler = stakeList.find { it.gameId == gameId && it.gamblerId == gambler.gamblerId }
                         Row(
