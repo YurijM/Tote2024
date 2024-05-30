@@ -309,7 +309,10 @@ class GameViewModel @Inject constructor(
 
     private fun calcGamblerPointsPrev() {
         val gameIds = mutableListOf<Int>()
-        games.filter { it.start.toLong() <= System.currentTimeMillis() && it.gameId != gameId }.forEach { game ->
+        val currentGame = games.find { it.gameId == gameId }
+        //games.filter { it.start.toLong() <= System.currentTimeMillis() && it.gameId != gameId }.forEach { game ->
+        games.filter { it.start.toLong() <= System.currentTimeMillis()
+                && it.start.toLong() < (currentGame?.start?.toLong() ?: 0) }.forEach { game ->
             gameIds.add(game.gameId.toInt())
         }
 
@@ -390,7 +393,7 @@ class GameViewModel @Inject constructor(
     private fun calcStakePoints(stake: StakeModel, game: GameModel, coefficient: Double): Double =
         if (stake.goal1 == game.goal1 && stake.goal2 == game.goal2) {
             val points = coefficient * 2
-            if (points <= gamblersCount) points else coefficient * 1.1
+            if (points <= gamblersCount) points else gamblersCount * 1.1
         } else if (game.goal1 != game.goal2
             && (game.goal1.toInt() - game.goal2.toInt()) == (stake.goal1.toInt() - stake.goal2.toInt())
         ) {
