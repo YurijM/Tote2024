@@ -42,7 +42,7 @@ fun RatingItemScreen(
     prevPoints: Double,
     place: Int,
     prevPlace: Int,
-    showArrows: Boolean,
+    showPrev: Boolean,
     toAdminGamblerPhoto: () -> Unit
 ) {
     val step = prevPlace - place
@@ -104,18 +104,28 @@ fun RatingItemScreen(
                 .padding(start = 8.dp),
             color = MaterialTheme.colorScheme.onSurface
         )
-        Text(
-            text = DecimalFormat("0.00").format(points),
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        if (showArrows) {
+        Row {
             Text(
+                text = DecimalFormat("0.00").format(points),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            if (showPrev) {
+                Text(
+                    modifier = Modifier.width(68.dp),
+                    text = "(${DecimalFormat("0.00").format(prevPoints)})",
+                    textAlign = TextAlign.End,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
+
+        if (showPrev) {
+            /*Text(
                 modifier = Modifier.width(68.dp),
                 text = "(${DecimalFormat("0.00").format(prevPoints)})",
                 textAlign = TextAlign.End,
                 color = MaterialTheme.colorScheme.onSurface
-            )
+            )*/
             Text(
                 modifier = Modifier.width(32.dp),
                 textAlign = TextAlign.Center,
