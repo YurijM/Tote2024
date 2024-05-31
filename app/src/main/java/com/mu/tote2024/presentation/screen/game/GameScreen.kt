@@ -79,7 +79,7 @@ fun GameScreen(
             }
 
             is UiState.Success -> {
-                isLoading = false
+                isLoading = true
                 if (result.data) toGameList()
             }
 
