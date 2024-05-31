@@ -41,8 +41,7 @@ fun PrognosisItemScreen(
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
-
-            ) {
+        ) {
             Text(
                 modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.labelSmall,
@@ -128,8 +127,7 @@ fun PrognosisItemScreen(
         )
 
         gamblers.forEach { gambler ->
-            //stakes.forEach { stake ->
-            val stake = stakes.find {it.gamblerId == gambler.gamblerId}
+            val stake = stakes.find { it.gamblerId == gambler.gamblerId }
             if (stake != null) {
                 val color = when (stake.place) {
                     1 -> ColorWin
