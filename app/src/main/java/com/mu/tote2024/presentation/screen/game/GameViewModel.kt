@@ -202,6 +202,7 @@ class GameViewModel @Inject constructor(
                 }
 
                 gameUseCase.saveGame(game).onEach { stateSave ->
+                    _state.value = StateGame(stateSave)
                     if (stateSave is UiState.Success) {
                         val index = games.indexOf(games.find { it.gameId == gameId })
                         games[index] = game.copy()
@@ -215,7 +216,6 @@ class GameViewModel @Inject constructor(
 
                         saveGamblerResult()
                     }
-                    _state.value = StateGame(stateSave)
                 }.launchIn(viewModelScope)
             }
 

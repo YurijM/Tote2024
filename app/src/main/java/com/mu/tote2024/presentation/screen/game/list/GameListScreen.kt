@@ -127,6 +127,7 @@ fun GameListScreen(
             }
             Column(
                 modifier = Modifier.fillMaxSize()
+                    .padding(bottom = 48.dp)
             ) {
                 (1..GROUPS_COUNT).forEach { index ->
                     val group = GROUPS[index - 1]
@@ -260,7 +261,7 @@ fun Games_Table(
             7 -> item.defeat.toString()
             8 -> "${item.balls1}:${item.balls2}"
             9 -> item.points.toString()
-            10 -> item.place.toString()
+            10 -> if (item.place > 0) item.place.toString() else ""
             else -> ""
         }
 
@@ -282,6 +283,11 @@ fun Games_Table(
                     5 -> ColorWin
                     6 -> ColorDraw
                     7 -> ColorDefeat
+                    10 -> when (value) {
+                        "1" -> ColorWin
+                        "2" -> ColorDraw
+                        else -> MaterialTheme.colorScheme.onSurface
+                    }
                     else -> MaterialTheme.colorScheme.onSurface
                 },
                 textAlign = if (value.isEmpty() || value[0].isDigit()) TextAlign.Center else TextAlign.Start,

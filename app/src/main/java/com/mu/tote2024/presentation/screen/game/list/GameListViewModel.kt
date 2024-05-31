@@ -164,7 +164,29 @@ class GameListViewModel @Inject constructor(
             resultTeams.add(resultTeam)
         }
 
+        calcTeamPlace(resultTeams)
+
         return resultTeams
+    }
+
+    private fun calcTeamPlace(resultTeams: MutableList<GroupTeamResultModel>) {
+        (0 until GROUPS_COUNT).forEach { groupNo ->
+            val group = GROUPS[groupNo]
+            resultTeams.filter { it.group == group }
+                .sortedWith(
+                    compareByDescending<GroupTeamResultModel> { it.points }
+                        .thenByDescending { (it.balls1 - it.balls2) }
+                        .thenByDescending { it.balls1 }
+                )
+                .forEachIndexed { place, result ->
+                    if (place == 0 && result.points == 0) return@forEach
+
+                    val index = resultTeams.indexOf(resultTeams.find { it.team == result.team })
+
+                    resultTeams[index] = result.copy(place = place + 1)
+                }
+
+        }
     }
 
     companion object {
