@@ -455,7 +455,9 @@ private fun GamePlayed(
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
@@ -473,7 +475,8 @@ private fun GamePlayed(
                 )
                 ShowFlag(flags.flag1)
                 Text(
-                    text = " - "
+                    modifier = Modifier.padding(horizontal = 4.dp),
+                    text = "${game.goal1}:${game.goal2}"
                 )
                 ShowFlag(flags.flag2)
                 Text(
@@ -485,15 +488,21 @@ private fun GamePlayed(
                         FontWeight.Normal
                 )
             }
-            Text(
-                text = "${game.goal1}:${game.goal2}" +
-                        if (game.addGoal1.isNotBlank())
-                            ", ${stringResource(id = R.string.add_time)} ${game.addGoal1}:${game.addGoal2}" +
-                                    if (game.penalty.isNotBlank())
-                                        ", ${stringResource(id = R.string.by_penalty)} ${game.penalty}"
-                                    else ""
-                        else ""
-            )
+            if (game.addGoal1.isNotBlank()) {
+                Text(
+                    /*text = "${game.goal1}:${game.goal2}" +
+                            if (game.addGoal1.isNotBlank())
+                                ", ${stringResource(id = R.string.add_time)} ${game.addGoal1}:${game.addGoal2}" +
+                                        if (game.penalty.isNotBlank())
+                                            ", ${stringResource(id = R.string.by_penalty)} ${game.penalty}"
+                                        else ""
+                            else ""*/
+                    text = "${stringResource(id = R.string.add_time)} ${game.addGoal1}:${game.addGoal2}" +
+                            if (game.penalty.isNotBlank())
+                                ", ${stringResource(id = R.string.by_penalty)} ${game.penalty}"
+                            else ""
+                )
+            }
         }
     }
 }
