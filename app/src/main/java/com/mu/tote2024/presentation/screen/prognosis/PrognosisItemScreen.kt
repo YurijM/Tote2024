@@ -51,6 +51,13 @@ fun PrognosisItemScreen(
             )
             Text(
                 modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                text = "№${game.gameId}"
+            )
+            Text(
+                modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.labelSmall,
                 textAlign = TextAlign.End,
                 color = MaterialTheme.colorScheme.onSurface,

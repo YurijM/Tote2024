@@ -24,7 +24,6 @@ import com.mu.tote2024.domain.model.StakeModel
 import com.mu.tote2024.presentation.components.AppProgressBar
 import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
-import com.mu.tote2024.presentation.utils.toLog
 
 @Composable
 fun PrognosisListScreen(
@@ -48,7 +47,7 @@ fun PrognosisListScreen(
                 isLoading = false
                 games = result.data
                     .filter { it.start.toDouble() < System.currentTimeMillis() }
-                    .sortedByDescending { it.gameId }
+                    .sortedByDescending { it.gameId.toInt() }
                 stakes = viewModel.stakes
                 prognosis = viewModel.prognosis
                 gamblers = viewModel.gamblers.sortedBy { it.profile.nickname }
