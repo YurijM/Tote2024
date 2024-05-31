@@ -110,6 +110,7 @@ fun RatingScreen(
                     nickname = gambler.profile.nickname,
                     photoUrl = gambler.profile.photoUrl,
                     points = gambler.result.points,
+                    prevPoints = gambler.result.pointsPrev,
                     place = gambler.result.place,
                     prevPlace = gambler.result.placePrev,
                     showArrows = viewModel.showArrows,

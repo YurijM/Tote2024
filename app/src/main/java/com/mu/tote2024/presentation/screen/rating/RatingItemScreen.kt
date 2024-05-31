@@ -39,6 +39,7 @@ fun RatingItemScreen(
     nickname: String,
     photoUrl: String,
     points: Double,
+    prevPoints: Double,
     place: Int,
     prevPlace: Int,
     showArrows: Boolean,
@@ -110,6 +111,12 @@ fun RatingItemScreen(
 
         if (showArrows) {
             Text(
+                modifier = Modifier.width(68.dp),
+                text = "(${DecimalFormat("0.00").format(prevPoints)})",
+                textAlign = TextAlign.End,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
                 modifier = Modifier.width(32.dp),
                 textAlign = TextAlign.Center,
                 text = place.toString(),
@@ -120,11 +127,6 @@ fun RatingItemScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                /*Text(
-                    modifier = Modifier.padding(horizontal = 4.dp),
-                    text = place.toString(),
-                    color = colorPlace
-                )*/
                 Icon(
                     modifier = Modifier.height(height),
                     painter = icon,
