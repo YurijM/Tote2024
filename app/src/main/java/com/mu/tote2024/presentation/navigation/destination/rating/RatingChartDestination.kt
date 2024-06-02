@@ -15,8 +15,6 @@ fun NavGraphBuilder.ratingChart() {
     }
 }
 
-fun NavController.navigateToRatingChart(
-    id: String
-) {
+fun NavController.navigateToRatingChart(id: String) {
     navigate("$RATING_CHART_SCREEN/$id")
 }
