@@ -22,7 +22,9 @@ import com.mu.tote2024.presentation.navigation.destination.game.groupGameList
 import com.mu.tote2024.presentation.navigation.destination.game.navigateToGame
 import com.mu.tote2024.presentation.navigation.destination.game.navigateToGroupGameList
 import com.mu.tote2024.presentation.navigation.destination.prognosis.prognosis
+import com.mu.tote2024.presentation.navigation.destination.rating.navigateToRatingChart
 import com.mu.tote2024.presentation.navigation.destination.rating.rating
+import com.mu.tote2024.presentation.navigation.destination.rating.ratingChart
 import com.mu.tote2024.presentation.navigation.destination.stake.navigateToStake
 import com.mu.tote2024.presentation.navigation.destination.stake.navigateToStakeList
 import com.mu.tote2024.presentation.navigation.destination.stake.stake
@@ -40,8 +42,13 @@ fun NavGraphMain(
         rating(
             toAdminGamblerPhoto = { photoUrl ->
                 navMainController.navigateToAdminGamblerPhoto(photoUrl)
+            },
+            toChart = { gamblerId ->
+                navMainController.navigateToRatingChart(gamblerId)
             }
         )
+
+        ratingChart()
 
         stakeList(
             toStake = { gameId, gamblerId ->

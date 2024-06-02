@@ -43,7 +43,8 @@ fun RatingItemScreen(
     place: Int,
     prevPlace: Int,
     showPrev: Boolean,
-    toAdminGamblerPhoto: () -> Unit
+    toAdminGamblerPhoto: () -> Unit,
+    toChart: () -> Unit
 ) {
     val step = prevPlace - place
     var icon: Painter = painterResource(id = R.drawable.ic_up)
@@ -72,7 +73,8 @@ fun RatingItemScreen(
             .padding(
                 vertical = 4.dp,
                 horizontal = 8.dp
-            ),
+            )
+            .clickable { toChart() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         SubcomposeAsyncImage(

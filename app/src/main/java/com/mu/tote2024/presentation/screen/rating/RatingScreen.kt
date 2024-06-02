@@ -31,7 +31,8 @@ import com.mu.tote2024.presentation.ui.common.UiState
 @Composable
 fun RatingScreen(
     viewModel: RatingViewModel = hiltViewModel(),
-    toAdminGamblerPhoto: (String) -> Unit
+    toAdminGamblerPhoto: (String) -> Unit,
+    toChart: (String) -> Unit
 ) {
     var isLoading by remember { mutableStateOf(false) }
     var gamblers by remember { mutableStateOf<List<GamblerModel>>(listOf()) }
@@ -40,7 +41,6 @@ fun RatingScreen(
 
     val state by viewModel.state.collectAsState()
     val result = state.result
-
 
     LaunchedEffect(key1 = result) {
         when (result) {
@@ -114,7 +114,8 @@ fun RatingScreen(
                     place = gambler.result.place,
                     prevPlace = gambler.result.placePrev,
                     showPrev = viewModel.showArrows,
-                    toAdminGamblerPhoto = { toAdminGamblerPhoto(gambler.profile.photoUrl) }
+                    toAdminGamblerPhoto = { toAdminGamblerPhoto(gambler.profile.photoUrl) },
+                    toChart = { if (gambler.gamblerId != null) toChart(gambler.gamblerId) }
                 )
             }
         }

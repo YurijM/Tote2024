@@ -6,11 +6,13 @@ import com.mu.tote2024.presentation.screen.rating.RatingScreen
 import com.mu.tote2024.presentation.utils.Constants.Routes.RATING_SCREEN
 
 fun NavGraphBuilder.rating(
-    toAdminGamblerPhoto: (String) -> Unit
+    toAdminGamblerPhoto: (String) -> Unit,
+    toChart: (String) -> Unit
 ) {
     composable(RATING_SCREEN) {
         RatingScreen(
-            toAdminGamblerPhoto = toAdminGamblerPhoto
+            toAdminGamblerPhoto = toAdminGamblerPhoto,
+            toChart = toChart
         )
     }
 }
