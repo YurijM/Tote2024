@@ -2,8 +2,9 @@ package com.mu.tote2024.presentation.screen.rating.chart
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,9 +31,9 @@ import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.ui.linechart.model.ShadowUnderLine
 import com.mu.tote2024.presentation.components.AppProgressBar
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
-import java.text.DecimalFormat
-import kotlin.math.ceil
+import kotlin.math.abs
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -63,7 +64,6 @@ fun RatingChartScreen(
                     .sortedBy { it.gameId.toInt() }.forEachIndexed { index, stake ->
                         places.add(Point(index.toFloat(), stake.place.toFloat()))
                     }*/
-
             }
 
             is UiState.Error -> {
@@ -76,20 +76,34 @@ fun RatingChartScreen(
 
     if (places.size > 0) {
         val xAxisData = AxisData.Builder()
-            .axisStepSize(25.dp)
+            //.axisStepSize(32.dp)
+            .axisStepSize(
+                when {
+                    places.size <= 3 -> 140.dp
+                    places.size <= 5 -> 72.dp
+                    places.size <= 9 -> 40.dp
+                    places.size <= 12 -> 32.dp
+                    else -> 24.dp
+                }
+            )
             .backgroundColor(Color.Transparent)
             .steps(places.size - 1)
+            .axisLabelColor(MaterialTheme.colorScheme.onSurface)
+            .axisLineColor(MaterialTheme.colorScheme.onSurface)
             .labelData { i -> (i + 1).toString() }
             .labelAndAxisLinePadding(8.dp)
             .build()
 
         val yAxisData = AxisData.Builder()
-            .steps(viewModel.max.toInt() - viewModel.min.toInt())
+            .steps(abs(viewModel.min).toInt() - abs(viewModel.max).toInt())
             .backgroundColor(Color.Transparent)
-            .labelAndAxisLinePadding(20.dp)
+            .axisLabelColor(MaterialTheme.colorScheme.onSurface)
+            .axisLineColor(MaterialTheme.colorScheme.onSurface)
+            .labelAndAxisLinePadding(16.dp)
             .labelData { i ->
-                val yScale = (viewModel.max - viewModel.min) / viewModel.max
-                DecimalFormat("0").format(ceil(i * yScale) + 1)
+                (abs(viewModel.min).toInt() - i).toString()
+                /*val yScale = (viewModel.max - viewModel.min) / viewModel.max
+                DecimalFormat("0").format(ceil(i * yScale) + 1)*/
             }.build()
 
         val lineChartData = LineChartData(
@@ -97,51 +111,48 @@ fun RatingChartScreen(
                 lines = listOf(
                     Line(
                         dataPoints = places,
-                        LineStyle(),
-                        IntersectionPoint(),
+                        LineStyle(
+                            color = MaterialTheme.colorScheme.onSurface,
+                            width = 6f
+                        ),
+                        IntersectionPoint(
+                            color = MaterialTheme.colorScheme.onSurface,
+                            radius = 6.dp
+                        ),
                         SelectionHighlightPoint(),
-                        ShadowUnderLine(),
+                        ShadowUnderLine(
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            alpha = .3f
+                        ),
                         SelectionHighlightPopUp()
                     )
                 ),
             ),
             xAxisData = xAxisData,
             yAxisData = yAxisData,
-            gridLines = GridLines(),
+            gridLines = GridLines(
+                color = Color.Gray,
+                alpha = .1f
+            ),
             backgroundColor = Color.Transparent
         )
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Title(title = nickname)
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
-                text = nickname
+                text = "динамика занимаемых мест"
             )
-            /*Text(
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                text = places.size.toString()
-            )
-            places.forEach {
-                Text(it.x.toString())
-            }*/
-            /*LazyColumn {
-            items(places) {
-                Text(
-                    text = it.x.toString(),
-                    color = Color.Black
-                )
-            }
-        }*/
             LineChart(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                //.height(50.dp),
+                    .fillMaxWidth()
+                    .padding(top = 0.dp),
+                //.height(150.dp),
                 lineChartData = lineChartData
             )
         }
     }
-
 
     if (isLoading) {
         AppProgressBar()
