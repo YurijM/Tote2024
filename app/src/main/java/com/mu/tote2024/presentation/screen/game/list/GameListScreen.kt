@@ -75,8 +75,6 @@ fun GameListScreen(
             isLoading = false
 
             games = result.data
-
-            //result = data.data
             groupTeamResult = viewModel.resultTeams
         }
 
@@ -94,20 +92,12 @@ fun GameListScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             (GROUPS.size - 1 downTo GROUPS_COUNT).forEach { index ->
-                //val list = viewModel.games
                 val list = games
                     .filter { it.group == GROUPS[index] }
                     .sortedBy { it.gameId }
 
                 if (list.isNotEmpty()) {
                     Title(title = GROUPS[index])
-                    /*Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = GROUPS[index],
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.titleMedium
-                    )*/
-
                     list.forEach { game ->
                         Box(
                             modifier = Modifier.padding(
