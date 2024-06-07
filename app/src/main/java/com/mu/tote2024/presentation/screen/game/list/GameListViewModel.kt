@@ -16,69 +16,67 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
 class GameListViewModel @Inject constructor(
     private val gameUseCase: GameUseCase,
-    private val teamUseCase: TeamUseCase
+    teamUseCase: TeamUseCase
 ) : ViewModel() {
     private val _state: MutableStateFlow<GameListState> = MutableStateFlow(GameListState())
     val state: StateFlow<GameListState> = _state
 
+    private var teams = listOf<TeamModel>()
+    var resultTeams = listOf<GroupTeamResultModel>()
     var games = listOf<GameModel>()
     val flags = mutableListOf<GameFlagsModel>()
 
     init {
-        viewModelScope.launch {
-            teamUseCase.getTeamList().collect { stateTeams ->
-                _state.value = GameListState(UiState.Loading)
+        teamUseCase.getTeamList().onEach { stateTeams ->
+            _state.value = GameListState(UiState.Loading)
 
-                if (stateTeams is UiState.Success) {
-                    val teams = stateTeams.data
-                        .sortedWith(
-                            compareBy<TeamModel> { it.group }
-                                .thenBy { it.itemNo }
-                        )
-
-                    gameUseCase.getGameList().collect { stateGame ->
-                        if (stateGame is UiState.Success) {
-                            games = stateGame.data
-
-                            games.forEach { game ->
-                                if (
-                                    game.start.toLong() <= System.currentTimeMillis()
-                                    && game.goal1.isBlank()
-                                    && game.goal2.isBlank()
-                                ) {
-                                    val correctedGame = game.copy(
-                                        goal1 = "0",
-                                        goal2 = "0"
-                                    )
-                                    gameUseCase.saveGame(correctedGame).launchIn(viewModelScope)
-                                }
-                                val flag1 = teams.first { it.team == game.team1 }.flag
-                                val flag2 = teams.first { it.team == game.team2 }.flag
-                                flags.add(
-                                    GameFlagsModel(
-                                        gameId = game.gameId,
-                                        flag1 = flag1,
-                                        flag2 = flag2
-                                    )
-                                )
-                            }
-                            val resultTeams = getTableResult(
-                                teams,
-                                games.filter { game -> game.group in GROUPS.take(GROUPS_COUNT) }
-                            )
-
-                            _state.value = GameListState(UiState.Success(resultTeams))
-                        }
-                    }
-                }
+            if (stateTeams is UiState.Success) {
+                teams = stateTeams.data
+                    .sortedWith(
+                        compareBy<TeamModel> { it.group }
+                            .thenBy { it.itemNo }
+                    )
             }
-        }
+        }.launchIn(viewModelScope)
+        gameUseCase.getGameList().onEach { stateGame ->
+            _state.value = GameListState(stateGame)
+            if (stateGame is UiState.Success) {
+                games = stateGame.data
+
+                games.forEach { game ->
+                    if (
+                        game.start.toLong() <= System.currentTimeMillis()
+                        && game.goal1.isBlank()
+                        && game.goal2.isBlank()
+                    ) {
+                        val correctedGame = game.copy(
+                            goal1 = "0",
+                            goal2 = "0"
+                        )
+                        gameUseCase.saveGame(correctedGame).launchIn(viewModelScope)
+                    }
+                    val flag1 = teams.first { it.team == game.team1 }.flag
+                    val flag2 = teams.first { it.team == game.team2 }.flag
+                    flags.add(
+                        GameFlagsModel(
+                            gameId = game.gameId,
+                            flag1 = flag1,
+                            flag2 = flag2
+                        )
+                    )
+                }
+                resultTeams = getTableResult(
+                    teams,
+                    games.filter { game -> game.group in GROUPS.take(GROUPS_COUNT) }
+                )
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun getTableResult(listTeam: List<TeamModel>, games: List<GameModel>): List<GroupTeamResultModel> {
@@ -185,13 +183,12 @@ class GameListViewModel @Inject constructor(
 
                     resultTeams[index] = result.copy(place = place + 1)
                 }
-
         }
     }
 
     companion object {
         data class GameListState(
-            val result: UiState<List<GroupTeamResultModel>> = UiState.Default
+            val result: UiState<List<GameModel>> = UiState.Default
         )
     }
 }

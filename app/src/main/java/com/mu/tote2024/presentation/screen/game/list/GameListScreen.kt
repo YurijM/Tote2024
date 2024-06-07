@@ -36,9 +36,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
 import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GameFlagsModel
+import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.model.GroupTeamResultModel
 import com.mu.tote2024.presentation.components.AppFabAdd
 import com.mu.tote2024.presentation.components.AppProgressBar
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.screen.game.list_group.GroupGameItemScreen
 import com.mu.tote2024.presentation.ui.ColorDefeat
 import com.mu.tote2024.presentation.ui.ColorDraw
@@ -59,11 +61,12 @@ fun GameListScreen(
 ) {
     var isLoading by remember { mutableStateOf(false) }
 
-    var result by remember { mutableStateOf<List<GroupTeamResultModel>>(listOf()) }
+    var games by remember { mutableStateOf<List<GameModel>>(listOf()) }
+    var groupTeamResult by remember { mutableStateOf<List<GroupTeamResultModel>>(listOf()) }
 
     val state by viewModel.state.collectAsState()
 
-    when (val data = state.result) {
+    when (val result = state.result) {
         is UiState.Loading -> {
             isLoading = true
         }
@@ -71,7 +74,10 @@ fun GameListScreen(
         is UiState.Success -> {
             isLoading = false
 
-            result = data.data
+            games = result.data
+
+            //result = data.data
+            groupTeamResult = viewModel.resultTeams
         }
 
         is UiState.Error -> {
@@ -81,24 +87,26 @@ fun GameListScreen(
         else -> {}
     }
 
-    if (result.isNotEmpty()) {
+    if (groupTeamResult.isNotEmpty()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
             (GROUPS.size - 1 downTo GROUPS_COUNT).forEach { index ->
-                val list = viewModel.games
+                //val list = viewModel.games
+                val list = games
                     .filter { it.group == GROUPS[index] }
                     .sortedBy { it.gameId }
 
                 if (list.isNotEmpty()) {
-                    Text(
+                    Title(title = GROUPS[index])
+                    /*Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = GROUPS[index],
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.titleMedium
-                    )
+                    )*/
 
                     list.forEach { game ->
                         Box(
@@ -127,7 +135,8 @@ fun GameListScreen(
                 }
             }
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .padding(bottom = 48.dp)
             ) {
                 (1..GROUPS_COUNT).forEach { index ->
@@ -139,7 +148,7 @@ fun GameListScreen(
                         style = MaterialTheme.typography.titleMedium
                     )
                     Games_Table(
-                        result = result.filter { it.group == group },
+                        result = groupTeamResult.filter { it.group == group },
                         onClick = { if (GAMBLER.admin) toGroupGameList(group) }
                     )
                 }
