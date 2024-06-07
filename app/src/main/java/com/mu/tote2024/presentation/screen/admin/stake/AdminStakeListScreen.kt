@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.GamblerModel
@@ -101,8 +102,25 @@ fun AdminStakeListScreen(
                     Text(text = stringResource(id = R.string.game_no, gameId))
                     gamblers.forEach { gambler ->
                         val stakeByGambler = stakeList.find { it.gameId == gameId && it.gamblerId == gambler.gamblerId }
+                        val gameResult = if (
+                            stakeByGambler == null
+                            || stakeByGambler.goal1.isBlank()
+                            || stakeByGambler.goal2.isBlank()
+                        )
+                            stringResource(R.string.stake_is_absent)
+                        else {
+                            "${stakeByGambler.goal1} : ${stakeByGambler.goal2}" +
+                                    if (stakeByGambler.addGoal1.isNotBlank() && stakeByGambler.addGoal2.isNotBlank()) {
+                                        ", ${stringResource(R.string.add_time)} " +
+                                                "${stakeByGambler.addGoal1} : ${stakeByGambler.addGoal2}" +
+                                                if (stakeByGambler.penalty.isNotBlank())
+                                                    ",\n${stringResource(R.string.by_penalty)} ${stakeByGambler.penalty}"
+                                                else ""
+                                    } else ""
+                        }
                         Row(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
                                 modifier = Modifier
@@ -112,16 +130,10 @@ fun AdminStakeListScreen(
                                 text = "${gambler.profile.nickname} -"
                             )
                             Text(
-                                modifier = Modifier.weight(1f),
-                                text = if (
-                                    stakeByGambler == null
-                                    || stakeByGambler.goal1.isBlank()
-                                    || stakeByGambler.goal2.isBlank()
-                                )
-                                    stringResource(R.string.stake_is_absent)
-                                else
-                                    "${stakeByGambler.goal1} : ${stakeByGambler.goal2}"
-                            )
+                                modifier = Modifier.weight(2f),
+                                text = gameResult,
+                                lineHeight = 1.em,
+                                maxLines = 2                            )
                         }
                     }
                 }
