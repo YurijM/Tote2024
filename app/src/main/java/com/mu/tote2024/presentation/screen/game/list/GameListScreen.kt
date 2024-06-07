@@ -88,8 +88,9 @@ fun GameListScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             (GROUPS.size - 1 downTo GROUPS_COUNT).forEach { index ->
-                val list =
-                    viewModel.games.filter { it.group == GROUPS[index] && it.start.toLong() <= System.currentTimeMillis() }
+                val list = viewModel.games
+                    .filter { it.group == GROUPS[index] }
+                    .sortedBy { it.gameId }
 
                 if (list.isNotEmpty()) {
                     Text(

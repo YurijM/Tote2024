@@ -50,7 +50,7 @@ class GameViewModel @Inject constructor(
     var game by mutableStateOf(GameModel())
         private set
 
-    var startTime = ""
+    var startTime = "00:00"
 
     val teams = mutableListOf<String>()
     private var gamblersCount = 0
@@ -204,17 +204,20 @@ class GameViewModel @Inject constructor(
                 gameUseCase.saveGame(game).onEach { stateSave ->
                     _state.value = StateGame(stateSave)
                     if (stateSave is UiState.Success) {
-                        val index = games.indexOf(games.find { it.gameId == gameId })
-                        games[index] = game.copy()
+                        //if ((gameId?.toInt() ?: 0) > 0) {
+                        if (game.goal1.isNotBlank() && game.goal2.isNotBlank()) {
+                            val index = games.indexOf(games.find { it.gameId == gameId })
+                            games[index] = game.copy()
 
-                        saveStakePlace()
+                            saveStakePlace()
 
-                        calcGamblerPointsPrev()
-                        calcGamblerPlacePrev()
-                        calcGamblerPoints()
-                        calcGamblerPlace()
+                            calcGamblerPointsPrev()
+                            calcGamblerPlacePrev()
+                            calcGamblerPoints()
+                            calcGamblerPlace()
 
-                        saveGamblerResult()
+                            saveGamblerResult()
+                        }
                     }
                 }.launchIn(viewModelScope)
             }
@@ -455,7 +458,7 @@ class GameViewModel @Inject constructor(
                     }
                     true
                 } else {
-                    false
+                    true //false
                 }
             }
         } else {

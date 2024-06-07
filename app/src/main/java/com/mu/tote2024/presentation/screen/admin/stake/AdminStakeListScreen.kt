@@ -107,13 +107,17 @@ fun AdminStakeListScreen(
                             Text(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .padding(end = 8.dp),
+                                    .padding(end = 4.dp),
                                 textAlign = TextAlign.End,
-                                text = gambler.profile.nickname
+                                text = "${gambler.profile.nickname} -"
                             )
                             Text(
                                 modifier = Modifier.weight(1f),
-                                text = if (stakeByGambler == null)
+                                text = if (
+                                    stakeByGambler == null
+                                    || stakeByGambler.goal1.isBlank()
+                                    || stakeByGambler.goal2.isBlank()
+                                )
                                     stringResource(R.string.stake_is_absent)
                                 else
                                     "${stakeByGambler.goal1} : ${stakeByGambler.goal2}"
