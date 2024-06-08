@@ -84,7 +84,7 @@ class AdminStakeListViewModel @Inject constructor(
                 _state.value = AdminStakeListState(UiState.Loading)
 
                 games.forEach { game ->
-                    /*gamblers.filter { it.rate > 0 }.forEach { gambler ->
+                    gamblers.filter { it.rate > 0 }.forEach { gambler ->
                         val stake = StakeModel(
                             gameId = game.gameId,
                             gamblerId = gambler.gamblerId ?: "",
@@ -97,8 +97,8 @@ class AdminStakeListViewModel @Inject constructor(
                         viewModelScope.launch {
                             stakeUseCase.saveStake(stake).collect {}
                         }
-                    }*/
-                    gamblers.forEach { gambler ->
+                    }
+                    /*gamblers.forEach { gambler ->
                         var stake = stakes.find { it.gamblerId == gambler.gamblerId && it.gameId == game.gameId }
                         if (stake != null) {
                             stake = stake.copy(
@@ -115,7 +115,7 @@ class AdminStakeListViewModel @Inject constructor(
                                 stakeUseCase.saveStake(stake).collect {}
                             }
                         }
-                    }
+                    }*/
                 }
             }
         }
