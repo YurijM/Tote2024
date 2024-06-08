@@ -86,6 +86,7 @@ class RatingChartViewModel @Inject constructor(
                         setPlaceMovementGambler(gameId)
                     }
 
+                    places.clear()
                     movement.filter { it.gamblerId == gamblerId }.sortedBy { it.gameId }.forEach { item ->
                         places.add(Point(item.gameId.toFloat(), -item.place.toFloat()))
                     }
@@ -98,13 +99,36 @@ class RatingChartViewModel @Inject constructor(
     }
 
     private fun setPlaceMovementGambler(gameId: Int) {
-        var place = 0
+        var place = 1
         var points = 0.0
+        var step = 0
+
         movement
             .filter { movement -> movement.gameId == gameId }
-            .sortedByDescending { sort -> sort.points }
+            //.sortedByDescending { sort -> sort.points }
+            .sortedWith(
+                compareByDescending<MovementModel> { item -> item.points }
+                    .thenBy { item -> item.nickname }
+            )
             .forEach { item ->
-                if (item.points != points) {
+                if (points == item.points) {
+                    step++
+                } else {
+                    place += step
+                    points = item.points
+
+                    step = 1
+                }
+
+                val index = movement.indexOf(
+                    movement.find {
+                        it.gamblerId == item.gamblerId
+                                && it.gameId == gameId
+                    }
+                )
+                movement[index] = item.copy(place = place)
+
+                /*if (item.points != points) {
                     place++
                     points = item.points
                 }
@@ -114,7 +138,7 @@ class RatingChartViewModel @Inject constructor(
                                 && it.gameId == gameId
                     }
                 )
-                movement[index] = item.copy(place = place)
+                movement[index] = item.copy(place = place)*/
             }
     }
 
@@ -139,6 +163,7 @@ class RatingChartViewModel @Inject constructor(
                     gameId = stake.gameId.toInt(),
                     start = start ?: "",
                     gamblerId = stake.gamblerId,
+                    nickname = gamblers.find { it.gamblerId == stake.gamblerId }?.profile?.nickname ?: "",
                     points = points,
                 )
             )
@@ -161,7 +186,7 @@ class RatingChartViewModel @Inject constructor(
     }
 
     private fun maxPlace(): Float {
-        var max = -(places.size + 1).toFloat()
+        var max = -(gamblers.size + 1).toFloat()
         places.forEach { place ->
             if (place.y > max) max = place.y
         }
@@ -177,6 +202,7 @@ class RatingChartViewModel @Inject constructor(
             val gameId: Int = 0,
             val start: String = "",
             val gamblerId: String = "",
+            val nickname: String = "",
             val points: Double = 0.0,
             val place: Int = 0,
         )
