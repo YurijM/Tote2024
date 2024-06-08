@@ -171,7 +171,11 @@ private fun EditCard(
     Card(
         modifier = Modifier
             .width(400.dp)
-            .padding(horizontal = 24.dp, vertical = 12.dp),
+            .padding(
+                start = 24.dp,
+                end = 24.dp,
+                bottom = 12.dp
+            ),
         border = BorderStroke(
             width = 2.dp,
             color = MaterialTheme.colorScheme.outline
