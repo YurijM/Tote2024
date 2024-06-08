@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.StakeModel
@@ -91,7 +92,23 @@ fun StakeItemScreen(
             }
         }
         if (stake.addGoal1.isNotBlank() && stake.addGoal1.isNotBlank()) {
-            Row(
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    lineHeight = 1.em,
+                    text = "дополнительное время ${stake.addGoal1} : ${stake.addGoal2}"
+                )
+                if (stake.penalty.isNotBlank()) {
+                    Text(
+                        lineHeight = 1.em,
+                        text = "по пенальти победила ${stake.penalty}"
+                    )
+                }
+            }
+
+            /*Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -108,7 +125,7 @@ fun StakeItemScreen(
                         text = "по пенальти победила ${stake.penalty}"
                     )
                 }
-            }
+            }*/
         }
     }
 }

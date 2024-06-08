@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.GameModel
@@ -90,11 +91,27 @@ fun GroupGameItemScreen(
             }
         }
         if (game.addGoal1.isNotBlank() && game.addGoal1.isNotBlank()) {
-            Row(
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    lineHeight = 1.em,
+                    text = "дополнительное время ${game.addGoal1} : ${game.addGoal2}"
+                )
+                if (game.penalty.isNotBlank()) {
+                    Text(
+                        lineHeight = 1.em,
+                        text = "по пенальти победила ${game.penalty}"
+                    )
+                }
+            }
+            /*Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
+                    lineHeight = 1.em,
                     text = "дополнительное время ${game.addGoal1} : ${game.addGoal2}"
                 )
             }
@@ -104,10 +121,11 @@ fun GroupGameItemScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
+                        lineHeight = 1.em,
                         text = "по пенальти победила ${game.penalty}"
                     )
                 }
-            }
+            }*/
         }
     }
 }

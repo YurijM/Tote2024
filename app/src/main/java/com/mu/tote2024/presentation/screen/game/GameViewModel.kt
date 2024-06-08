@@ -90,6 +90,8 @@ class GameViewModel @Inject constructor(
                 if (stateGame is UiState.Success) {
                     game = stateGame.data
                     startTime = game.start.asTime()
+
+                    enabled = checkValues()
                 }
             }.launchIn(viewModelScope)
         }
