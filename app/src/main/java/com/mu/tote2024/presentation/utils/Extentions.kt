@@ -127,8 +127,8 @@ fun generateResult() : String {
     val goal2 = (0..3).random()
     var result = "$goal1 : $goal2"
     if (goal1 == goal2) {
-        val addGoal1 = (0..3).random()
-        val addGoal2 = (0..3).random()
+        val addGoal1 = (goal1..3).random()
+        val addGoal2 = (goal2..3).random()
         result += ", доп.время $addGoal1 : $addGoal2"
         if (addGoal1 == addGoal2) {
             result += ", по пенальти ${(1..2).random()}"
