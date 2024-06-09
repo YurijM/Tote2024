@@ -103,7 +103,7 @@ fun StakeItemScreen(
                 if (stake.penalty.isNotBlank()) {
                     Text(
                         lineHeight = 1.em,
-                        text = "по пенальти победила ${stake.penalty}"
+                        text = "по пенальти победит ${stake.penalty}"
                     )
                 }
             }
