@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -101,14 +102,17 @@ fun AdminStakeListScreen(
                     gameId = stake.gameId
                     Text(text = stringResource(id = R.string.game_no, gameId))
                     gamblers.forEach { gambler ->
+                        val stakeIsAbsent: Boolean
                         val stakeByGambler = stakeList.find { it.gameId == gameId && it.gamblerId == gambler.gamblerId }
                         val gameResult = if (
                             stakeByGambler == null
                             || stakeByGambler.goal1.isBlank()
                             || stakeByGambler.goal2.isBlank()
-                        )
+                        ) {
+                            stakeIsAbsent = true
                             stringResource(R.string.stake_is_absent)
-                        else {
+                        } else {
+                            stakeIsAbsent = false
                             "${stakeByGambler.goal1} : ${stakeByGambler.goal2}" +
                                     if (stakeByGambler.addGoal1.isNotBlank() && stakeByGambler.addGoal2.isNotBlank()) {
                                         ", ${stringResource(R.string.add_time)} " +
@@ -132,6 +136,11 @@ fun AdminStakeListScreen(
                             Text(
                                 modifier = Modifier.weight(2f),
                                 text = gameResult,
+                                color = if (stakeIsAbsent) {
+                                    MaterialTheme.colorScheme.error
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface
+                                },
                                 lineHeight = 1.em,
                                 maxLines = 2                            )
                         }
