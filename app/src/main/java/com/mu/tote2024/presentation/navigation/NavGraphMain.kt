@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.mu.tote2024.presentation.navigation.destination.admin.adminEmail
 import com.mu.tote2024.presentation.navigation.destination.admin.adminEmailList
+import com.mu.tote2024.presentation.navigation.destination.admin.adminFinish
 import com.mu.tote2024.presentation.navigation.destination.admin.adminGambler
 import com.mu.tote2024.presentation.navigation.destination.admin.adminGamblerList
 import com.mu.tote2024.presentation.navigation.destination.admin.adminGamblerPhoto
@@ -126,5 +127,7 @@ fun NavGraphMain(
         adminGameList()
 
         adminStakeList()
+
+        adminFinish()
     }
 }

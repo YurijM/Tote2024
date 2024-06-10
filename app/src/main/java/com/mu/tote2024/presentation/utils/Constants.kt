@@ -48,6 +48,7 @@ object Constants {
         const val ADMIN_TEAM_LIST_SCREEN = "admin_team_list_screen"
         const val ADMIN_GAME_LIST_SCREEN = "admin_game_list_screen"
         const val ADMIN_STAKE_LIST_SCREEN = "admin_stake_list_screen"
+        const val ADMIN_FINISH_SCREEN = "admin_finish_screen"
     }
 
     object Errors {

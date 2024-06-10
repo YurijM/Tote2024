@@ -16,6 +16,7 @@ object Constants {
         const val NODE_GAMES = "games"
         const val NODE_STAKES = "stakes"
         const val NODE_PROGNOSIS = "prognosis"
+        const val NODE_FINISH = "finish"
 
         const val GAMBLER_PHOTO_URL = "photoUrl"
     }
@@ -32,5 +33,6 @@ object Constants {
         const val ERROR_PROFILE_IS_EMPTY = "Профиль не заполнен"
         const val ERROR_CANCEL_WHEN_PROFILE_IS_EMPTY = "Отмена (профиль не заполнен)"
         const val ERROR_ALL_FIELDS_MUST_BE_FILLED = "Все поля должна быть заполнены"
+        const val ERROR_FINISH_IS_NOT_FOUND = "Не найдены данные об окончании турнира"
     }
 }

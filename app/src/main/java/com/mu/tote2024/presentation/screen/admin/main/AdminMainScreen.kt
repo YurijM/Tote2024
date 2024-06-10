@@ -19,6 +19,7 @@ fun AdminMainScreen(
         AdminNavItem.AdminTeamItem,
         AdminNavItem.AdminGameItem,
         AdminNavItem.AdminStakeItem,
+        AdminNavItem.AdminFinishItem,
     )
     Box(
         modifier = Modifier

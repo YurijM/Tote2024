@@ -4,8 +4,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.mu.tote2024.data.repository.GameRepositoryImpl
 import com.mu.tote2024.domain.repository.GameRepository
 import com.mu.tote2024.domain.usecase.game_usecase.GameUseCase
+import com.mu.tote2024.domain.usecase.game_usecase.GetFinish
 import com.mu.tote2024.domain.usecase.game_usecase.GetGame
 import com.mu.tote2024.domain.usecase.game_usecase.GetGameList
+import com.mu.tote2024.domain.usecase.game_usecase.SaveFinish
 import com.mu.tote2024.domain.usecase.game_usecase.SaveGame
 import dagger.Module
 import dagger.Provides
@@ -27,6 +29,8 @@ object GameRepositoryModule {
     fun provideGameUseCase(gameRepository: GameRepository) = GameUseCase(
         getGame = GetGame(gameRepository),
         getGameList = GetGameList(gameRepository),
-        saveGame = SaveGame(gameRepository)
-    )
+        saveGame = SaveGame(gameRepository),
+        getFinish = GetFinish(gameRepository),
+        saveFinish = SaveFinish(gameRepository),
+        )
 }
