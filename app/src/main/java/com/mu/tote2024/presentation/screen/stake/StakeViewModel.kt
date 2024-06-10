@@ -159,7 +159,10 @@ class StakeViewModel @Inject constructor(
                                                 && it.start.toLong() < System.currentTimeMillis()
                                                 && it.gameId != gameId
                                     }
-                                    .sortedBy { it.gameId }
+                                    .sortedWith(
+                                        compareBy<GameModel> { it.team1 == team1 || it.team2 == team1 }
+                                            .thenBy { it.team1 == team2 || it.team2 == team2 }
+                                    )
                                 games.forEach {
                                     addFlags(
                                         gameId = it.gameId,
