@@ -316,8 +316,10 @@ class GameViewModel @Inject constructor(
         val gameIds = mutableListOf<Int>()
         val currentGame = games.find { it.gameId == gameId }
         //games.filter { it.start.toLong() <= System.currentTimeMillis() && it.gameId != gameId }.forEach { game ->
-        games.filter { it.start.toLong() <= System.currentTimeMillis()
-                && it.start.toLong() < (currentGame?.start?.toLong() ?: 0) }.forEach { game ->
+        games.filter {
+            it.start.toLong() <= System.currentTimeMillis()
+                    && it.start.toLong() < (currentGame?.start?.toLong() ?: 0)
+        }.forEach { game ->
             gameIds.add(game.gameId.toInt())
         }
 
@@ -367,8 +369,7 @@ class GameViewModel @Inject constructor(
     }
 
     private fun calcStakePointsAddTime(stake: StakeModel, game: GameModel): Double {
-        var points = stake.points
-        points += if (stake.goal1 == game.goal1 && stake.goal2 == game.goal2
+        var points = if (stake.goal1 == game.goal1 && stake.goal2 == game.goal2
             && stake.addGoal1 == game.addGoal1 && stake.addGoal2 == game.addGoal2
         ) {
             2.0
@@ -395,8 +396,8 @@ class GameViewModel @Inject constructor(
         return points
     }
 
-    private fun calcStakePoints(stake: StakeModel, game: GameModel, coefficient: Double): Double =
-        if (stake.goal1 == game.goal1 && stake.goal2 == game.goal2) {
+    private fun calcStakePoints(stake: StakeModel, game: GameModel, coefficient: Double): Double {
+        var result = if (stake.goal1 == game.goal1 && stake.goal2 == game.goal2) {
             val points = coefficient * 2
             if (points <= gamblersCount) points else gamblersCount * 1.1
         } else if (game.goal1 != game.goal2
@@ -417,11 +418,16 @@ class GameViewModel @Inject constructor(
             0.15
         } else {
             0.0
-        } + if (game.addGoal1.isNotBlank() && game.addGoal2.isNotBlank()
+        }
+
+        if (game.addGoal1.isNotBlank() && game.addGoal2.isNotBlank()
             && stake.addGoal1.isNotBlank() && stake.addGoal2.isNotBlank()
         ) {
-            calcStakePointsAddTime(stake, game)
-        } else 0.0
+            result += calcStakePointsAddTime(stake, game)
+        }
+
+        return result
+    }
 
     private fun checkValues(): Boolean {
         isExtraTime = false
