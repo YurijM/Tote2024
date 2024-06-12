@@ -111,14 +111,14 @@ class GameRepositoryImpl(
         }
     }
 
-    override fun saveFinish(finish: FinishModel): Flow<UiState<Boolean>> = callbackFlow {
+    override fun saveFinish(finish: FinishModel): Flow<UiState<FinishModel>> = callbackFlow {
         trySend(UiState.Loading)
 
         firebaseDatabase.reference
             .child(NODE_FINISH)
             .setValue(finish)
 
-        trySend(UiState.Success(true))
+        trySend(UiState.Success(finish))
 
         awaitClose {
             close()

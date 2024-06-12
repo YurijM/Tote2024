@@ -10,5 +10,5 @@ interface GameRepository {
     fun getGameList(): Flow<UiState<List<GameModel>>>
     fun saveGame(game: GameModel): Flow<UiState<Boolean>>
     fun getFinish(): Flow<UiState<FinishModel>>
-    fun saveFinish(finish: FinishModel): Flow<UiState<Boolean>>
+    fun saveFinish(finish: FinishModel): Flow<UiState<FinishModel>>
 }

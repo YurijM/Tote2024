@@ -20,9 +20,7 @@ import javax.inject.Inject
 class AdminFinishViewModel @Inject constructor(
     private val gameUseCase: GameUseCase,
 ) : ViewModel() {
-    private val _state: MutableStateFlow<AdminFinishState> = MutableStateFlow(
-        AdminFinishState()
-    )
+    private val _state: MutableStateFlow<AdminFinishState> = MutableStateFlow(AdminFinishState())
     val state: StateFlow<AdminFinishState> = _state.asStateFlow()
 
     var finish by mutableStateOf(FinishModel())
@@ -31,17 +29,17 @@ class AdminFinishViewModel @Inject constructor(
     init {
         gameUseCase.getFinish().onEach { finishState ->
             _state.value = AdminFinishState(finishState)
-
-            if (finishState is UiState.Success)
+            if (finishState is UiState.Success) {
                 finish = finishState.data
+            }
         }.launchIn(viewModelScope)
     }
 
     fun onEvent(event: AdminFinishEvent) {
         when (event) {
-            is AdminFinishEvent.OnIsFinishedChange -> {
+            is AdminFinishEvent.OnFinishChange -> {
                 finish = finish.copy(
-                    isFinished = event.isFinished
+                    finish = event.finish
                 )
             }
 
@@ -57,9 +55,7 @@ class AdminFinishViewModel @Inject constructor(
 
             is AdminFinishEvent.OnSave -> {
                 gameUseCase.saveFinish(finish).onEach { finishState ->
-                    if (finishState is UiState.Success) {
-                        _state.value = AdminFinishState(UiState.Success(finish))
-                    }
+                    _state.value = AdminFinishState(finishState)
                 }.launchIn(viewModelScope)
             }
         }
