@@ -37,7 +37,7 @@ import com.mu.tote2024.presentation.ui.common.UiState
 @Composable
 fun AdminFinishScreen(
     viewModel: AdminFinishViewModel = hiltViewModel(),
-    //toAdminEmailList: () -> Unit
+    toAdmin: () -> Unit
 ) {
     val isLoading = remember { mutableStateOf(false) }
     val state by viewModel.state.collectAsState()
@@ -52,7 +52,7 @@ fun AdminFinishScreen(
         is UiState.Success -> {
             isLoading.value = false
             isLoaded = true
-            //if (viewModel.isExit) toAdminEmailList()
+            if (viewModel.isExit) toAdmin()
         }
 
         is UiState.Error -> {

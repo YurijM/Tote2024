@@ -128,6 +128,10 @@ fun NavGraphMain(
 
         adminStakeList()
 
-        adminFinish()
+        adminFinish(
+            toAdmin = {
+                navMainController.popBackStack()
+            }
+        )
     }
 }

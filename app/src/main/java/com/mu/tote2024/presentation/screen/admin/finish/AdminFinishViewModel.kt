@@ -25,12 +25,15 @@ class AdminFinishViewModel @Inject constructor(
 
     var finish by mutableStateOf(FinishModel())
         private set
+    var isExit by mutableStateOf(false)
+        private set
 
     init {
         gameUseCase.getFinish().onEach { finishState ->
             _state.value = AdminFinishState(finishState)
             if (finishState is UiState.Success) {
                 finish = finishState.data
+                isExit = false
             }
         }.launchIn(viewModelScope)
     }
@@ -51,10 +54,12 @@ class AdminFinishViewModel @Inject constructor(
 
             is AdminFinishEvent.OnCancel -> {
                 _state.value = AdminFinishState(UiState.Success(finish))
+                isExit = true
             }
 
             is AdminFinishEvent.OnSave -> {
                 gameUseCase.saveFinish(finish).onEach { finishState ->
+                    isExit = true
                     _state.value = AdminFinishState(finishState)
                 }.launchIn(viewModelScope)
             }
