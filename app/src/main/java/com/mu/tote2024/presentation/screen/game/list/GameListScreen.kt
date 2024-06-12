@@ -40,6 +40,7 @@ import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.model.GroupTeamResultModel
 import com.mu.tote2024.presentation.components.AppFabAdd
 import com.mu.tote2024.presentation.components.AppProgressBar
+import com.mu.tote2024.presentation.components.AppTournamentIsFinished
 import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.screen.game.list_group.GroupGameItemScreen
 import com.mu.tote2024.presentation.ui.ColorDefeat
@@ -91,6 +92,9 @@ fun GameListScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
+            if (viewModel.finish.finish)
+                AppTournamentIsFinished(text = viewModel.finish.text)
+
             (GROUPS.size - 1 downTo GROUPS_COUNT).forEach { index ->
                 val list = games
                     .filter { it.group == GROUPS[index] }

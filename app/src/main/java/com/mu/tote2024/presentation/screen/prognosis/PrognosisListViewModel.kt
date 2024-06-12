@@ -2,7 +2,7 @@ package com.mu.tote2024.presentation.screen.prognosis
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mu.tote2024.domain.model.FinishModel
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.model.PrognosisModel
@@ -21,24 +21,28 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PrognosisListViewModel @Inject constructor(
-    gameUseCase: GameUseCase,
     private val stakeUseCase: StakeUseCase,
     private val prognosisUseCase: PrognosisUseCase,
     private val gamblerUseCase: GamblerUseCase,
+    gameUseCase: GameUseCase
 ) : ViewModel() {
     private val _state: MutableStateFlow<GameState> = MutableStateFlow(GameState())
     val state: StateFlow<GameState> = _state
 
     var gamblers = listOf<GamblerModel>()
         private set
-
     var stakes = listOf<StakeModel>()
         private set
-
     var prognosis = listOf<PrognosisModel>()
+        private set
+    var finish = FinishModel()
         private set
 
     init {
+        gameUseCase.getFinish().onEach { stateFinish ->
+            if (stateFinish is UiState.Success)
+              finish = stateFinish.data
+        }.launchIn(viewModelScope)
         gameUseCase.getGameList().onEach { stateGame ->
             if (stateGame is UiState.Success) {
                 gamblerUseCase.getGamblerList().onEach { stateGambler ->

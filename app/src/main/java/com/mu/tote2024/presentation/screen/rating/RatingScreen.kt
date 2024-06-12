@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.data.utils.Constants.GAMBLER
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.presentation.components.AppProgressBar
+import com.mu.tote2024.presentation.components.AppTournamentIsFinished
 import com.mu.tote2024.presentation.ui.common.UiState
 
 @Composable
@@ -93,6 +94,9 @@ fun RatingScreen(
                 )
             }
         }
+
+        if (viewModel.finish.finish)
+            AppTournamentIsFinished(text = viewModel.finish.text)
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),

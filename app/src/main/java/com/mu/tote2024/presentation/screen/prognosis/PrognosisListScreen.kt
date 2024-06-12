@@ -22,6 +22,7 @@ import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.model.PrognosisModel
 import com.mu.tote2024.domain.model.StakeModel
 import com.mu.tote2024.presentation.components.AppProgressBar
+import com.mu.tote2024.presentation.components.AppTournamentIsFinished
 import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
 
@@ -64,6 +65,9 @@ fun PrognosisListScreen(
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
+        if (viewModel.finish.finish)
+            AppTournamentIsFinished(text = viewModel.finish.text)
+
         Title(title = stringResource(id = R.string.prognosis))
         LazyColumn(
             modifier = Modifier

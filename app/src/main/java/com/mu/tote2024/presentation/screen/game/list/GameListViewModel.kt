@@ -2,6 +2,7 @@ package com.mu.tote2024.presentation.screen.game.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mu.tote2024.domain.model.FinishModel
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.GameModel
 import com.mu.tote2024.domain.model.GroupTeamResultModel
@@ -31,8 +32,14 @@ class GameListViewModel @Inject constructor(
     var resultTeams = listOf<GroupTeamResultModel>()
     var games = listOf<GameModel>()
     val flags = mutableListOf<GameFlagsModel>()
+    var finish = FinishModel()
+        private set
 
     init {
+        gameUseCase.getFinish().onEach { stateFinish ->
+            if (stateFinish is UiState.Success)
+                finish = stateFinish.data
+        }.launchIn(viewModelScope)
         teamUseCase.getTeamList().onEach { stateTeams ->
             _state.value = GameListState(UiState.Loading)
 

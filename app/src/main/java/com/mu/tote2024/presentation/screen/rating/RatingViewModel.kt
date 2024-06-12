@@ -3,23 +3,31 @@ package com.mu.tote2024.presentation.screen.rating
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mu.tote2024.data.utils.Constants.GAMBLER
+import com.mu.tote2024.domain.model.FinishModel
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.usecase.gambler_usecase.GamblerUseCase
+import com.mu.tote2024.domain.usecase.game_usecase.GameUseCase
 import com.mu.tote2024.presentation.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.round
 
 @HiltViewModel
 class RatingViewModel @Inject constructor(
+    gameUseCase: GameUseCase,
     gamblerUseCase: GamblerUseCase
 ) : ViewModel() {
     private val _state: MutableStateFlow<RatingState> = MutableStateFlow(RatingState())
     val state: StateFlow<RatingState> = _state.asStateFlow()
+
+    var finish = FinishModel()
+        private set
 
     var showArrows = false
         private set
@@ -29,6 +37,10 @@ class RatingViewModel @Inject constructor(
         private set
 
     init {
+        gameUseCase.getFinish().onEach { stateFinish ->
+            if (stateFinish is UiState.Success)
+                finish = stateFinish.data
+        }.launchIn(viewModelScope)
         viewModelScope.launch {
             gamblerUseCase.getGamblerList().collect { stateGambler ->
                 winningsList = mutableListOf()
