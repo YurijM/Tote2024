@@ -28,7 +28,6 @@ import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.domain.model.GameFlagsModel
 import com.mu.tote2024.domain.model.StakeModel
 import com.mu.tote2024.presentation.components.AppProgressBar
-import com.mu.tote2024.presentation.components.OkAndCancel
 import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
 
@@ -78,7 +77,7 @@ fun AdminStakeListScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Title(stringResource(id = R.string.admin_stake_list))
-        OkAndCancel(
+        /*OkAndCancel(
             titleOk = stringResource(id = R.string.generate_stakes),
             enabledOk = true,
             showCancel = false,
@@ -87,7 +86,7 @@ fun AdminStakeListScreen(
                 viewModel.onEvent(AdminStakeListEvent.OnGenerate)
             },
             onCancel = {}
-        )
+        )*/
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

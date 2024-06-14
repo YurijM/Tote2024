@@ -17,10 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.GamblerModel
-import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.components.AppProgressBar
-import com.mu.tote2024.presentation.components.OkAndCancel
-import com.mu.tote2024.presentation.screen.admin.game.AdminGameListEvent
+import com.mu.tote2024.presentation.components.Title
 import com.mu.tote2024.presentation.ui.common.UiState
 
 @Composable
@@ -58,13 +56,13 @@ fun AdminGamblerListScreen(
             .padding(4.dp)
     ) {
         Title(stringResource(id = R.string.admin_gambler_list))
-        OkAndCancel(
+        /*OkAndCancel(
             titleOk = stringResource(id = R.string.gambler_result_clear),
             enabledOk = true,
             showCancel = false,
             onOK = { viewModel.onEvent(AdminGamblerListEvent.OnResultClear) },
             onCancel = {}
-        )
+        )*/
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
