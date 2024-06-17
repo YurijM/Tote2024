@@ -11,9 +11,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +24,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -128,54 +128,8 @@ fun RatingScreen(
             }
         }
 
-        Row(
-            modifier = Modifier
-                .padding(top = 12.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            BadgedBox(badge = {
-                Badge(
-                    containerColor = ColorFemale,
-                    contentColor = Color.White
-                ) {
-                    Text(
-                        modifier = Modifier.padding(4.dp),
-                        text = DecimalFormat("0.00").format(femaleResult),
-                        fontSize = 14.sp
-                    )
-                }
-            }) {
-                Text(
-                    modifier = Modifier.padding(top = 8.dp, end = 4.dp),
-                    text = "Ж",
-                    color = ColorFemale,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            Spacer(modifier = Modifier.width(48.dp))
-            BadgedBox(badge = {
-                Badge(
-                    containerColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    contentColor = Color.White
-                ) {
-                    Text(
-                        modifier = Modifier.padding(4.dp),
-                        text = DecimalFormat("0.00").format(maleResult),
-                        fontSize = 14.sp
-                    )
-                }
-            }) {
-                Text(
-                    modifier = Modifier.padding(top = 8.dp, end = 4.dp),
-                    text = "М",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
+        if (!isLoading)
+            GenderTournament(maleResult, femaleResult)
 
         LazyColumn {
             items(gamblers) { gambler ->
@@ -196,5 +150,73 @@ fun RatingScreen(
 
     if (isLoading) {
         AppProgressBar()
+    }
+}
+
+@Composable
+fun GenderTournament(maleResult: Double, femaleResult: Double) {
+    Row(
+        modifier = Modifier
+            .padding(top = 12.dp)
+            .fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier.padding(end = 4.dp),
+                text = "М",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Card(
+                modifier = Modifier.width(64.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentColor = Color.White
+                )
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    text = DecimalFormat("0.00").format(maleResult),
+                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp
+                )
+            }
+        }
+        Spacer(modifier = Modifier.width(20.dp))
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Card(
+                modifier = Modifier.width(64.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = ColorFemale,
+                    contentColor = Color.White
+                )
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    text = DecimalFormat("0.00").format(femaleResult),
+                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp
+                )
+            }
+            Text(
+                modifier = Modifier.padding(start = 4.dp),
+                text = "Ж",
+                color = ColorFemale,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
