@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.GamblerModel
@@ -146,7 +147,9 @@ fun PrognosisItemScreen(
                     Text(
                         modifier = Modifier.weight(.4f),
                         color = MaterialTheme.colorScheme.onSurface,
-                        text = gamblers.find { it.gamblerId == stake.gamblerId }?.profile?.nickname ?: ""
+                        text = gamblers.find { it.gamblerId == stake.gamblerId }?.profile?.nickname ?: "",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Column(
                         modifier = Modifier.weight(1f),

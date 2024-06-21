@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -130,11 +131,13 @@ fun AdminStakeListScreen(
                                     .weight(1f)
                                     .padding(end = 4.dp),
                                 textAlign = TextAlign.End,
-                                text = "${gambler.profile.nickname} -"
+                                text = gambler.profile.nickname,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
                             )
                             Text(
                                 modifier = Modifier.weight(2f),
-                                text = gameResult,
+                                text = "- $gameResult",
                                 color = if (stakeIsAbsent) {
                                     MaterialTheme.colorScheme.error
                                 } else {
