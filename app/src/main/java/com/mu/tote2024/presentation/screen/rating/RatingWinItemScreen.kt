@@ -10,8 +10,9 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,13 +20,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.SubcomposeAsyncImage
+import coil.compose.AsyncImage
 import com.mu.tote2024.R
 import com.mu.tote2024.domain.model.GamblerModel
 import com.mu.tote2024.presentation.ui.ColorDraw
@@ -63,7 +65,7 @@ fun RatingWinItemScreen(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                SubcomposeAsyncImage(
+                /*SubcomposeAsyncImage(
                     model = gambler.profile.photoUrl,
                     contentDescription = null,
                     modifier = Modifier
@@ -80,6 +82,21 @@ fun RatingWinItemScreen(
                             )
                         }
                     }
+                )*/
+                val placeholder = rememberVectorPainter(
+                    image = Icons.Rounded.AccountCircle
+                )
+                AsyncImage(
+                    model = gambler.profile.photoUrl,
+                    placeholder = placeholder,
+                    contentDescription = "User Photo",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .requiredSize(dimensionResource(id = R.dimen.winner_photo_size))
+                        .clip(RoundedCornerShape(8.dp)),
+                        //.size(64.dp)
+                        //.aspectRatio(1f / 1f)
+                        //.clip(CircleShape)
                 )
             }
             Text(

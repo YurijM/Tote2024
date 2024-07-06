@@ -2,16 +2,16 @@ package com.mu.tote2024.presentation.screen.rating
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,13 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.SubcomposeAsyncImage
+import coil.compose.AsyncImage
 import com.mu.tote2024.R
 import com.mu.tote2024.presentation.ui.ColorDefeat
 import com.mu.tote2024.presentation.ui.ColorDraw
@@ -77,7 +77,7 @@ fun RatingItemScreen(
             .clickable { toChart() },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SubcomposeAsyncImage(
+        /*SubcomposeAsyncImage(
             model = photoUrl,
             contentDescription = null,
             modifier = Modifier
@@ -98,6 +98,22 @@ fun RatingItemScreen(
                     )
                 }
             },
+        )*/
+        val placeholder = rememberVectorPainter(
+            image = Icons.Rounded.AccountCircle
+        )
+        AsyncImage(
+            model = photoUrl,
+            placeholder = placeholder,
+            contentDescription = "User Photo",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(36.dp)
+                .aspectRatio(1f / 1f)
+                .clip(CircleShape)
+                .clickable {
+                    toAdminGamblerPhoto()
+                }
         )
         Text(
             text = nickname,
